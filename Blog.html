@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOOM | Blog</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f8f3ef;
+      --card: rgba(255,255,255,0.78);
+      --rose: #d7b0a3;
+      --rose-dark: #b88272;
+      --text: #3f322d;
+      --muted: #8f7d77;
+      --line: #eaded8;
+      --shadow: 0 14px 35px rgba(89, 63, 55, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, #fcf8f5, #f5ece7);
+      color: var(--text);
+    }
+
+    .navbar {
+      width: 100%;
+      padding: 22px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      margin-left: 28px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .hero {
+      width: 90%;
+      max-width: 1280px;
+      margin: 35px auto 28px;
+      min-height: 75vh;
+      border-radius: 34px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow);
+      background: url("images/blog-hero.png") center/cover no-repeat;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .hero-overlay {
+      width: 100%;
+      padding: 70px 7%;
+      background: linear-gradient(to top, rgba(37, 24, 20, 0.72), rgba(37, 24, 20, 0.18), transparent);
+      color: white;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 68px;
+      line-height: 0.95;
+      max-width: 650px;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      max-width: 580px;
+      font-size: 16px;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .section-head {
+      width: 90%;
+      max-width: 1250px;
+      margin: 50px auto 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 46px;
+      line-height: 1;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.8;
+    }
+
+    .blog-grid {
+      width: 90%;
+      max-width: 1250px;
+      margin: 0 auto 70px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .blog-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(18px);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: 0.3s ease;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .blog-card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+    }
+
+    .blog-content {
+      padding: 24px;
+    }
+
+    .blog-date {
+      font-size: 13px;
+      color: var(--rose-dark);
+      margin-bottom: 10px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    .blog-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      line-height: 1.05;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    .blog-text {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+
+    .blog-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: linear-gradient(135deg, #d8ab9d, #b98272);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 22px rgba(185,130,114,0.22);
+      cursor: pointer;
+      border: none;
+    }
+
+    .empty-state {
+      width: 90%;
+      max-width: 1000px;
+      margin: 30px auto 80px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 28px;
+      padding: 60px 30px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .empty-state h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      inset: 0;
+      background: rgba(30, 20, 17, 0.55);
+      backdrop-filter: blur(6px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #fffaf7;
+      width: 100%;
+      max-width: 850px;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      animation: fadeUp 0.25s ease;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+    }
+
+    .modal-body {
+      padding: 30px;
+    }
+
+    .modal-date {
+      color: var(--rose-dark);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .modal-text {
+      color: var(--muted);
+      line-height: 2;
+      font-size: 16px;
+      white-space: pre-line;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      background: rgba(255,255,255,0.88);
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      font-size: 22px;
+      cursor: pointer;
+      color: #4a3a35;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        min-height: 60vh;
+      }
+
+      .hero h1 {
+        font-size: 48px;
+      }
+
+      .section-head h2 {
+        font-size: 38px;
+      }
+
+      .modal-title {
+        font-size: 38px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .nav-links a {
+        margin: 0 10px;
+      }
+
+      .hero h1 {
+        font-size: 38px;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      .modal-content img {
+        height: 260px;
+      }
+
+      .modal-title {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">LOOM</div>
+    <div class="nav-links">
+      <a href="blog.html">Blog</a>
+      <a href="admin-add-blog.html">Admin</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-overlay">
+      <span class="hero-tag">LOOM Journal</span>
+      <h1>Fashion, but<br>more conscious.</h1>
+      <p>
+        Explore thoughtful articles about sustainable fashion, second-use clothing, and mindful wardrobe choices designed for a better future.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-head">
+    <div>
+      <h2>Latest stories</h2>
+    </div>
+    <p>
+      Discover curated blog posts that make sustainable fashion easier to understand, more elegant to follow, and more practical in everyday life.
+    </p>
+  </section>
+
+  <section class="blog-grid" id="blogContainer"></section>
+
+  <div class="modal" id="blogModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <img id="modalImage" src="" alt="Blog Image">
+      <div class="modal-body">
+        <p class="modal-date" id="modalDate"></p>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-text" id="modalText"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const blogContainer = document.getElementById("blogContainer");
+    const blogModal = document.getElementById("blogModal");
+    const modalImage = document.getElementById("modalImage");
+    const modalDate = document.getElementById("modalDate");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+
+    const defaultBlogs = [
+      {
+        id: 1,
+        title: "Why Sustainable Fashion Matters",
+        image: "images/blog1.png",
+        date: "2026-04-01",
+        content: "Sustainable fashion helps reduce textile waste, environmental harm, and impulsive overconsumption.\n\nIt encourages more intentional shopping decisions, better use of clothing, and greater awareness of how fashion impacts the planet.\n\nBy choosing quality over quantity and supporting more responsible practices, users can build wardrobes that are both stylish and thoughtful."
+      },
+      {
+        id: 2,
+        title: "How Second-Use Clothing Extends a Garment’s Life",
+        image: "images/blog2.png",
+        date: "2026-03-28",
+        content: "Second-use fashion gives clothing a second life instead of allowing it to be wasted after limited wear.\n\nBuying and selling pre-owned garments supports circular fashion, reduces unnecessary waste, and encourages smarter wardrobe choices.\n\nIt also allows users to refresh their style in a more sustainable and affordable way."
+      },
+      {
+        id: 3,
+        title: "5 Smart Habits for a More Conscious Wardrobe",
+        image: "images/blog3.png",
+        date: "2026-03-21",
+        content: "A more conscious wardrobe starts with simple habits.\n\nBuy less, choose better quality, rewear what you own, care for your garments properly, and avoid impulsive purchases.\n\nThese small decisions can make fashion feel more intentional, practical, and aligned with sustainability."
+      }
+    ];
+
+    let storedBlogs = JSON.parse(localStorage.getItem("blogs"));
+
+    if (!storedBlogs || storedBlogs.length === 0) {
+      localStorage.setItem("blogs", JSON.stringify(defaultBlogs));
+      storedBlogs = defaultBlogs;
+    }
+
+    function formatDate(dateString) {
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return new Date(dateString).toLocaleDateString("en-US", options);
+    }
+
+    function openModal(blog) {
+      modalImage.src = blog.image;
+      modalTitle.textContent = blog.title;
+      modalDate.textContent = formatDate(blog.date);
+      modalText.textContent = blog.content;
+      blogModal.style.display = "flex";
+    }
+
+    function closeModal() {
+      blogModal.style.display = "none";
+    }
+
+    window.addEventListener("click", function(e) {
+      if (e.target === blogModal) {
+        closeModal();
+      }
+    });
+
+    function renderBlogs() {
+      let blogs = JSON.parse(localStorage.getItem("blogs")) || [];
+
+      if (blogs.length === 0) {
+        blogContainer.innerHTML = `
+          <div class="empty-state">
+            <h3>No blog posts yet</h3>
+            <p>The admin hasn’t published any blog posts yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      blogContainer.innerHTML = "";
+
+      blogs.slice().reverse().forEach(blog => {
+        const card = document.createElement("div");
+        card.className = "blog-card";
+
+        card.innerHTML = `
+          <img src="${blog.image}" alt="${blog.title}">
+          <div class="blog-content">
+            <p class="blog-date">${formatDate(blog.date)}</p>
+            <h3 class="blog-title">${blog.title}</h3>
+            <p class="blog-text">${blog.content.substring(0, 140)}...</p>
+            <button class="blog-btn">Read More</button>
+          </div>
+        `;
+
+        card.querySelector(".blog-btn").addEventListener("click", () => {
+          openModal(blog);
+        });
+
+        blogContainer.appendChild(card);
+      });
+    }
+
+    renderBlogs();
+  </script>
+
+</body>
+</html>
