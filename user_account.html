@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOOM - My Account</title>
+  <style>
+    :root {
+      --dusty-blush: #dea4ad;
+      --terracotta: #b56449;
+      --sage: #6b7883;
+      --warm-pink: #f3e8e8;
+      --charcoal: #434543;
+      --cream: #faf6f3;
+      --soft-white: #fffdfb;
+      --line: #eadfda;
+      --shadow: 0 8px 24px rgba(67, 69, 67, 0.06);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(to bottom, #f8f1ee, #fdfaf8);
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 20px 40px;
+    }
+
+    .topbar {
+      background: rgba(255, 253, 251, 0.92);
+      border-bottom: 1px solid #efe4df;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f0c7cc, #e8d9cf);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--terracotta);
+      font-size: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #726f6b;
+      font-size: 0.92rem;
+      transition: 0.25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--terracotta);
+    }
+
+    .account-head {
+      padding: 42px 0 18px;
+      text-align: center;
+    }
+
+    .account-head h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.5rem;
+      color: var(--charcoal);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .section-card {
+      background: rgba(255, 253, 251, 0.9);
+      border: 1px solid #f0e5e1;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 26px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+
+    .profile-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f7d8dc, #f5ece7);
+      border: 3px solid #fff8f5;
+      box-shadow: 0 6px 20px rgba(181, 100, 73, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: var(--terracotta);
+      overflow: hidden;
+    }
+
+    .profile-info h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.45rem;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .profile-info .email {
+      color: #7f7975;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .profile-info .small-text {
+      color: #8d8783;
+      font-size: 0.88rem;
+    }
+
+    .soft-btn {
+      border: none;
+      background: var(--terracotta);
+      color: white;
+      padding: 11px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      font-size: 0.95rem;
+    }
+
+    .soft-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.96;
+    }
+
+    .section-title-wrap {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+
+    .section-subtext {
+      color: #847e79;
+      font-size: 0.92rem;
+    }
+
+    .section-space {
+      margin-bottom: 48px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .fashion-card {
+      background: var(--soft-white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 6px 18px rgba(67, 69, 67, 0.05);
+      transition: 0.25s ease;
+      width: 100%;
+    }
+
+    .fashion-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 22px rgba(67, 69, 67, 0.08);
+    }
+
+    .card-image-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #f6f1ee;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+    }
+
+    .card-action-icons {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      opacity: 1;
+      transform: translateY(0);
+      transition: 0.28s ease;
+      z-index: 5;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 250, 247, 0.85);
+      background: rgba(255, 253, 251, 0.95);
+      color: var(--charcoal);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s ease;
+      box-shadow: 0 6px 16px rgba(67, 69, 67, 0.08);
+      font-size: 0.8rem;
+      padding: 0;
+    }
+
+    .icon-btn:hover {
+      transform: scale(1.05);
+      color: var(--terracotta);
+      background: #fff8f5;
+    }
+
+    .bookmark-btn {
+      background: rgba(255, 253, 251, 0.96);
+    }
+
+    .bookmark-btn.active {
+      color: var(--terracotta);
+    }
+
+    .bookmark-svg {
+      width: 15px;
+      height: 18px;
+      fill: currentColor;
+      display: block;
+    }
+
+    .card-body {
+      padding: 14px 14px 16px;
+    }
+
+    .title-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.3rem;
+      line-height: 1.1;
+      font-weight: 500;
+      color: var(--charcoal);
+    }
+
+    .card-price {
+      color: var(--terracotta);
+      font-size: 1rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .card-description {
+      color: #716d69;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      min-height: 50px;
+    }
+
+    .contact-pill {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #f3ece8;
+      color: #6f6c68;
+      font-size: 0.8rem;
+      border: 1px solid #eee2de;
+      margin-bottom: 10px;
+    }
+
+    .card-bottom-line {
+      margin-top: 10px;
+      border-top: 1px solid #eee3de;
+    }
+
+    .empty-state {
+      padding: 32px 20px;
+      text-align: center;
+      background: #fffdfb;
+      border: 1px dashed #dfc9c2;
+      border-radius: 20px;
+      color: #7e7773;
+    }
+
+    .empty-state h4 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+      color: var(--charcoal);
+      font-weight: 500;
+    }
+
+    .empty-state p {
+      font-size: 0.92rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(53, 48, 45, 0.34);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: #fffaf8;
+      border-radius: 22px;
+      border: 1px solid #f1e3de;
+      box-shadow: 0 20px 50px rgba(67, 69, 67, 0.14);
+      padding: 24px;
+      animation: popIn 0.22s ease;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.7rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--charcoal);
+    }
+
+    .modal-text {
+      color: #79736f;
+      margin-bottom: 18px;
+      font-size: 0.92rem;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #5f5a56;
+      font-size: 0.9rem;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      border: 1px solid #eadad4;
+      background: #fffefd;
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+      transition: 0.22s ease;
+      color: var(--charcoal);
+      font-size: 0.92rem;
+    }
+
+    .form-textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      border-color: var(--dusty-blush);
+      box-shadow: 0 0 0 4px rgba(222, 164, 173, 0.13);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-light,
+    .btn-main,
+    .btn-delete {
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.22s ease;
+      font-size: 0.92rem;
+    }
+
+    .btn-light {
+      background: #f7efeb;
+      color: var(--charcoal);
+      border: 1px solid #ecdcd5;
+    }
+
+    .btn-light:hover {
+      background: #f3e6e1;
+    }
+
+    .btn-main {
+      background: var(--terracotta);
+      color: white;
+      border: none;
+    }
+
+    .btn-main:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-delete {
+      background: #f3e7e3;
+      color: var(--terracotta);
+      border: 1px solid #e8d0c8;
+    }
+
+    .btn-delete:hover {
+      background: #efdfd9;
+    }
+
+    .footer {
+      margin-top: 52px;
+      background: #464847;
+      color: #f7efe9;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 34px 20px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .footer-brand {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+
+    .footer p,
+    .footer li,
+    .footer a {
+      color: #dfd6d1;
+      text-decoration: none;
+      list-style: none;
+      margin-bottom: 7px;
+      font-size: 0.9rem;
+    }
+
+    .footer h4 {
+      font-family: Georgia, "Times New Roman", serif;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #fff6ef;
+    }
+.avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: #e9e3e0;
+  border: 3px solid #f6e3e6;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8e918b;
+  overflow: hidden;
+  position: relative;
+}
+
+.avatar svg {
+  width: 42px;
+  height: 42px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.delete-btn {
+  font-size: 1.05rem;
+}
+
+.bookmark-btn {
+  background: rgba(255, 253, 251, 0.98);
+  width: 42px;
+  height: 42px;
+}
+
+.bookmark-svg {
+  width: 17px;
+  height: 21px;
+  fill: currentColor;
+  display: block;
+}
+    @media (max-width: 1100px) {
+      .page-container,
+      .topbar-inner,
+      .footer-inner {
+        max-width: 1000px;
+      }
+
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+
+      .footer-inner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page-container {
+        padding: 16px 16px 32px;
+      }
+
+      .topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 16px;
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      .brand-name {
+        font-size: 1.6rem;
+      }
+
+      .account-head {
+        padding: 30px 0 14px;
+      }
+
+      .account-head h2 {
+        font-size: 2rem;
+      }
+
+      .profile-card {
+        padding: 18px;
+      }
+
+      .profile-left {
+        gap: 12px;
+      }
+
+      .avatar {
+        width: 64px;
+        height: 64px;
+        font-size: 1.35rem;
+      }
+
+      .profile-info h3 {
+        font-size: 1.25rem;
+      }
+
+      .section-title {
+        font-size: 1.7rem;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-image {
+        height: 240px;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+        padding: 28px 16px;
+      }
+
+      .title-price-row {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+      }
+
+      .card-price {
+        font-size: 1rem;
+      }
+
+      .card-description {
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#" class="brand">
+        <div class="brand-mark">⌒</div>
+        <div class="brand-name">LOOM</div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#" class="active">Home</a>
+        <a href="SecondUse.html">Second-Use</a>
+        <a href="#">Brands</a>
+        <a href="#">Blogs</a>
+        <a href="#">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <section class="account-head">
+      <h2>My Account</h2>
+    </section>
+
+    <section class="section-space">
+      <div class="profile-card section-card">
+        <div class="profile-left">
+          <div class="avatar" aria-label="Default profile avatar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M5 19c0-3.3 2.7-6 6-6h2c3.3 0 6 2.7 6 6"></path>
+            </svg>
+            </div>
+          <div class="profile-info">
+            <h3>sophiawears</h3>
+            <div class="email">sophia@loom.com</div>
+            <div class="small-text">Manage your profile and marketplace activity</div>
+          </div>
+        </div>
+
+        <!-- <button class="soft-btn" type="button">Edit Profile</button> -->
+      </div>
+    </section>
+
+    <section class="section-space">
+      <div class="section-title-wrap">
+        <div>
+          <h3 class="section-title">Saved Pieces</h3>
+          <p class="section-subtext">Your curated collection of favorite finds</p>
+        </div>
+      </div>
+
+      <div class="card-grid" id="bookmarksGrid" data-id="bookmark-1">
+        <article class="fashion-card bookmark-card">
+          <div class="card-image-wrap">
+            <img class="card-image" src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=80" alt="Linen Oversized Blazer">
+            <div class="card-action-icons">
+              <button class="icon-btn bookmark-btn active remove-bookmark-btn" title="Remove from saved" aria-label="Remove from saved">
+                <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">Linen Oversized Blazer</h4>
+              <div class="card-price">⃁68</div>
+            </div>
+            <p class="card-description">
+              Soft neutral blazer made from reclaimed linen, perfect for layering.
+            </p>
+            <div class="contact-pill">+966 555330200</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        </article>
+
+        <article class="fashion-card bookmark-card" data-id="bookmark-2">
+          <div class="card-image-wrap">
+            <img class="card-image" src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?auto=format&fit=crop&w=900&q=80" alt="Sage Cotton Button-Up">
+            <div class="card-action-icons">
+              <button class="icon-btn bookmark-btn active remove-bookmark-btn" title="Remove from saved" aria-label="Remove from saved">
+                <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">Sage Cotton Button-Up</h4>
+              <div class="card-price">⃁42</div>
+            </div>
+            <p class="card-description">
+              Lightweight certified cotton shirt in a relaxed fit.
+            </p>
+            <div class="contact-pill">n@gmail.com</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        </article>
+
+        <article class="fashion-card bookmark-card" data-id="bookmark-3">
+          <div class="card-image-wrap">
+            <img class="card-image" src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=900&q=80" alt="Cream Knit Sweater">
+            <div class="card-action-icons">
+              <button class="icon-btn bookmark-btn active remove-bookmark-btn" title="Remove from saved" aria-label="Remove from saved">
+                <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">Cream Knit Sweater</h4>
+              <div class="card-price">⃁55</div>
+            </div>
+            <p class="card-description">
+              Cozy second-hand knit with a timeless silhouette.
+            </p>
+            <div class="contact-pill">+966 51572566</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-space">
+      <div class="section-title-wrap">
+        <div>
+          <h3 class="section-title">My Listings</h3>
+          <p class="section-subtext">Pieces you currently have available for sale</p>
+        </div>
+      </div>
+
+      <div class="card-grid" id="listingsGrid" >
+        <article class="fashion-card listing-card" data-id="listing-1">
+          <div class="card-image-wrap">
+            <img class="card-image" src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=900&q=80" alt="Beige Wool Coat">
+            <div class="card-action-icons">
+              <button class="icon-btn edit-btn" title="Edit listing" aria-label="Edit listing">✎</button>
+              <button class="icon-btn delete-btn" title="Delete listing" aria-label="Delete listing">🗑</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">Beige Wool Coat</h4>
+              <div class="card-price">⃁110</div>
+            </div>
+            <p class="card-description">
+              Tailored wool coat in excellent condition with a relaxed fit.
+            </p>
+            <div class="contact-pill">sara@gmail.com</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        </article>
+
+        <article class="fashion-card listing-card" data-id="listing-2">
+          <div class="card-image-wrap">
+            <img class="card-image" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80" alt="Blush Wrap Cardigan">
+            <div class="card-action-icons">
+              <button class="icon-btn edit-btn" title="Edit listing" aria-label="Edit listing">✎</button>
+              <button class="icon-btn delete-btn" title="Delete listing" aria-label="Delete listing">🗑</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">Blush Wrap Cardigan</h4>
+              <div class="card-price">⃁47</div>
+            </div>
+            <p class="card-description">
+              Soft textured cardigan in a dusty blush tone, lightly worn.
+            </p>
+            <div class="contact-pill">+96650599999</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        </article>
+
+        <article class="fashion-card listing-card" data-id="listing-3">
+          <div class="card-image-wrap">
+            <img class="card-image" src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80" alt="Forest Midi Dress">
+            <div class="card-action-icons">
+              <button class="icon-btn edit-btn" title="Edit listing" aria-label="Edit listing">✎</button>
+              <button class="icon-btn delete-btn" title="Delete listing" aria-label="Delete listing">🗑</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">Forest Midi Dress</h4>
+              <div class="card-price">⃁72</div>
+            </div>
+            <p class="card-description">
+              Flowing midi dress in muted green with a flattering cut.
+            </p>
+            <div class="contact-pill">sara@gmail.com</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">LOOM</div>
+        <p>Curated second-use fashion for a softer, more conscious wardrobe.</p>
+      </div>
+
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#">Second-Use</a></li>
+          <li><a href="#">Saved Pieces</a></li>
+          <li><a href="#">My Listings</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Pinterest</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <h3 class="modal-title">Edit Listing</h3>
+      <p class="modal-text">Update your piece details below.</p>
+
+      <div class="form-group">
+        <label for="editTitle">Title</label>
+        <input id="editTitle" class="form-input" type="text" />
+      </div>
+
+      <div class="form-group">
+        <label for="editDescription">Description</label>
+        <textarea id="editDescription" class="form-textarea"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="editPrice">Price</label>
+        <input id="editPrice" class="form-input" type="text" />
+      </div>
+
+      <div class="form-group">
+        <label for="editContact">Contact method</label>
+        <input id="editContact" class="form-input" type="text" />
+      </div>
+
+      <div class="form-group">
+        <label for="editImage">Upload New Photo</label>
+        <input id="editImage" class="form-input" type="file" accept="image/*" />
+        </div>
+
+      <div class="modal-actions">
+        <button class="btn-light" id="cancelEditBtn" type="button">Cancel</button>
+        <button class="btn-main" id="saveEditBtn" type="button">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+      <h3 class="modal-title">Delete Listing</h3>
+      <p class="modal-text">Are you sure you want to delete this listing?</p>
+
+      <div class="modal-actions">
+        <button class="btn-light" id="cancelDeleteBtn" type="button">Cancel</button>
+        <button class="btn-delete" id="confirmDeleteBtn" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  let currentCardForEdit = null;
+  let currentCardForDelete = null;
+
+  const editModal = document.getElementById("editModal");
+  const deleteModal = document.getElementById("deleteModal");
+
+  const editTitleInput = document.getElementById("editTitle");
+  const editDescriptionInput = document.getElementById("editDescription");
+  const editPriceInput = document.getElementById("editPrice");
+  const editContactInput = document.getElementById("editContact");
+  const editImageInput = document.getElementById("editImage");
+
+  const saveEditBtn = document.getElementById("saveEditBtn");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+  const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+
+  const bookmarksGrid = document.getElementById("bookmarksGrid");
+  const listingsGrid = document.getElementById("listingsGrid");
+
+  function getListingCardData(card) {
+    return {
+      id: card.dataset.id,
+      title: card.querySelector(".card-title").textContent,
+      description: card.querySelector(".card-description").textContent.trim(),
+      price: card.querySelector(".card-price").textContent.replace("$", ""),
+      contact: card.querySelector(".contact-pill").textContent,
+      image: card.querySelector(".card-image").getAttribute("src"),
+      alt: card.querySelector(".card-image").getAttribute("alt") || card.querySelector(".card-title").textContent
+    };
+  }
+
+  function getBookmarkCardData(card) {
+    return {
+      id: card.dataset.id,
+      title: card.querySelector(".card-title").textContent,
+      description: card.querySelector(".card-description").textContent.trim(),
+      price: card.querySelector(".card-price").textContent.replace("$", ""),
+      contact: card.querySelector(".contact-pill").textContent,
+      image: card.querySelector(".card-image").getAttribute("src"),
+      alt: card.querySelector(".card-image").getAttribute("alt") || card.querySelector(".card-title").textContent
+    };
+  }
+
+  function saveListingsToStorage() {
+    const listingCards = document.querySelectorAll(".listing-card");
+    const listingsData = [];
+
+    listingCards.forEach(function(card) {
+      listingsData.push(getListingCardData(card));
+    });
+
+    localStorage.setItem("loomListings", JSON.stringify(listingsData));
+  }
+
+  function saveBookmarksToStorage() {
+    const bookmarkCards = document.querySelectorAll(".bookmark-card");
+    const bookmarksData = [];
+
+    bookmarkCards.forEach(function(card) {
+      bookmarksData.push(getBookmarkCardData(card));
+    });
+
+    localStorage.setItem("loomBookmarks", JSON.stringify(bookmarksData));
+  }
+
+  function createBookmarkCardHTML(item) {
+    return `
+      <article class="fashion-card bookmark-card" data-id="${item.id}">
+        <div class="card-image-wrap">
+          <img class="card-image" src="${item.image}" alt="${item.alt}">
+          <div class="card-action-icons">
+            <button class="icon-btn bookmark-btn active remove-bookmark-btn" title="Remove from saved" aria-label="Remove from saved">
+              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">${item.title}</h4>
+            <div class="card-price">$${item.price}</div>
+          </div>
+          <p class="card-description">${item.description}</p>
+          <div class="contact-pill">${item.contact}</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+    `;
+  }
+
+  function createListingCardHTML(item) {
+    return `
+      <article class="fashion-card listing-card" data-id="${item.id}">
+        <div class="card-image-wrap">
+          <img class="card-image" src="${item.image}" alt="${item.alt}">
+          <div class="card-action-icons">
+            <button class="icon-btn edit-btn" title="Edit listing" aria-label="Edit listing">✎</button>
+            <button class="icon-btn delete-btn" title="Delete listing" aria-label="Delete listing">🗑</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">${item.title}</h4>
+            <div class="card-price">$${item.price}</div>
+          </div>
+          <p class="card-description">${item.description}</p>
+          <div class="contact-pill">${item.contact}</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+    `;
+  }
+
+  function loadListingsFromStorage() {
+    const savedListings = localStorage.getItem("loomListings");
+
+    if (!savedListings) {
+      saveListingsToStorage();
+      return;
+    }
+
+    const listingsData = JSON.parse(savedListings);
+
+    if (listingsData.length === 0) {
+      listingsGrid.innerHTML = `
+        <div class="empty-state">
+          <h4>You haven’t listed any pieces yet.</h4>
+          <p>Add your first listing to start selling on LOOM.</p>
+        </div>
+      `;
+      return;
+    }
+
+    let html = "";
+    listingsData.forEach(function(item) {
+      html += createListingCardHTML(item);
+    });
+
+    listingsGrid.innerHTML = html;
+  }
+
+function loadBookmarksFromStorage() {
+    const savedBookmarks = localStorage.getItem("loomBookmarks");
+    
+    if (!savedBookmarks || JSON.parse(savedBookmarks).length === 0) {
+        bookmarksGrid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <h4>Your curated collection is empty</h4>
+                <p>Pieces you save in Second-Use will appear here.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const bookmarksData = JSON.parse(savedBookmarks);
+    let html = "";
+    
+    bookmarksData.forEach(function(item, index) {
+        html += `
+          <article class="fashion-card bookmark-card">
+            <div class="card-image-wrap">
+              <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
+              <div class="card-action-icons">
+                <button class="icon-btn bookmark-btn active" onclick="removeSpecificBookmark(${index})" title="Remove from saved">
+                  <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="title-price-row">
+                <h4 class="card-title">${item.title}</h4>
+                <div class="card-price">${item.price}</div>
+              </div>
+              <p class="card-description">${item.description}</p>
+              <div class="contact-pill">${item.contact}</div>
+              <div class="card-bottom-line"></div>
+            </div>
+          </article>
+        `;
+    });
+
+    bookmarksGrid.innerHTML = html;
+}
+
+function removeSpecificBookmark(index) {
+    let bookmarks = JSON.parse(localStorage.getItem("loomBookmarks") || "[]");
+    bookmarks.splice(index, 1);
+    localStorage.setItem("loomBookmarks", JSON.stringify(bookmarks));
+    loadBookmarksFromStorage(); // إعادة تحديث العرض
+}
+
+
+  function openEditModal(card) {
+    currentCardForEdit = card;
+
+    const title = card.querySelector(".card-title").textContent;
+    const description = card.querySelector(".card-description").textContent.trim();
+    const price = card.querySelector(".card-price").textContent.replace("$", "");
+    const contact = card.querySelector(".contact-pill").textContent;
+
+    editTitleInput.value = title;
+    editDescriptionInput.value = description;
+    editPriceInput.value = price;
+    editContactInput.value = contact;
+    editImageInput.value = "";
+
+    editModal.classList.add("show");
+  }
+
+  function closeEditModal() {
+    editModal.classList.remove("show");
+    currentCardForEdit = null;
+    editImageInput.value = "";
+  }
+
+  function saveEditChanges() {
+    if (!currentCardForEdit) {
+      return;
+    }
+
+    const newTitle = editTitleInput.value.trim();
+    const newDescription = editDescriptionInput.value.trim();
+    const newPrice = editPriceInput.value.trim();
+    const newContact = editContactInput.value.trim();
+    const selectedFile = editImageInput.files[0];
+
+    if (newTitle === "" || newDescription === "" || newPrice === "" || newContact === "") {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    currentCardForEdit.querySelector(".card-title").textContent = newTitle;
+    currentCardForEdit.querySelector(".card-description").textContent = newDescription;
+    currentCardForEdit.querySelector(".card-price").textContent = "$" + newPrice;
+    currentCardForEdit.querySelector(".contact-pill").textContent = newContact;
+    currentCardForEdit.querySelector(".card-image").alt = newTitle;
+
+    if (selectedFile) {
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        currentCardForEdit.querySelector(".card-image").src = event.target.result;
+        saveListingsToStorage();
+        closeEditModal();
+        addCardButtonEvents();
+      };
+
+      reader.readAsDataURL(selectedFile);
+    } else {
+      saveListingsToStorage();
+      closeEditModal();
+      addCardButtonEvents();
+    }
+  }
+
+  function openDeleteModal(card) {
+    currentCardForDelete = card;
+    deleteModal.classList.add("show");
+  }
+
+  function closeDeleteModal() {
+    deleteModal.classList.remove("show");
+    currentCardForDelete = null;
+  }
+
+  function deleteListingCard() {
+    if (!currentCardForDelete) {
+      return;
+    }
+
+    currentCardForDelete.style.transition = "0.3s ease";
+    currentCardForDelete.style.opacity = "0";
+    currentCardForDelete.style.transform = "scale(0.96)";
+
+    setTimeout(function() {
+      currentCardForDelete.remove();
+      saveListingsToStorage();
+      closeDeleteModal();
+      checkListingsEmptyState();
+      addCardButtonEvents();
+    }, 260);
+  }
+
+  function removeBookmark(card) {
+    card.style.transition = "0.3s ease";
+    card.style.opacity = "0";
+    card.style.transform = "scale(0.96)";
+
+    setTimeout(function() {
+      card.remove();
+      saveBookmarksToStorage();
+      checkBookmarksEmptyState();
+      addCardButtonEvents();
+    }, 260);
+  }
+
+  function checkBookmarksEmptyState() {
+    const bookmarkCards = bookmarksGrid.querySelectorAll(".bookmark-card");
+
+    if (bookmarkCards.length === 0) {
+      bookmarksGrid.innerHTML = `
+        <div class="empty-state">
+          <h4>You have no saved pieces yet.</h4>
+          <p>Start exploring LOOM and save the pieces you love.</p>
+        </div>
+      `;
+      localStorage.setItem("loomBookmarks", JSON.stringify([]));
+    }
+  }
+
+  function checkListingsEmptyState() {
+    const listingCards = listingsGrid.querySelectorAll(".listing-card");
+
+    if (listingCards.length === 0) {
+      listingsGrid.innerHTML = `
+        <div class="empty-state">
+          <h4>You haven’t listed any pieces yet.</h4>
+          <p>Add your first listing to start selling on LOOM.</p>
+        </div>
+      `;
+      localStorage.setItem("loomListings", JSON.stringify([]));
+    }
+  }
+
+  function addCardButtonEvents() {
+    const editButtons = document.querySelectorAll(".edit-btn");
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+    const bookmarkButtons = document.querySelectorAll(".remove-bookmark-btn");
+
+    editButtons.forEach(function(button) {
+      button.onclick = function() {
+        const card = button.closest(".listing-card");
+        openEditModal(card);
+      };
+    });
+
+    deleteButtons.forEach(function(button) {
+      button.onclick = function() {
+        const card = button.closest(".listing-card");
+        openDeleteModal(card);
+      };
+    });
+
+    bookmarkButtons.forEach(function(button) {
+      button.onclick = function() {
+        const card = button.closest(".bookmark-card");
+        removeBookmark(card);
+      };
+    });
+  }
+
+  saveEditBtn.addEventListener("click", saveEditChanges);
+  cancelEditBtn.addEventListener("click", closeEditModal);
+
+  confirmDeleteBtn.addEventListener("click", deleteListingCard);
+  cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+
+  editModal.addEventListener("click", function(event) {
+    if (event.target === editModal) {
+      closeEditModal();
+    }
+  });
+
+  deleteModal.addEventListener("click", function(event) {
+    if (event.target === deleteModal) {
+      closeDeleteModal();
+    }
+  });
+
+  loadListingsFromStorage();
+  loadBookmarksFromStorage();
+  addCardButtonEvents();
+</script>
+</body>
+</html>
