@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOOM - Second-Use</title>
+  <style>
+    :root {
+      --dusty-blush: #dea4ad;
+      --terracotta: #b56449;
+      --sage: #6b7883;
+      --warm-pink: #f3e8e8;
+      --charcoal: #434543;
+      --cream: #faf6f3;
+      --soft-white: #fffdfb;
+      --line: #eadfda;
+      --shadow: 0 8px 24px rgba(67, 69, 67, 0.06);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(to bottom, #f8f1ee, #fdfaf8);
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+
+    img { max-width: 100%; display: block; }
+    button, input, textarea, select { font: inherit; }
+
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 20px 40px;
+    }
+
+    .topbar {
+      background: rgba(255, 253, 251, 0.92);
+      border-bottom: 1px solid #efe4df;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f0c7cc, #e8d9cf);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--terracotta);
+      font-size: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #726f6b;
+      font-size: 0.92rem;
+      transition: 0.25s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: var(--terracotta); }
+
+    .page-head {
+      padding: 42px 0 28px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .page-head-left h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.5rem;
+      color: var(--charcoal);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .page-head-left p {
+      color: #847e79;
+      font-size: 0.92rem;
+    }
+
+    .add-listing-btn {
+      background: var(--terracotta);
+      color: white;
+      border: none;
+      padding: 11px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .add-listing-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.96;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .fashion-card {
+      background: var(--soft-white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 6px 18px rgba(67, 69, 67, 0.05);
+      transition: 0.25s ease;
+    }
+
+    .fashion-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 22px rgba(67, 69, 67, 0.08);
+    }
+
+    .card-image-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #f6f1ee;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+    }
+
+    .card-action-icons {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 250, 247, 0.85);
+      background: rgba(255, 253, 251, 0.96);
+      color: var(--charcoal);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s ease;
+      box-shadow: 0 6px 16px rgba(67, 69, 67, 0.08);
+    }
+
+    .icon-btn:hover {
+      transform: scale(1.05);
+      color: var(--terracotta);
+      background: #fff8f5;
+    }
+
+    .bookmark-btn.active { color: var(--terracotta); }
+
+    .bookmark-svg {
+      width: 17px;
+      height: 21px;
+      fill: currentColor;
+      display: block;
+    }
+
+    .card-body { padding: 14px 14px 16px; }
+
+    .title-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.3rem;
+      line-height: 1.1;
+      font-weight: 500;
+      color: var(--charcoal);
+    }
+
+    .card-price {
+      color: var(--terracotta);
+      font-size: 1rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .card-description {
+      color: #716d69;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      min-height: 50px;
+    }
+
+    .contact-pill {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #f3ece8;
+      color: #6f6c68;
+      font-size: 0.8rem;
+      border: 1px solid #eee2de;
+      margin-bottom: 10px;
+    }
+
+    .card-bottom-line { margin-top: 10px; border-top: 1px solid #eee3de; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(53, 48, 45, 0.34);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: #fffaf8;
+      border-radius: 22px;
+      border: 1px solid #f1e3de;
+      box-shadow: 0 20px 50px rgba(67, 69, 67, 0.14);
+      padding: 24px;
+      animation: popIn 0.22s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.7rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--charcoal);
+    }
+
+    .modal-text {
+      color: #79736f;
+      margin-bottom: 18px;
+      font-size: 0.92rem;
+    }
+
+    .form-group { margin-bottom: 14px; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #5f5a56;
+      font-size: 0.9rem;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      border: 1px solid #eadad4;
+      background: #fffefd;
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+      transition: 0.22s ease;
+      color: var(--charcoal);
+      font-size: 0.92rem;
+    }
+
+    .form-textarea { min-height: 96px; resize: vertical; }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--dusty-blush);
+      box-shadow: 0 0 0 4px rgba(222, 164, 173, 0.13);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-light, .btn-main {
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.22s ease;
+      font-size: 0.92rem;
+    }
+
+    .btn-light {
+      background: #f7efeb;
+      color: var(--charcoal);
+      border: 1px solid #ecdcd5;
+    }
+
+    .btn-light:hover { background: #f3e6e1; }
+
+    .btn-main {
+      background: var(--terracotta);
+      color: white;
+      border: none;
+    }
+
+    .btn-main:hover { opacity: 0.95; transform: translateY(-1px); }
+
+    .footer {
+      margin-top: 52px;
+      background: #464847;
+      color: #f7efe9;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 34px 20px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .footer-brand {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+
+    .footer p, .footer li, .footer a {
+      color: #dfd6d1;
+      text-decoration: none;
+      list-style: none;
+      margin-bottom: 7px;
+      font-size: 0.9rem;
+    }
+
+    .footer h4 {
+      font-family: Georgia, "Times New Roman", serif;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #fff6ef;
+    }
+
+    @media (max-width: 1100px) {
+      .card-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .footer-inner { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 760px) {
+      .page-container { padding: 16px 16px 32px; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; padding: 14px 16px; }
+      .nav-links { gap: 14px; }
+      .brand-name { font-size: 1.6rem; }
+      .page-head { padding: 30px 0 20px; }
+      .page-head-left h2 { font-size: 2rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      .card-image { height: 240px; }
+      .footer-inner { grid-template-columns: 1fr; padding: 28px 16px; }
+      .title-price-row { flex-direction: column; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#" class="brand">
+        <div class="brand-mark">⌒</div>
+        <div class="brand-name">LOOM</div>
+      </a>
+      <nav class="nav-links">
+        <a href="account.html">Home</a>
+        <a href="#" class="active">Second-Use</a>
+        <a href="#">Brands</a>
+        <a href="#">Blogs</a>
+        <a href="#">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <div class="page-head">
+      <div class="page-head-left">
+        <h2>Second-Use</h2>
+        <p>Discover pre-loved pieces with a story, curated finds for a more conscious wardrobe.</p>
+      </div>
+      <button class="add-listing-btn" id="openAddListingBtn">+ Add Listing</button>
+    </div>
+
+    <div class="card-grid" id="secondUseGrid">
+
+      <article class="fashion-card" data-id="item-1">
+       <a href="Productdetail.html" style="text-decoration:none;color:inherit;display:block;">
+        <div class="card-image-wrap">
+          <img class="card-image" src="photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٢.jpg" alt="Grey Wool Cardigan">
+          <div class="card-action-icons"></a>
+            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item">
+              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">Grey Wool Cardigan</h4>
+            <div class="card-price">⃁85</div>
+          </div>
+          <p class="card-description">Fitted wool cardigan with gold buttons, worn twice.</p>
+          <div class="contact-pill">layla@gmail.com</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+
+      <article class="fashion-card" data-id="item-2">
+        <div class="card-image-wrap">
+          <img class="card-image" src="photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٣ (2).jpg" alt="Striped Bow-Back Dress">
+          <div class="card-action-icons">
+            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item">
+              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">Striped Bow-Back Dress</h4>
+            <div class="card-price">⃁120</div>
+          </div>
+          <p class="card-description">Statement maxi dress with open back and oversized bow detail. </p>
+          <div class="contact-pill">+966 501234567</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+
+      <article class="fashion-card" data-id="item-3">
+        <div class="card-image-wrap">
+          <img class="card-image" src="Draped Green Top.jpg" alt="Draped Green Top">
+          <div class="card-action-icons">
+            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item">
+              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">Draped Green Top</h4>
+            <div class="card-price">⃁55</div>
+          </div>
+          <p class="card-description">Asymmetric draped top in soft sage green with a gathered detail.</p>
+          <div class="contact-pill">noor@gmail.com</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+
+      <article class="fashion-card" data-id="item-4">
+        <div class="card-image-wrap">
+          <img class="card-image" src="photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥ (2).jpg" alt="Ivory Rose Top">
+          <div class="card-action-icons">
+            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item">
+              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">Ivory Rose Top</h4>
+            <div class="card-price">⃁65</div>
+          </div>
+          <p class="card-description">Soft ivory top with a fabric rose accent, lightweight and barely worn.</p>
+          <div class="contact-pill">+966 509876543</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+
+      <article class="fashion-card" data-id="item-5">
+        <div class="card-image-wrap">
+          <img class="card-image" src="photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥.jpg" alt="Polka Dot Midi Skirt">
+          <div class="card-action-icons">
+            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item">
+              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">Polka Dot Midi Skirt</h4>
+            <div class="card-price">⃁75</div>
+          </div>
+          <p class="card-description">Flowy midi skirt in cream with black polka dots, elastic waist.</p>
+          <div class="contact-pill">sara@gmail.com</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+
+      <article class="fashion-card" data-id="item-6">
+        <div class="card-image-wrap">
+          <img class="card-image" src="photo_٢٠٢٦-٠٤-٠٣_١٢-٣٨-٥٧.jpg" alt="Wide-Leg Linen Trousers">
+          <div class="card-action-icons">
+            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item">
+              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">Wide-Leg Linen Trousers</h4>
+            <div class="card-price">⃁90</div>
+          </div>
+          <p class="card-description">Relaxed wide-leg trousers in charcoal grey with a tie waist.</p>
+          <div class="contact-pill">+966 556789012</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">LOOM</div>
+        <p>Curated second-use fashion for a softer, more conscious wardrobe.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#">Second-Use</a></li>
+          <li><a href="#">Saved Pieces</a></li>
+          <li><a href="#">My Listings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Pinterest</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="addListingModal">
+    <div class="modal-box">
+      <h3 class="modal-title">Add Listing</h3>
+      <p class="modal-text">Share a piece you'd like to sell.</p>
+
+      <div class="form-group">
+        <label for="addTitle">Title</label>
+        <input id="addTitle" class="form-input" type="text" placeholder="e.g. Cream Knit Sweater" />
+      </div>
+
+      <div class="form-group">
+        <label for="addDescription">Description</label>
+        <textarea id="addDescription" class="form-textarea" placeholder="Describe the item, condition, size..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="addPrice">Price (⃁)</label>
+        <input id="addPrice" class="form-input" type="text" placeholder="e.g. 65" />
+      </div>
+
+      <div class="form-group">
+        <label for="addContact">Contact</label>
+        <input id="addContact" class="form-input" type="text" placeholder="Phone or email" />
+      </div>
+
+      <div class="form-group">
+        <label for="addImage">Photo</label>
+        <input id="addImage" class="form-input" type="file" accept="image/*" />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-light" id="cancelAddBtn" type="button">Cancel</button>
+        <button class="btn-main" id="confirmAddBtn" type="button">Add Listing</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const addListingModal = document.getElementById("addListingModal");
+    const openAddListingBtn = document.getElementById("openAddListingBtn");
+    const cancelAddBtn = document.getElementById("cancelAddBtn");
+    const confirmAddBtn = document.getElementById("confirmAddBtn");
+    const secondUseGrid = document.getElementById("secondUseGrid");
+
+    let itemCounter = 100;
+
+    const savedBookmarks = JSON.parse(localStorage.getItem("loomBookmarks") || "[]");
+
+    function getBookmarkedIds() {
+      return savedBookmarks.map(function(b) { return b.id; });
+    }
+
+    function saveBookmarksToStorage() {
+      localStorage.setItem("loomBookmarks", JSON.stringify(savedBookmarks));
+    }
+
+    function handleBookmarkClick(btn) {
+      const card = btn.closest(".fashion-card");
+      const isActive = btn.classList.contains("active");
+
+      if (isActive) {
+        btn.classList.remove("active");
+        const idx = savedBookmarks.findIndex(function(b) { return b.id === card.dataset.id; });
+        if (idx !== -1) savedBookmarks.splice(idx, 1);
+      } else {
+        btn.classList.add("active");
+        savedBookmarks.push({
+          id: card.dataset.id,
+          title: card.querySelector(".card-title").textContent,
+          description: card.querySelector(".card-description").textContent.trim(),
+          price: card.querySelector(".card-price").textContent.replace("⃁", ""),
+          contact: card.querySelector(".contact-pill").textContent,
+          image: card.querySelector(".card-image").src,
+          alt: card.querySelector(".card-image").alt
+        });
+      }
+
+      saveBookmarksToStorage();
+    }
+
+    function attachBookmarkEvents() {
+      document.querySelectorAll(".bookmark-btn").forEach(function(btn) {
+        btn.onclick = function() { handleBookmarkClick(btn); };
+      });
+    }
+
+    function markSavedItems() {
+      const ids = getBookmarkedIds();
+      document.querySelectorAll(".fashion-card").forEach(function(card) {
+        if (ids.includes(card.dataset.id)) {
+          card.querySelector(".bookmark-btn").classList.add("active");
+        }
+      });
+    }
+
+    openAddListingBtn.addEventListener("click", function() {
+      addListingModal.classList.add("show");
+    });
+
+    cancelAddBtn.addEventListener("click", function() {
+      addListingModal.classList.remove("show");
+      clearAddForm();
+    });
+
+    addListingModal.addEventListener("click", function(e) {
+      if (e.target === addListingModal) {
+        addListingModal.classList.remove("show");
+        clearAddForm();
+      }
+    });
+
+    function clearAddForm() {
+      document.getElementById("addTitle").value = "";
+      document.getElementById("addDescription").value = "";
+      document.getElementById("addPrice").value = "";
+      document.getElementById("addContact").value = "";
+      document.getElementById("addImage").value = "";
+    }
+
+    confirmAddBtn.addEventListener("click", function() {
+      const title = document.getElementById("addTitle").value.trim();
+      const description = document.getElementById("addDescription").value.trim();
+      const price = document.getElementById("addPrice").value.trim();
+      const contact = document.getElementById("addContact").value.trim();
+      const file = document.getElementById("addImage").files[0];
+      //=================================
+if (!title || !description || !price || !contact || !file) {
+  alert("Please fill in all required fields.");
+  return;
+}
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^\+?[0-9]{7,15}$/;
+if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
+  alert("Contact must be a valid email or phone number.");
+  return;
+}
+
+const priceNum = Number(price);
+if (isNaN(priceNum) || priceNum <= 0) {
+  alert("Price must be a positive number.");
+  return;
+}
+
+      function createCard(imgSrc) {
+        itemCounter++;
+        const id = "item-" + itemCounter;
+        const article = document.createElement("article");
+        article.className = "fashion-card";
+        article.dataset.id = id;
+        article.innerHTML = `
+          <div class="card-image-wrap">
+            <img class="card-image" src="${imgSrc}" alt="${title}" style="height:280px;object-fit:cover;">
+            <div class="card-action-icons">
+              <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item">
+                <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">${title}</h4>
+              <div class="card-price">⃁${price}</div>
+            </div>
+            <p class="card-description">${description}</p>
+            <div class="contact-pill">${contact}</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        `;
+        article.style.opacity = "0";
+        article.style.transform = "scale(0.96)";
+        secondUseGrid.prepend(article);
+        requestAnimationFrame(function() {
+          article.style.transition = "0.3s ease";
+          article.style.opacity = "1";
+          article.style.transform = "scale(1)";
+        });
+        attachBookmarkEvents();
+        addListingModal.classList.remove("show");
+        clearAddForm();
+      }
+
+      if (file) {
+  const reader = new FileReader();
+  reader.onload = function(e) { createCard(e.target.result); };
+  reader.readAsDataURL(file);
+}
+    });
+
+    markSavedItems();
+    attachBookmarkEvents();
+  </script>
+</body>
+</html>
