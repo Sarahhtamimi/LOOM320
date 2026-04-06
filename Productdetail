@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOOM - Grey Wool Cardigan</title>
+  <style>
+    :root {
+      --dusty-blush: #dea4ad;
+      --terracotta: #b56449;
+      --sage: #6b7883;
+      --charcoal: #434543;
+      --soft-white: #fffdfb;
+      --line: #eadfda;
+      --shadow: 0 8px 24px rgba(67, 69, 67, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(to bottom, #f8f1ee, #fdfaf8);
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    /* TOPBAR */
+    .topbar {
+      background: rgba(255, 253, 251, 0.92);
+      border-bottom: 1px solid #efe4df;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f0c7cc, #e8d9cf);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--terracotta);
+      font-size: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #726f6b;
+      font-size: 0.92rem;
+      transition: 0.25s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: var(--terracotta); }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 20px 0;
+      font-size: 0.85rem;
+      color: #9a9390;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .breadcrumb a {
+      color: #9a9390;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--terracotta); }
+
+    .breadcrumb span { color: #c5bbb7; }
+
+    /* MAIN LAYOUT */
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 52px;
+      align-items: start;
+    }
+
+    /* IMAGE SIDE */
+    .product-image-wrap {
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f4eeea;
+      box-shadow: 0 12px 40px rgba(67, 69, 67, 0.08);
+      position: sticky;
+      top: 90px;
+    }
+
+    .product-image {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* INFO SIDE */
+    .product-info {
+      padding-top: 8px;
+    }
+
+    .product-tag {
+      display: inline-block;
+      background: #f3ece8;
+      color: #8a7e79;
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid #ede0da;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .product-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.4rem;
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--charcoal);
+      margin-bottom: 12px;
+    }
+
+    .product-price {
+      font-size: 1.7rem;
+      color: var(--terracotta);
+      font-weight: 600;
+      margin-bottom: 22px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 22px 0;
+    }
+
+    .product-description {
+      color: #6b6764;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      margin-bottom: 22px;
+    }
+
+    /* DETAILS LIST */
+    .details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .detail-row {
+      display: flex;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .detail-label {
+      color: #9a9390;
+      min-width: 80px;
+    }
+
+    .detail-value {
+      color: var(--charcoal);
+      font-weight: 500;
+    }
+
+    /* CONTACT SECTION */
+    .contact-section {
+      background: rgba(255, 253, 251, 0.9);
+      border: 1px solid #f0e5e1;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .contact-label {
+      font-size: 0.82rem;
+      color: #9a9390;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .contact-value {
+      font-size: 1rem;
+      color: var(--charcoal);
+      font-weight: 500;
+    }
+
+    /* BUTTONS */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-main {
+      flex: 1;
+      background: var(--terracotta);
+      color: white;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.25s ease;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-main:hover {
+      opacity: 0.93;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      flex: 1;
+      background: transparent;
+      color: var(--charcoal);
+      border: 1px solid var(--line);
+      padding: 14px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--dusty-blush);
+      color: var(--terracotta);
+      background: #fff8f5;
+    }
+
+    .btn-outline.saved {
+      color: var(--terracotta);
+      border-color: var(--dusty-blush);
+      background: #fff8f5;
+    }
+
+    .bookmark-svg {
+      width: 15px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 52px;
+      background: #464847;
+      color: #f7efe9;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 34px 20px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .footer-brand {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+
+    .footer p, .footer li, .footer a {
+      color: #dfd6d1;
+      text-decoration: none;
+      list-style: none;
+      margin-bottom: 7px;
+      font-size: 0.9rem;
+    }
+
+    .footer h4 {
+      font-family: Georgia, "Times New Roman", serif;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #fff6ef;
+    }
+
+    @media (max-width: 860px) {
+      .product-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .product-image-wrap { position: static; }
+
+      .product-title { font-size: 1.9rem; }
+
+      .footer-inner { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .page-container { padding: 20px 16px 40px; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; padding: 14px 16px; }
+      .nav-links { gap: 14px; }
+      .brand-name { font-size: 1.6rem; }
+      .product-title { font-size: 1.7rem; }
+      .btn-row { flex-direction: column; }
+      .footer-inner { grid-template-columns: 1fr; padding: 28px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#" class="brand">
+        <div class="brand-mark">⌒</div>
+        <div class="brand-name">LOOM</div>
+      </a>
+      <nav class="nav-links">
+        <a href="account.html">Home</a>
+        <a href="second-use.html" class="active">Second-Use</a>
+        <a href="#">Brands</a>
+        <a href="#">Blogs</a>
+        <a href="#">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <a href="SecondUse.html">Second-Use</a>
+    <span>›</span>
+    <span>Grey Wool Cardigan</span>
+  </div>
+
+  <main class="page-container">
+    <div class="product-layout">
+
+      <div class="product-image-wrap">
+        <img class="product-image" src="photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٢.jpg" alt="Grey Wool Cardigan">
+      </div>
+
+      <div class="product-info">
+        <div class="product-tag">Second-Use</div>
+        <h1 class="product-title">Grey Wool Cardigan</h1>
+        <div class="product-price">⃁85</div>
+
+        <hr class="divider">
+
+        <p class="product-description">
+          Fitted wool cardigan with gold buttons. A timeless wardrobe staple in soft heather grey, pairs effortlessly with everything from tailored trousers to relaxed denim.
+        </p>
+
+        <div class="details-list">
+          <div class="detail-row">
+            <span class="detail-label">Condition</span>
+            <span class="detail-value">Like new</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Size</span>
+            <span class="detail-value">S – M</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Material</span>
+            <span class="detail-value">Wool blend</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Color</span>
+            <span class="detail-value">Heather Grey</span>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="contact-section">
+          <div class="contact-label">Contact seller</div>
+          <div class="contact-value">layla@gmail.com</div>
+        </div>
+
+        <div class="btn-row">
+          <a href="mailto:layla@loom.com" class="btn-main">Contact Seller</a>
+          <button class="btn-outline" id="saveBtn">
+            <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+            </svg>
+            Save
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">LOOM</div>
+        <p>Curated second-use fashion for a softer, more conscious wardrobe.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#">Second-Use</a></li>
+          <li><a href="#">Saved Pieces</a></li>
+          <li><a href="#">My Listings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Pinterest</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const saveBtn = document.getElementById("saveBtn");
+    const ITEM_ID = "item-1";
+
+    const savedBookmarks = JSON.parse(localStorage.getItem("loomBookmarks") || "[]");
+
+    function isBookmarked() {
+      return savedBookmarks.some(function(b) { return b.id === ITEM_ID; });
+    }
+
+    function updateBtn() {
+      if (isBookmarked()) {
+        saveBtn.classList.add("saved");
+        saveBtn.innerHTML = `<svg class="bookmark-svg" viewBox="0 0 24 24"><path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path></svg> Saved`;
+      } else {
+        saveBtn.classList.remove("saved");
+        saveBtn.innerHTML = `<svg class="bookmark-svg" viewBox="0 0 24 24"><path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path></svg> Save`;
+      }
+    }
+
+    saveBtn.addEventListener("click", function() {
+      if (isBookmarked()) {
+        const idx = savedBookmarks.findIndex(function(b) { return b.id === ITEM_ID; });
+        if (idx !== -1) savedBookmarks.splice(idx, 1);
+      } else {
+        savedBookmarks.push({
+          id: ITEM_ID,
+          title: "Grey Wool Cardigan",
+          description: "Fitted wool cardigan with gold buttons, worn twice. Size S–M.",
+          price: "85",
+          contact: "layla@gmail.com",
+          image: "photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٢.jpg",
+          alt: "Grey Wool Cardigan"
+        });
+      }
+      localStorage.setItem("loomBookmarks", JSON.stringify(savedBookmarks));
+      updateBtn();
+    });
+
+    updateBtn();
+  </script>
+</body>
+</html>
