@@ -123,6 +123,119 @@
       font-size: 0.92rem;
     }
 
+    /*==================================*/
+    
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(to bottom, #f8f1ee, #fdfaf8);
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 20px 40px;
+    }
+
+    .topbar {
+      background: rgba(255, 253, 251, 0.92);
+      border-bottom: 1px solid #efe4df;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f0c7cc, #e8d9cf);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--terracotta);
+      font-size: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #726f6b;
+      font-size: 0.92rem;
+      transition: 0.25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--terracotta);
+    }
+
+    .account-head {
+      padding: 42px 0 18px;
+      text-align: center;
+    }
+
+    .account-head h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.5rem;
+      color: var(--charcoal);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .section-card {
+      background: rgba(255, 253, 251, 0.9);
+      border: 1px solid #f0e5e1;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+/**/
     .add-listing-btn {
       background: var(--terracotta);
       color: white;
@@ -427,7 +540,7 @@
         <div class="brand-name">LOOM</div>
       </a>
       <nav class="nav-links">
-        <a href="account.html">Home</a>
+        <a href="user_account.html">Home</a>
         <a href="#" class="active">Second-Use</a>
         <a href="#">Brands</a>
         <a href="#">Blogs</a>
@@ -671,30 +784,28 @@
     function saveBookmarksToStorage() {
       localStorage.setItem("loomBookmarks", JSON.stringify(savedBookmarks));
     }
+function handleBookmarkClick(btn) {
+    const card = btn.closest(".fashion-card");
+    const isActive = btn.classList.contains("active");
+    let saved = JSON.parse(localStorage.getItem("loomBookmarks")) || [];
 
-    function handleBookmarkClick(btn) {
-      const card = btn.closest(".fashion-card");
-      const isActive = btn.classList.contains("active");
-
-      if (isActive) {
+    if (isActive) {
         btn.classList.remove("active");
-        const idx = savedBookmarks.findIndex(function(b) { return b.id === card.dataset.id; });
-        if (idx !== -1) savedBookmarks.splice(idx, 1);
-      } else {
+        saved = saved.filter(item => item.id !== card.dataset.id);
+    } else {
         btn.classList.add("active");
-        savedBookmarks.push({
-          id: card.dataset.id,
-          title: card.querySelector(".card-title").textContent,
-          description: card.querySelector(".card-description").textContent.trim(),
-          price: card.querySelector(".card-price").textContent.replace("⃁", ""),
-          contact: card.querySelector(".contact-pill").textContent,
-          image: card.querySelector(".card-image").src,
-          alt: card.querySelector(".card-image").alt
+        saved.push({
+            id: card.dataset.id,
+            title: card.querySelector(".card-title").innerText,
+            description: card.querySelector(".card-description").innerText.trim(),
+            price: card.querySelector(".card-price").innerText,
+            contact: card.querySelector(".contact-pill").innerText,
+            image: card.querySelector(".card-image").src,
+            alt: card.querySelector(".card-image").alt || card.querySelector(".card-title").innerText
         });
-      }
-
-      saveBookmarksToStorage();
     }
+    localStorage.setItem("loomBookmarks", JSON.stringify(saved));
+}
 
     function attachBookmarkEvents() {
       document.querySelectorAll(".bookmark-btn").forEach(function(btn) {
