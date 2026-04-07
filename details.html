@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOOM | Brand Details</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#F3E8E8;
+      --card:#FFFFFF;
+      --charcoal:#434543;
+      --forest:#6B7883;
+      --terracotta:#B56449;
+      --blush:#DEA4AD;
+      --muted:rgba(67,69,67,.68);
+      --border:rgba(67,69,67,.10);
+      --shadow:0 22px 60px rgba(67,69,67,.10);
+      --shadow-soft:0 12px 32px rgba(67,69,67,.08);
+      --r-xl:28px;
+      --r-lg:22px;
+      --r-md:16px;
+      --r-sm:12px;
+      --max:1180px;
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--charcoal);
+      background:
+        radial-gradient(900px 460px at 12% -5%, rgba(222, 164, 173, .33), transparent 60%),
+        radial-gradient(900px 480px at 88% 0%, rgba(107, 120, 131, .18), transparent 60%),
+        linear-gradient(180deg, #f6ecec 0%, var(--bg) 40%, #f4eaea 100%);
+      overflow-x:hidden;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .container{
+      width:min(var(--max), calc(100% - 40px));
+      margin:0 auto;
+    }
+
+    .header{
+      position:sticky;
+      top:0;
+      z-index:60;
+      backdrop-filter:blur(14px);
+      background:rgba(243,232,232,.72);
+      border-bottom:1px solid var(--border);
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:180px;
+    }
+
+    .logo-mark{
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border-radius:14px;
+      background:rgba(255,255,255,.66);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .wordmark{
+      font-family:"Cormorant Garamond", serif;
+      font-size:26px;
+      font-weight:700;
+      letter-spacing:.08em;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.58);
+      box-shadow:var(--shadow-soft);
+    }
+
+    nav a{
+      padding:11px 10px;
+      font-size:13px;
+      font-weight:700;
+      color:rgba(67,69,67,.84);
+      position:relative;
+    }
+
+    nav a.active::after{
+      content:"";
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:7px;
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(90deg, var(--terracotta), var(--blush));
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .pill{
+      border-radius:999px;
+      border:1px solid var(--border);
+      padding:11px 14px;
+      font-size:13px;
+      font-weight:800;
+      background:rgba(255,255,255,.65);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .details-page{
+      padding:34px 0 40px;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:18px;
+      font-size:14px;
+      font-weight:700;
+      color:var(--terracotta);
+    }
+
+    .hero-shell{
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--border);
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      background:
+        radial-gradient(760px 340px at 0% 0%, rgba(222,164,173,.30), transparent 60%),
+        radial-gradient(720px 320px at 100% 10%, rgba(107,120,131,.18), transparent 58%),
+        rgba(255,255,255,.68);
+      padding:28px;
+      isolation:isolate;
+      margin-bottom:24px;
+    }
+
+    .hero-orb{
+      position:absolute;
+      border-radius:999px;
+      filter:blur(8px);
+      opacity:.35;
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .orb-1{
+      width:180px;
+      height:180px;
+      background:rgba(222,164,173,.65);
+      top:-20px;
+      right:140px;
+    }
+
+    .orb-2{
+      width:220px;
+      height:220px;
+      background:rgba(107,120,131,.28);
+      bottom:80px;
+      left:-40px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.02fr .98fr;
+      gap:22px;
+      align-items:center;
+      position:relative;
+      z-index:2;
+    }
+
+    .hero-copy{
+      padding:10px 4px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.62);
+      font-size:12px;
+      font-weight:800;
+      box-shadow:var(--shadow-soft);
+      margin-bottom:18px;
+    }
+
+    .eyebrow i{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:var(--terracotta);
+      display:inline-block;
+    }
+
+    .hero-copy h1{
+      margin:0 0 14px;
+      font-family:"Cormorant Garamond", serif;
+      font-size:clamp(42px, 5.4vw, 68px);
+      line-height:.95;
+      letter-spacing:.01em;
+    }
+
+    .hero-copy p{
+      margin:0 0 18px;
+      font-size:15px;
+      line-height:1.75;
+      color:var(--muted);
+      max-width:58ch;
+    }
+
+    .meta-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+
+    .category-badge{
+      display:inline-block;
+      background:rgba(222,164,173,.18);
+      color:var(--terracotta);
+      border:1px solid rgba(181,100,73,.14);
+      padding:9px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .visit-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:none;
+      cursor:pointer;
+      border-radius:18px;
+      padding:13px 18px;
+      font-weight:800;
+      font-size:13px;
+      background:linear-gradient(135deg, rgba(181,100,73,.24), rgba(222,164,173,.28));
+      border:1px solid rgba(181,100,73,.28);
+      color:var(--charcoal);
+      box-shadow:var(--shadow-soft);
+      transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+    }
+
+    .visit-btn:hover{
+      transform:translateY(-1px);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-side{
+      display:grid;
+    }
+
+    .image-card{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.66);
+      border-radius:26px;
+      box-shadow:var(--shadow-soft);
+      padding:16px;
+    }
+
+    .hero-image{
+      width:100%;
+      height:420px;
+      object-fit:cover;
+      border-radius:22px;
+      display:block;
+      background:rgba(255,255,255,.88);
+    }
+
+    .content-grid{
+      display:grid;
+      gap:18px;
+    }
+
+    .info-card{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.82);
+      border-radius:28px;
+      box-shadow:var(--shadow-soft);
+      padding:24px;
+    }
+
+    .info-card h2{
+      font-family:"Cormorant Garamond", serif;
+      font-size:34px;
+      margin-bottom:12px;
+      color:var(--terracotta);
+    }
+
+    .info-card p{
+      font-size:15px;
+      line-height:1.85;
+      color:var(--charcoal);
+    }
+
+    .gallery-card{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.82);
+      border-radius:28px;
+      box-shadow:var(--shadow-soft);
+      padding:24px;
+    }
+
+    .gallery-card h2{
+      font-family:"Cormorant Garamond", serif;
+      font-size:34px;
+      margin-bottom:14px;
+      color:var(--terracotta);
+    }
+
+    .gallery-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+    }
+
+    .gallery-grid img{
+      width:100%;
+      height:240px;
+      object-fit:cover;
+      border-radius:22px;
+      display:block;
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--border);
+    }
+
+    .footer{
+      margin-top:10px;
+      padding:38px 0 0;
+      border-top:1px solid var(--border);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+      background:
+        radial-gradient(circle at top left, rgba(222,164,173,.20), transparent 35%),
+        radial-gradient(circle at top right, rgba(107,120,131,.14), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.82), rgba(243,232,232,.75), rgba(255,255,255,.88));
+    }
+
+    .footer-layout{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:56px;
+      flex-wrap:wrap;
+      padding-bottom:28px;
+    }
+
+    .footer-left{
+      flex:1.2;
+      min-width:320px;
+    }
+
+    .footer-brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .footer-about h4,
+    .footer-info h4{
+      margin:0 0 8px;
+      font-family:"Cormorant Garamond", serif;
+      font-size:22px;
+      font-weight:700;
+      color:var(--terracotta);
+      letter-spacing:.01em;
+    }
+
+    .footer-about p{
+      margin:0;
+      color:rgba(67,69,67,.78);
+      font-size:14px;
+      line-height:1.9;
+      max-width:470px;
+    }
+
+    .footer-right{
+      min-width:240px;
+      display:flex;
+      flex-direction:column;
+      gap:24px;
+      text-align:left;
+      padding-right:28px;
+    }
+
+    .footer-info{
+      padding:10px 0;
+    }
+
+    .footer-info p{
+      margin:0;
+      color:rgba(67,69,67,.75);
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    .footer-bottom{
+      border-top:1px solid rgba(67,69,67,.08);
+      padding:16px 0;
+      text-align:center;
+      background:rgba(255,255,255,.35);
+    }
+
+    .footer-bottom p{
+      margin:0;
+      font-size:12px;
+      color:rgba(67,69,67,.60);
+      letter-spacing:.02em;
+    }
+
+    @media (max-width: 980px){
+      nav{
+        display:none;
+      }
+
+      .hero-grid{
+        grid-template-columns:1fr;
+      }
+
+      .gallery-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .footer-layout{
+        gap:28px;
+      }
+    }
+
+    @media (max-width: 680px){
+      .container{
+        width:min(var(--max), calc(100% - 24px));
+      }
+
+      .hero-copy h1{
+        font-size:42px;
+      }
+
+      .gallery-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-image{
+        height:280px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="brands.html">
+        <div class="logo-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M13 4L9.5 20" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" />
+            <path d="M8.5 7.5c3-2 6-2 9 0" stroke="var(--blush)" stroke-width="2" stroke-linecap="round" />
+            <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="wordmark">LOOM</div>
+      </a>
+
+      <nav>
+        <a href="#">Home</a>
+        <a href="brands.html" class="active">Brands</a>
+        <a href="#">Second Use</a>
+        <a href="#">Blogs</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="pill">Guest Mode</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="details-page">
+    <div class="container">
+      <a class="back-link" href="brands.html">← Back to brands</a>
+
+      <section class="hero-shell">
+        <span class="hero-orb orb-1"></span>
+        <span class="hero-orb orb-2"></span>
+
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><i></i> LOOM brand details</div>
+            <h1 id="brandName">Brand Name</h1>
+
+            <div class="meta-row">
+              <span id="brandCategory" class="category-badge">Category</span>
+            </div>
+
+            <p id="brandIntro">Brand introduction goes here.</p>
+
+            <a id="brandWebsite" class="visit-btn" href="#" target="_blank">Visit Official Website</a>
+          </div>
+
+          <div class="hero-side">
+            <div class="image-card">
+              <img id="brandImage" class="hero-image" src="" alt="Brand image">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="info-card">
+          <h2>Brand Story</h2>
+          <p id="brandStory"></p>
+        </section>
+
+        <section class="info-card">
+          <h2>Why It Stands Out</h2>
+          <p id="brandDetails"></p>
+        </section>
+
+        <section class="gallery-card">
+          <h2>Gallery</h2>
+          <div class="gallery-grid">
+            <img id="gallery1" src="" alt="Gallery image 1">
+            <img id="gallery2" src="" alt="Gallery image 2">
+            <img id="gallery3" src="" alt="Gallery image 3">
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-layout">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <div class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 4L9.5 20" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" />
+              <path d="M8.5 7.5c3-2 6-2 9 0" stroke="var(--blush)" stroke-width="2" stroke-linecap="round" />
+              <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="wordmark">LOOM</div>
+        </div>
+
+        <div class="footer-about">
+          <h4>About LOOM</h4>
+          <p>
+            LOOM is a platform that helps users explore sustainable fashion brands,
+            learn more about responsible fashion, and support second-hand clothing.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-right">
+        <div class="footer-info">
+          <h4>Contact</h4>
+          <p>teamloom@gmail.com</p>
+        </div>
+
+        <div class="footer-info">
+          <h4>Category</h4>
+          <p>Sustainable Fashion</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Team LOOM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    var brandData = JSON.parse(localStorage.getItem("selectedBrand"));
+
+    if(!brandData){
+      window.location.href = "brands.html";
+    }
+
+    document.getElementById("brandName").textContent = brandData.name;
+    document.getElementById("brandCategory").textContent = brandData.category;
+    document.getElementById("brandImage").src = brandData.image;
+    document.getElementById("brandWebsite").href = brandData.url;
+
+    document.getElementById("brandIntro").textContent = brandData.story;
+    document.getElementById("brandStory").textContent = brandData.story;
+    document.getElementById("brandDetails").textContent = brandData.details;
+
+    document.getElementById("gallery1").src = brandData.gallery1 || "";
+    document.getElementById("gallery2").src = brandData.gallery2 || "";
+    document.getElementById("gallery3").src = brandData.gallery3 || "";
+  </script>
+
+</body>
+</html>
