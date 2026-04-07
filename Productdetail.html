@@ -360,13 +360,13 @@
     }
 
     .wordmark {
-      font-family: "Cormorant Garamond", serif;
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      color: #434543;
-    }
-
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 26px !important;
+  font-weight: 500 !important; /* أعطِ أولوية للوزن */
+  letter-spacing: .08em !important;
+  color: #434543 !important;
+}
+    
     nav {
       display: flex;
       align-items: center;
@@ -615,6 +615,7 @@
 
 <body>
 
+  
   <header class="header">
     <div class="container header-inner">
       <a class="brand" href="home.html" aria-label="LOOM Home">
@@ -632,8 +633,8 @@
       <nav>
         <a href="index.html">Home</a>
         <a href="Brand.html">Brands</a>
-        <a href="Blog.html" class="active">Blogs</a>
-        <a href="SecondUse.html">Second Hand</a>
+        <a href="Blog.html">Blogs</a>
+        <a href="SecondUse.html" class="active">Second Hand</a>
         <a href="user_account.html" id="profileLink" style="display:none;">Profile</a>
         <a href="register.html" id="loginLink">Login / Register</a>
       </nav>
@@ -643,6 +644,7 @@
       </div>
     </div>
   </header>
+
 
   <div class="breadcrumb">
     <a href="SecondUse.html">Second-Use</a>
