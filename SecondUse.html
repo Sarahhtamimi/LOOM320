@@ -608,11 +608,11 @@
         <div class="wordmark">LOOM</div>
       </a>
 
-     <nav>
-        <a href="index.html" >Home</a>
-         <a href="Brand.html">Brands</a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="Brand.html">Brands</a>
         <a href="Blog.html">Blogs</a>
-        <a href="SecondUse.html"class="active">Second Hand</a>
+        <a href="SecondUse.html" class="active">Second Hand</a>
         <a href="user_account.html" id="profileLink" style="display:none;">Profile</a>
         <a href="register.html" id="loginLink">Login / Register</a>
       </nav>
@@ -869,6 +869,12 @@
     }
 
     function handleBookmarkClick(btn) {
+      if (!isLoggedIn) {
+        alert("Please log in first to bookmark items.");
+        window.location.href = "register.html";
+        return;
+      }
+
       const card = btn.closest(".fashion-card");
       const isActive = btn.classList.contains("active");
       let saved = getStoredBookmarks();
@@ -891,7 +897,6 @@
 
       saveBookmarksToStorage(saved);
     }
-
     function attachBookmarkEvents() {
       document.querySelectorAll(".bookmark-btn").forEach(function (btn) {
         btn.onclick = function (e) {
@@ -913,6 +918,12 @@
     }
 
     openAddListingBtn.addEventListener("click", function () {
+      if (!isLoggedIn) {
+        alert("Please log in first to create a listing.");
+        window.location.href = "register.html";
+        return;
+      }
+
       addListingModal.classList.add("show");
     });
 
@@ -937,6 +948,12 @@
     }
 
     confirmAddBtn.addEventListener("click", function () {
+      if (!isLoggedIn) {
+        alert("Please log in first to create a listing.");
+        window.location.href = "register.html";
+        return;
+      }
+
       const title = document.getElementById("addTitle").value.trim();
       const description = document.getElementById("addDescription").value.trim();
       const price = document.getElementById("addPrice").value.trim();
@@ -1020,6 +1037,7 @@
     const profileLink = document.getElementById("profileLink");
     const authPill = document.getElementById("authPill");
     const savedUser = localStorage.getItem("loomLoggedInUser");
+    const isLoggedIn = !!savedUser;
 
     if (savedUser) {
       if (loginLink) loginLink.style.display = "none";
@@ -1029,6 +1047,9 @@
       if (loginLink) loginLink.style.display = "inline-block";
       if (profileLink) profileLink.style.display = "none";
       if (authPill) authPill.textContent = "Guest Mode";
+    }
+    if (!isLoggedIn) {
+      openAddListingBtn.textContent = "Login to Add Listing";
     }
   </script>
 </body>
