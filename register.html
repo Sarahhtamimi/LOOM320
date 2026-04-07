@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,8 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+    rel="stylesheet" />
 
   <style>
     :root {
@@ -375,12 +375,13 @@
     }
   </style>
 </head>
+
 <body>
 
   <main class="auth-page">
     <div class="container">
       <section class="auth-shell">
-       
+
 
         <div class="auth-wrapper">
           <div class="eyebrow"><i></i> Create your LOOM account</div>
@@ -427,26 +428,76 @@
   </main>
 
   <script>
+
     const signupForm = document.getElementById("signupForm");
     const fullNameInput = document.getElementById("fullName");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+
+    const fullNameError = document.getElementById("fullNameError");
+    const emailError = document.getElementById("emailError");
+    const passwordError = document.getElementById("passwordError");
     const formMessage = document.getElementById("formMessage");
 
-    const fields = {
-      fullName: {
-        input: fullNameInput,
-        error: document.getElementById("fullNameError")
-      },
-      email: {
-        input: emailInput,
-        error: document.getElementById("emailError")
-      },
-      password: {
-        input: passwordInput,
-        error: document.getElementById("passwordError")
+    signupForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      fullNameError.textContent = "";
+      emailError.textContent = "";
+      passwordError.textContent = "";
+      formMessage.textContent = "";
+
+      const fullName = fullNameInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value.trim();
+
+      let isValid = true;
+
+      if (fullName === "") {
+        fullNameError.textContent = "Please enter your name.";
+        isValid = false;
       }
-    };
+
+      if (email === "") {
+        emailError.textContent = "Please enter your email.";
+        isValid = false;
+      }
+
+      if (password === "") {
+        passwordError.textContent = "Please enter your password.";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      let users = JSON.parse(localStorage.getItem("loomUsers")) || [];
+
+      const existingUser = users.find(user => user.email === email);
+
+      if (existingUser) {
+        formMessage.textContent = "This email is already registered.";
+        return;
+      }
+
+      const newUser = {
+        fullName: fullName,
+        email: email,
+        password: password
+      };
+
+      users.push(newUser);
+      localStorage.setItem("loomUsers", JSON.stringify(users));
+
+      localStorage.setItem("loomLoggedInUser", fullName);
+      localStorage.setItem("loomUserEmail", email);
+
+      formMessage.textContent = "Account created successfully.";
+
+      setTimeout(function () {
+        window.location.href = "index.html";
+      }, 700);
+    });
+
 
     function setFieldError(fieldName, message) {
       fields[fieldName].error.textContent = message;
@@ -572,4 +623,5 @@
     });
   </script>
 </body>
+
 </html>

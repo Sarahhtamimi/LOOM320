@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,8 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+    rel="stylesheet" />
 
   <style>
     :root {
@@ -178,7 +178,7 @@
       isolation: isolate;
     }
 
-   
+
 
     .auth-wrapper {
       position: relative;
@@ -377,19 +377,21 @@
     }
   </style>
 </head>
+
 <body>
 
 
   <main class="auth-page">
     <div class="container">
       <section class="auth-shell">
-      
+
 
         <div class="auth-wrapper">
           <div class="eyebrow"><i></i> Welcome back to LOOM</div>
           <h1>Sign In</h1>
           <p class="subtitle">
-            Sign in to manage your activity and continue your LOOM journey with the same elegant experience as the homepage.
+            Sign in to manage your activity and continue your LOOM journey with the same elegant experience as the
+            homepage.
           </p>
 
           <div class="card">
@@ -424,12 +426,59 @@
   </main>
 
   <script>
+
     const loginForm = document.getElementById("loginForm");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+
     const emailError = document.getElementById("emailError");
     const passwordError = document.getElementById("passwordError");
     const formMessage = document.getElementById("formMessage");
+
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      emailError.textContent = "";
+      passwordError.textContent = "";
+      formMessage.textContent = "";
+
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value.trim();
+
+      let isValid = true;
+
+      if (email === "") {
+        emailError.textContent = "Please enter your email.";
+        isValid = false;
+      }
+
+      if (password === "") {
+        passwordError.textContent = "Please enter your password.";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      const users = JSON.parse(localStorage.getItem("loomUsers")) || [];
+
+      const matchedUser = users.find(user => user.email === email && user.password === password);
+
+      if (!matchedUser) {
+        formMessage.textContent = "Invalid email or password.";
+        return;
+      }
+
+      localStorage.setItem("loomLoggedInUser", matchedUser.fullName);
+      localStorage.setItem("loomUserEmail", matchedUser.email);
+
+      formMessage.textContent = "Login successful.";
+
+      setTimeout(function () {
+        window.location.href = "index.html";
+      }, 700);
+    });
+
+
 
     function setError(input, errorElement, message) {
       input.classList.add("invalid");
@@ -529,7 +578,7 @@
         showMessage("Login successful. Redirecting to homepage...", "success");
 
         setTimeout(() => {
-          window.location.href = "home.html";
+          window.location.href = "index.html";
         }, 1200);
       } catch (error) {
         showMessage(error.message || "Login failed. Please try again.", "error");
@@ -548,4 +597,5 @@
     });
   </script>
 </body>
+
 </html>
