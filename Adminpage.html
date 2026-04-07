@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -34,35 +34,108 @@
       min-height: 100vh;
     }
 
-    .navbar {
-      width: 100%;
-      padding: 22px 7%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0,0,0,0.05);
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      background: rgba(243, 232, 232, 0.78);
+      border-bottom: 1px solid rgba(67, 69, 67, 0.08);
     }
 
-    .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: 1px;
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 0;
     }
 
-    .nav-links a {
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       text-decoration: none;
-      color: var(--text);
-      margin-left: 28px;
-      font-size: 15px;
-      font-weight: 500;
+      color: inherit;
+      min-width: 180px;
     }
 
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(67, 69, 67, 0.10);
+      box-shadow: 0 12px 24px rgba(67, 69, 67, 0.06);
+    }
+
+    .wordmark {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #434543;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 14px;
+      min-height: 50px;
+      border-radius: 999px;
+      border: 1px solid rgba(67, 69, 67, 0.08);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 10px 24px rgba(67, 69, 67, 0.05);
+    }
+
+    nav a {
+      padding: 11px 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(67, 69, 67, 0.84);
+      position: relative;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 7px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #B56449, #DEA4AD);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(67, 69, 67, 0.08);
+      padding: 11px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 10px 24px rgba(67, 69, 67, 0.05);
+      color: #434543;
+    }
+
+    /* Page */
     .page {
       width: 90%;
       max-width: 1250px;
@@ -252,6 +325,83 @@
       line-height: 1.6;
     }
 
+    /* Footer */
+    .footer {
+      margin-top: 16px;
+      padding: 38px 0 0;
+      border-top: 1px solid rgba(67, 69, 67, 0.08);
+      background:
+        radial-gradient(circle at top left, rgba(222, 164, 173, 0.18), transparent 34%),
+        radial-gradient(circle at top right, rgba(107, 120, 131, 0.10), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(243, 232, 232, 0.78), rgba(255, 255, 255, 0.9));
+    }
+
+    .footer-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 56px;
+      flex-wrap: wrap;
+      padding-bottom: 28px;
+    }
+
+    .footer-left {
+      flex: 1.2;
+      min-width: 320px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .footer-about h4,
+    .footer-info h4 {
+      margin: 0 0 8px;
+      font-family: Inter, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #6f5d5d;
+    }
+
+    .footer-about p,
+    .footer-info p {
+      margin: 0;
+      color: rgba(67, 69, 67, 0.78);
+      font-size: 14px;
+      line-height: 1.9;
+      font-family: Inter, sans-serif;
+    }
+
+    .footer-about p {
+      max-width: 470px;
+    }
+
+    .footer-right {
+      min-width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      text-align: left;
+      margin-right: 20px;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(67, 69, 67, 0.08);
+      padding: 16px 0;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.34);
+    }
+
+    .footer-bottom p {
+      margin: 0;
+      font-size: 12px;
+      color: rgba(67, 69, 67, 0.60);
+      letter-spacing: 0.02em;
+    }
+
     @media (max-width: 980px) {
       .page {
         grid-template-columns: 1fr;
@@ -260,221 +410,67 @@
       .title {
         font-size: 38px;
       }
+
+      .header-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .footer-layout {
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .footer-right {
+        text-align: left;
+        margin-right: 0;
+      }
     }
 
     @media (max-width: 600px) {
       .form-grid {
         grid-template-columns: 1fr;
       }
-
-      .navbar {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .nav-links a {
-        margin: 0 10px;
-      }
-      .header{
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  backdrop-filter: blur(14px);
-  background: rgba(243,232,232,.72);
-  border-bottom: 1px solid rgba(67,69,67,.10);
-}
-
-.header-inner{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  padding:14px 0;
-}
-
-.container{
-  width:min(1180px, calc(100% - 40px));
-  margin:0 auto;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:180px;
-  text-decoration:none;
-  color:inherit;
-}
-
-.logo-mark{
-  width:38px;
-  height:38px;
-  display:grid;
-  place-items:center;
-  border-radius:14px;
-  background:rgba(255,255,255,.66);
-  border:1px solid rgba(67,69,67,.10);
-  box-shadow:0 12px 32px rgba(67,69,67,.08);
-}
-
-.wordmark{
-  font-family:"Cormorant Garamond", serif;
-  font-size:26px;
-  font-weight:700;
-  letter-spacing:.08em;
-  color:#434543;
-}
-
-nav{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding:0 12px;
-  border-radius:999px;
-  border:1px solid rgba(67,69,67,.10);
-  background:rgba(255,255,255,.58);
-  box-shadow:0 12px 32px rgba(67,69,67,.08);
-}
-
-nav a{
-  padding:11px 10px;
-  font-size:13px;
-  font-weight:700;
-  color:rgba(67,69,67,.84);
-  position:relative;
-  text-decoration:none;
-}
-
-nav a.active::after{
-  content:"";
-  position:absolute;
-  left:10px;
-  right:10px;
-  bottom:7px;
-  height:2px;
-  border-radius:999px;
-  background:linear-gradient(90deg,#B56449,#DEA4AD);
-}
-
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.pill{
-  border-radius:999px;
-  border:1px solid rgba(67,69,67,.10);
-  padding:11px 14px;
-  font-size:13px;
-  font-weight:800;
-  background:rgba(255,255,255,.65);
-  box-shadow:0 12px 32px rgba(67,69,67,.08);
-  color:#434543;
-}
-
-.footer{
-  margin-top: 10px;
-  padding: 38px 0 0;
-  border-top: 1px solid rgba(67,69,67,.10);
-  background:
-    radial-gradient(circle at top left, rgba(222,164,173,.20), transparent 35%),
-    radial-gradient(circle at top right, rgba(107,120,131,.14), transparent 30%),
-    linear-gradient(180deg, rgba(255,255,255,.82), rgba(243,232,232,.75), rgba(255,255,255,.88));
-}
-
-.footer-layout{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:56px;
-  flex-wrap:wrap;
-  padding-bottom:28px;
-}
-
-.footer-left{
-  flex:1.2;
-  min-width:320px;
-}
-
-.footer-brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:18px;
-}
-
-.footer-about h4,
-.footer-info h4{
-  margin:0 0 8px;
-  font-family:Inter, sans-serif;
-  font-size:18px;
-  font-weight:700;
-  color:#6f5d5d;
-}
-
-.footer-about p,
-.footer-info p{
-  margin:0;
-  color:rgba(67,69,67,.78);
-  font-size:14px;
-  line-height:1.9;
-  font-family:Inter, sans-serif;
-  max-width:470px;
-}
-
-.footer-right{
-  min-width:240px;
-  display:flex;
-  flex-direction:column;
-  gap:24px;
-  text-align:left;
-  margin-right:35px;
-}
-
-.footer-bottom{
-  border-top:1px solid rgba(67,69,67,.08);
-  padding:16px 0;
-  text-align:center;
-  background:rgba(255,255,255,.35);
-}
-
-.footer-bottom p{
-  margin:0;
-  font-size:12px;
-  color:rgba(67,69,67,.60);
-  letter-spacing:.02em;
-}
-
-@media (max-width: 980px){
-  nav{
-    display:none;
-  }
-}
-
-@media (max-width: 768px){
-  .footer-layout{
-    flex-direction:column;
-    gap:24px;
-  }
-
-  .footer-right{
-    text-align:left;
-    margin-right:0;
-  }
-}
     }
   </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="logo">LOOM</div>
-    <div class="nav-links">
-      <a href="admin-add-blog.html">Admin</a>
-      <a href="blog.html">Blog Page</a>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="home.html" aria-label="LOOM Home">
+        <div class="logo-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M13 4L9.5 20" stroke="#6B7883" stroke-width="2" stroke-linecap="round" />
+            <path d="M8.5 7.5c3-2 6-2 9 0" stroke="#DEA4AD" stroke-width="2" stroke-linecap="round" />
+            <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="#B56449" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="wordmark">LOOM</div>
+      </a>
+
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="Blog.html">Blog Page</a>
+        <a href="SecondUse.html">Second Hand</a>
+        <a href="user_account.html" id="profileLink" style="display:none;">Profile</a>
+        <a href="index.html" id="loginLink">Login / Register</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="pill" id="authPill">Guest Mode</button>
+      </div>
     </div>
-  </nav>
+  </header>
 
   <section class="page">
     <div class="form-card">
@@ -517,7 +513,7 @@ nav a.active::after{
     </div>
 
     <div class="side-card">
-      <img src="\images\admin-blog-side.png" alt="LOOM Admin Visual">
+      <img src="images/admin-blog-side.png" alt="LOOM Admin Visual">
       <div class="side-content">
         <h3>Write with elegance,<br>publish with purpose.</h3>
         <p>
@@ -537,6 +533,47 @@ nav a.active::after{
       </div>
     </div>
   </section>
+
+  <footer class="footer">
+    <div class="container footer-layout">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <div class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 4L9.5 20" stroke="#6B7883" stroke-width="2" stroke-linecap="round" />
+              <path d="M8.5 7.5c3-2 6-2 9 0" stroke="#DEA4AD" stroke-width="2" stroke-linecap="round" />
+              <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="#B56449" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="wordmark">LOOM</div>
+        </div>
+
+        <div class="footer-about">
+          <h4>About LOOM</h4>
+          <p>
+            LOOM is a platform that helps users explore sustainable fashion brands,
+            learn more about responsible fashion, and support second-hand clothing.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-right">
+        <div class="footer-info">
+          <h4>Contact</h4>
+          <p>teamloom@gmail.com</p>
+        </div>
+
+        <div class="footer-info">
+          <h4>Category</h4>
+          <p>Sustainable Fashion</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Team LOOM. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script>
     const form = document.getElementById("blogForm");
@@ -569,12 +606,27 @@ nav a.active::after{
       message.textContent = "Blog published successfully.";
 
       setTimeout(() => {
-        window.location.href = "blog.html";
+        window.location.href = "Blog.html";
       }, 800);
 
       form.reset();
       dateInput.value = today;
     });
+
+    const loginLink = document.getElementById("loginLink");
+    const profileLink = document.getElementById("profileLink");
+    const authPill = document.getElementById("authPill");
+    const savedUser = localStorage.getItem("loomLoggedInUser");
+
+    if (savedUser) {
+      if (loginLink) loginLink.style.display = "none";
+      if (profileLink) profileLink.style.display = "inline-block";
+      if (authPill) authPill.textContent = savedUser;
+    } else {
+      if (loginLink) loginLink.style.display = "inline-block";
+      if (profileLink) profileLink.style.display = "none";
+      if (authPill) authPill.textContent = "Guest Mode";
+    }
   </script>
 
 </body>
