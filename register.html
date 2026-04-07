@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOOM - Sign Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Cormorant+Garamond:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --dusty-blush: #DEA4AD;
+      --terracotta: #B56449;
+      --forest-green: #6B7883;
+      --warm-pink: #F3E8E8;
+      --charcoal: #434543;
+      --bg: #faf5f3;
+      --card: rgba(255, 255, 255, 0.42);
+      --border: #e6d7d4;
+      --input-border: #e2d7d4;
+      --muted: #7e807e;
+      --error: #b54b4b;
+      --success: #4d6a58;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      font-family: "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--charcoal);
+    }
+
+    body {
+      overflow-x: hidden;
+      background-color: #F3E8E8;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar {
+      height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 42px;
+      border-bottom: 1px solid #e8dfdc;
+      background: rgba(255,255,255,0.28);
+    }
+
+    .logo-box {
+      width: 78px;
+      height: 46px;
+      border-radius: 4px;
+      background: #f6efed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: var(--forest-green);
+      border: 1px solid #eee3df;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 34px;
+      align-items: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover,
+    .signin:hover,
+    .switch-link:hover {
+      color: var(--terracotta);
+    }
+
+    .signin {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--charcoal);
+    }
+
+    .page {
+      min-height: calc(100vh - 74px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 54px 16px 40px;
+    }
+
+    .signup-wrapper {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .hero-icon {
+      margin-bottom: 0px;
+      color: var(--terracotta);
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-icon svg {
+      width: 80px;
+      height: 100px;
+    }
+
+    h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 44px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--charcoal);
+      margin-top: 0px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--forest-green);
+      margin-bottom: 28px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 24px 24px 22px;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 26px rgba(67, 69, 67, 0.04);
+      text-align: left;
+      backdrop-filter: blur(2px);
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    .field input {
+      width: 100%;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid var(--input-border);
+      background: #fcf7f6;
+      padding: 0 16px;
+      font-size: 14px;
+      color: var(--charcoal);
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .field input::placeholder {
+      color: #a7a09d;
+    }
+
+    .field input:focus {
+      border-color: var(--dusty-blush);
+      box-shadow: 0 0 0 3px rgba(222, 164, 173, 0.18);
+    }
+
+    .field input.invalid {
+      border-color: var(--error);
+      background: #fff8f8;
+    }
+
+    .error-text {
+      display: block;
+      min-height: 16px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--error);
+    }
+
+    .message {
+      display: none;
+      margin-bottom: 14px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .message.error {
+      display: block;
+      color: var(--error);
+      background: #fff1f1;
+      border: 1px solid #efcaca;
+    }
+
+    .message.success {
+      display: block;
+      color: var(--success);
+      background: #eef6f0;
+      border: 1px solid #cadecf;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      background: var(--terracotta);
+      color: #fffaf8;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      box-shadow: 0 8px 18px rgba(181, 100, 73, 0.18);
+    }
+
+    .submit-btn:hover {
+      filter: brightness(0.96);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.75;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .bottom-text {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--forest-green);
+    }
+
+    .switch-link {
+      color: var(--terracotta);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px 24px;
+        height: auto;
+        padding: 16px 18px;
+      }
+
+      .nav-links {
+        gap: 18px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .signup-wrapper {
+        max-width: 100%;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 20px 16px 18px;
+      }
+
+      .nav-links {
+        font-size: 13px;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo-box">LOOM</div>
+
+    <nav class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Second-Use</a>
+      <a href="#">Brands</a>
+      <a href="#">Blogs</a>
+      <a href="#">About</a>
+    </nav>
+
+    <a href="login.html" class="signin">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 21a8 8 0 0 0-16 0"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Sign In</span>
+    </a>
+  </header>
+
+  <main class="page">
+    <section class="signup-wrapper">
+      
+      <!-- <div class="hero-icon">
+        <svg viewBox="0 0 64 64" width="32" height="32" fill="none"
+            stroke="#B56449" stroke-width="3.2"
+            stroke-linecap="round" stroke-linejoin="round">
+
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+        </svg>
+        </div> -->
+
+      <h1>Join LOOM</h1>
+      <p class="subtitle">Create an account to start your sustainable fashion journey.</p>
+
+      <div class="card">
+        <form id="signupForm" novalidate>
+          <div class="field">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Your name" />
+            <small class="error-text" id="fullNameError"></small>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" />
+            <small class="error-text" id="emailError"></small>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" />
+            <small class="error-text" id="passwordError"></small>
+          </div>
+
+          <div id="formMessage" class="message"></div>
+
+          <button type="submit" class="submit-btn">Create Account</button>
+
+          <p class="bottom-text">
+            Already have an account?
+            <a class="switch-link" href="login.html">Sign In</a>
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const signupForm = document.getElementById("signupForm");
+    const fullNameInput = document.getElementById("fullName");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const formMessage = document.getElementById("formMessage");
+
+    const fields = {
+      fullName: {
+        input: fullNameInput,
+        error: document.getElementById("fullNameError")
+      },
+      email: {
+        input: emailInput,
+        error: document.getElementById("emailError")
+      },
+      password: {
+        input: passwordInput,
+        error: document.getElementById("passwordError")
+      }
+    };
+
+    function setFieldError(fieldName, message) {
+      fields[fieldName].error.textContent = message;
+      fields[fieldName].input.classList.add("invalid");
+    }
+
+    function clearFieldError(fieldName) {
+      fields[fieldName].error.textContent = "";
+      fields[fieldName].input.classList.remove("invalid");
+    }
+
+    function clearAllErrors() {
+      Object.keys(fields).forEach(clearFieldError);
+      hideFormMessage();
+    }
+
+    function showFormMessage(message, type) {
+      formMessage.textContent = message;
+      formMessage.className = "message " + type;
+    }
+
+    function hideFormMessage() {
+      formMessage.textContent = "";
+      formMessage.className = "message";
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isValidPassword(password) {
+      return password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
+    }
+
+    function validateForm() {
+      clearAllErrors();
+
+      const fullName = fullNameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      let valid = true;
+
+      if (!fullName) {
+        setFieldError("fullName", "Full name is required.");
+        valid = false;
+      }
+
+      if (!email) {
+        setFieldError("email", "Email is required.");
+        valid = false;
+      } else if (!isValidEmail(email)) {
+        setFieldError("email", "Please enter a valid email address.");
+        valid = false;
+      }
+
+      if (!password) {
+        setFieldError("password", "Password is required.");
+        valid = false;
+      } else if (!isValidPassword(password)) {
+        setFieldError(
+          "password",
+          "Password must be at least 8 characters and contain at least one letter and one number."
+        );
+        valid = false;
+      }
+
+     
+
+      return valid;
+    }
+
+    async function registerUser(userData) {
+      // Replace with your real API call.
+      // This demo stores users locally to simulate database storage.
+      const users = JSON.parse(localStorage.getItem("loomUsers") || "[]");
+
+      const exists = users.some(
+        (user) => user.email.toLowerCase() === userData.email.toLowerCase()
+      );
+
+      if (exists) {
+        throw new Error("A user with this email already exists.");
+      }
+
+      users.push(userData);
+      localStorage.setItem("loomUsers", JSON.stringify(users));
+
+      return { success: true };
+    }
+
+    signupForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      if (!validateForm()) return;
+
+      const button = signupForm.querySelector(".submit-btn");
+      button.disabled = true;
+      button.textContent = "Creating...";
+
+      try {
+        await registerUser({
+          fullName: fullNameInput.value.trim(),
+          email: emailInput.value.trim(),
+          password: passwordInput.value
+        });
+
+        showFormMessage("Account created successfully. Redirecting to homepage...", "success");
+        signupForm.reset();
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
+      } catch (error) {
+        showFormMessage(error.message || "Registration failed. Please try again.", "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Create Account";
+      }
+    });
+
+    [fullNameInput, emailInput, passwordInput].forEach((input) => {
+      input.addEventListener("input", () => {
+        clearFieldError(input.name);
+        hideFormMessage();
+      });
+    });
+  </script>
+</body>
+</html>
