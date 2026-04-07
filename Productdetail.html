@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,7 +16,11 @@
       --shadow: 0 8px 24px rgba(67, 69, 67, 0.06);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: Arial, Helvetica, sans-serif;
@@ -24,7 +29,10 @@
       line-height: 1.6;
     }
 
-    img { max-width: 100%; display: block; }
+    img {
+      max-width: 100%;
+      display: block;
+    }
 
     /* TOPBAR */
     .topbar {
@@ -88,7 +96,10 @@
       transition: 0.25s ease;
     }
 
-    .nav-links a:hover, .nav-links a.active { color: var(--terracotta); }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--terracotta);
+    }
 
     /* BREADCRUMB */
     .breadcrumb {
@@ -108,9 +119,13 @@
       transition: 0.2s;
     }
 
-    .breadcrumb a:hover { color: var(--terracotta); }
+    .breadcrumb a:hover {
+      color: var(--terracotta);
+    }
 
-    .breadcrumb span { color: #c5bbb7; }
+    .breadcrumb span {
+      color: #c5bbb7;
+    }
 
     /* MAIN LAYOUT */
     .page-container {
@@ -298,83 +313,332 @@
       fill: currentColor;
     }
 
-    /* FOOTER */
-    .footer {
-      margin-top: 52px;
-      background: #464847;
-      color: #f7efe9;
+
+
+
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      backdrop-filter: blur(14px);
+      background: rgba(243, 232, 232, .72);
+      border-bottom: 1px solid rgba(67, 69, 67, .10);
     }
 
-    .footer-inner {
-      max-width: 1120px;
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 0;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 34px 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 180px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
       display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr 1fr;
-      gap: 20px;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .66);
+      border: 1px solid rgba(67, 69, 67, .10);
+      box-shadow: 0 12px 32px rgba(67, 69, 67, .08);
+    }
+
+    .wordmark {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: #434543;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(67, 69, 67, .10);
+      background: rgba(255, 255, 255, .58);
+      box-shadow: 0 12px 32px rgba(67, 69, 67, .08);
+    }
+
+    nav a {
+      padding: 11px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(67, 69, 67, .84);
+      position: relative;
+      text-decoration: none;
+    }
+
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 7px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #B56449, #DEA4AD);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(67, 69, 67, .10);
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, .65);
+      box-shadow: 0 12px 32px rgba(67, 69, 67, .08);
+      color: #434543;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      backdrop-filter: blur(14px);
+      background: rgba(243, 232, 232, .72);
+      border-bottom: 1px solid rgba(67, 69, 67, .10);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 0;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 180px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .66);
+      border: 1px solid rgba(67, 69, 67, .10);
+      box-shadow: 0 12px 32px rgba(67, 69, 67, .08);
+    }
+
+    .wordmark {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: #434543;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(67, 69, 67, .10);
+      background: rgba(255, 255, 255, .58);
+      box-shadow: 0 12px 32px rgba(67, 69, 67, .08);
+    }
+
+    nav a {
+      padding: 11px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(67, 69, 67, .84);
+      position: relative;
+      text-decoration: none;
+    }
+
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 7px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #B56449, #DEA4AD);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(67, 69, 67, .10);
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, .65);
+      box-shadow: 0 12px 32px rgba(67, 69, 67, .08);
+      color: #434543;
+    }
+
+    .footer {
+      margin-top: 10px;
+      padding: 38px 0 0;
+      border-top: 1px solid rgba(67, 69, 67, .10);
+      background:
+        radial-gradient(circle at top left, rgba(222, 164, 173, .20), transparent 35%),
+        radial-gradient(circle at top right, rgba(107, 120, 131, .14), transparent 30%),
+        linear-gradient(180deg, rgba(255, 255, 255, .82), rgba(243, 232, 232, .75), rgba(255, 255, 255, .88));
+    }
+
+    .footer-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 56px;
+      flex-wrap: wrap;
+      padding-bottom: 28px;
+    }
+
+    .footer-left {
+      flex: 1.2;
+      min-width: 320px;
     }
 
     .footer-brand {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.7rem;
-      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
-    .footer p, .footer li, .footer a {
-      color: #dfd6d1;
-      text-decoration: none;
-      list-style: none;
-      margin-bottom: 7px;
-      font-size: 0.9rem;
+    .footer-about h4,
+    .footer-info h4 {
+      margin: 0 0 8px;
+      font-family: Inter, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #6f5d5d;
     }
 
-    .footer h4 {
-      font-family: Georgia, "Times New Roman", serif;
-      margin-bottom: 12px;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #fff6ef;
+    .footer-about p,
+    .footer-info p {
+      margin: 0;
+      color: rgba(67, 69, 67, .78);
+      font-size: 14px;
+      line-height: 1.9;
+      font-family: Inter, sans-serif;
+      max-width: 470px;
     }
 
-    @media (max-width: 860px) {
-      .product-layout {
-        grid-template-columns: 1fr;
-        gap: 28px;
+    .footer-right {
+      min-width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      text-align: left;
+      margin-right: 35px;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(67, 69, 67, .08);
+      padding: 16px 0;
+      text-align: center;
+      background: rgba(255, 255, 255, .35);
+    }
+
+    .footer-bottom p {
+      margin: 0;
+      font-size: 12px;
+      color: rgba(67, 69, 67, .60);
+      letter-spacing: .02em;
+    }
+
+    @media (max-width: 980px) {
+      nav {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .footer-layout {
+        flex-direction: column;
+        gap: 24px;
       }
 
-      .product-image-wrap { position: static; }
-
-      .product-title { font-size: 1.9rem; }
-
-      .footer-inner { grid-template-columns: repeat(2, 1fr); }
+      .footer-right {
+        text-align: left;
+        margin-right: 0;
+      }
     }
 
-    @media (max-width: 560px) {
-      .page-container { padding: 20px 16px 40px; }
-      .topbar-inner { flex-direction: column; align-items: flex-start; padding: 14px 16px; }
-      .nav-links { gap: 14px; }
-      .brand-name { font-size: 1.6rem; }
-      .product-title { font-size: 1.7rem; }
-      .btn-row { flex-direction: column; }
-      .footer-inner { grid-template-columns: 1fr; padding: 28px 16px; }
+    @media (max-width: 980px) {
+      nav {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
 
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="#" class="brand">
-        <div class="brand-mark">⌒</div>
-        <div class="brand-name">LOOM</div>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="home.html" aria-label="LOOM Home">
+        <div class="logo-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M13 4L9.5 20" stroke="#6B7883" stroke-width="2" stroke-linecap="round" />
+            <path d="M8.5 7.5c3-2 6-2 9 0" stroke="#DEA4AD" stroke-width="2" stroke-linecap="round" />
+            <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="#B56449" stroke-width="2"
+              stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="wordmark">LOOM</div>
       </a>
-      <nav class="nav-links">
-        <a href="user_account.html">Home</a>
-        <a href="second-use.html" class="active">Second-Use</a>
-        <a href="#">Brands</a>
-        <a href="#">Blogs</a>
-        <a href="#">About</a>
+
+      <nav>
+        <a href="home.html" class="active">Home</a>
+        <a href="Blog.html">Blog Page</a>
+        <a href="SecondUse.html">Second Hand</a>
+        <a href="user_account.html" id="profileLink" style="display:none;">Profile</a>
+        <a href="index.html" id="loginLink">Login / Register</a>
       </nav>
+
+      <div class="header-actions">
+        <button class="pill" id="authPill">Guest Mode</button>
+      </div>
     </div>
   </header>
 
@@ -399,7 +663,8 @@
         <hr class="divider">
 
         <p class="product-description">
-          Fitted wool cardigan with gold buttons. A timeless wardrobe staple in soft heather grey, pairs effortlessly with everything from tailored trousers to relaxed denim.
+          Fitted wool cardigan with gold buttons. A timeless wardrobe staple in soft heather grey, pairs effortlessly
+          with everything from tailored trousers to relaxed denim.
         </p>
 
         <div class="details-list">
@@ -443,35 +708,46 @@
   </main>
 
   <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <div class="footer-brand">LOOM</div>
-        <p>Curated second-use fashion for a softer, more conscious wardrobe.</p>
+    <div class="container footer-layout">
+
+      <div class="footer-left">
+        <div class="footer-brand">
+          <div class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 4L9.5 20" stroke="#6B7883" stroke-width="2" stroke-linecap="round" />
+              <path d="M8.5 7.5c3-2 6-2 9 0" stroke="#DEA4AD" stroke-width="2" stroke-linecap="round" />
+              <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="#B56449" stroke-width="2"
+                stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="wordmark">LOOM</div>
+        </div>
+
+        <div class="footer-about">
+          <h4>About LOOM</h4>
+          <p>
+            LOOM is a platform that helps users explore sustainable fashion brands,
+            learn more about responsible fashion, and support second-hand clothing.
+          </p>
+        </div>
       </div>
-      <div>
-        <h4>Explore</h4>
-        <ul>
-          <li><a href="#">Second-Use</a></li>
-          <li><a href="#">Saved Pieces</a></li>
-          <li><a href="#">My Listings</a></li>
-        </ul>
+
+      <div class="footer-right">
+        <div class="footer-info">
+          <h4>Contact</h4>
+          <p>teamloom@gmail.com</p>
+        </div>
+
+        <div class="footer-info">
+          <h4>Category</h4>
+          <p>Sustainable Fashion</p>
+        </div>
       </div>
-      <div>
-        <h4>Company</h4>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Sustainability</a></li>
-          <li><a href="#">Blog</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Connect</h4>
-        <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">Pinterest</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Team LOOM. All rights reserved.</p>
     </div>
   </footer>
 
@@ -482,7 +758,7 @@
     const savedBookmarks = JSON.parse(localStorage.getItem("loomBookmarks") || "[]");
 
     function isBookmarked() {
-      return savedBookmarks.some(function(b) { return b.id === ITEM_ID; });
+      return savedBookmarks.some(function (b) { return b.id === ITEM_ID; });
     }
 
     function updateBtn() {
@@ -495,9 +771,9 @@
       }
     }
 
-    saveBtn.addEventListener("click", function() {
+    saveBtn.addEventListener("click", function () {
       if (isBookmarked()) {
-        const idx = savedBookmarks.findIndex(function(b) { return b.id === ITEM_ID; });
+        const idx = savedBookmarks.findIndex(function (b) { return b.id === ITEM_ID; });
         if (idx !== -1) savedBookmarks.splice(idx, 1);
       } else {
         savedBookmarks.push({
@@ -515,6 +791,24 @@
     });
 
     updateBtn();
+
+    const loginLink = document.getElementById("loginLink");
+    const profileLink = document.getElementById("profileLink");
+    const authPill = document.getElementById("authPill");
+
+    const savedUser = localStorage.getItem("loomLoggedInUser");
+
+    if (savedUser) {
+      if (loginLink) loginLink.style.display = "none";
+      if (profileLink) profileLink.style.display = "inline-block";
+      if (authPill) authPill.textContent = savedUser;
+    } else {
+      if (loginLink) loginLink.style.display = "inline-block";
+      if (profileLink) profileLink.style.display = "none";
+      if (authPill) authPill.textContent = "Guest Mode";
+    }
+
   </script>
 </body>
+
 </html>
