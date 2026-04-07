@@ -447,6 +447,21 @@
         grid-template-columns: 1fr;
       }
     }
+    .admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* المسافة بينهم */
+}
+
+.user-name {
+  background: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+}
+
+.logout {
+  background: linear-gradient(135deg, #d7a89a, #b98272);
+  color: white;
+}
   </style>
 </head>
 
@@ -466,18 +481,18 @@
         <div class="wordmark">LOOM</div>
       </a>
 
-      <nav>
-        <a href="index.html" class="active">Home</a>
-        <a href="Brand.html">Brands</a>
-        <a href="Blog.html">Blogs</a>
-        <a href="SecondUse.html">Second Hand</a>
-        <a href="user_account.html" id="profileLink" style="display:none;">Profile</a>
-        <a href="register.html" id="loginLink">Login / Register</a>
-      </nav>
+      
+<nav>
+  <a href="admin-dashboard.html" class="active">Admin</a>
+  <a href="Blog.html">Blog</a>
+</nav>
 
-      <div class="header-actions">
-        <button class="pill" id="authPill">Guest Mode</button>
-      </div>
+
+
+      <div class="header-actions admin-actions">
+  <span class="pill user-name" id="authPill">Admin</span>
+  <button class="pill logout" id="logoutBtn">Logout</button>
+</div>
     </div>
   </header>
 
@@ -624,20 +639,23 @@
       dateInput.value = today;
     });
 
-    const loginLink = document.getElementById("loginLink");
-    const profileLink = document.getElementById("profileLink");
     const authPill = document.getElementById("authPill");
-    const savedUser = localStorage.getItem("loomLoggedInUser");
+const logoutBtn = document.getElementById("logoutBtn");
 
-    if (savedUser) {
-      if (loginLink) loginLink.style.display = "none";
-      if (profileLink) profileLink.style.display = "inline-block";
-      if (authPill) authPill.textContent = savedUser;
-    } else {
-      if (loginLink) loginLink.style.display = "inline-block";
-      if (profileLink) profileLink.style.display = "none";
-      if (authPill) authPill.textContent = "Guest Mode";
-    }
+const savedUser = localStorage.getItem("loomLoggedInUser");
+
+
+
+// تسجيل الخروج
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("loomLoggedInUser");
+  localStorage.removeItem("loomUserEmail");
+  window.location.href = "index.html";
+});
+
+    
+  
+
   </script>
 
 </body>
