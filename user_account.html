@@ -64,7 +64,6 @@
       padding: 20px 20px 40px;
     }
 
-    /* Header */
     .header {
       position: sticky;
       top: 0;
@@ -160,7 +159,6 @@
       color: #434543;
     }
 
-    /* Account Page */
     .account-head {
       padding: 42px 0 18px;
       text-align: center;
@@ -444,16 +442,16 @@
       font-size: 0.92rem;
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(53, 48, 45, 0.34);
       display: none;
-      align-items: center;
       justify-content: center;
-      padding: 20px;
-      z-index: 50;
+      align-items: flex-start;
+      padding: 100px 20px 20px;
+      z-index: 1000;
+      overflow-y: auto;
     }
 
     .modal-overlay.show {
@@ -509,8 +507,7 @@
     }
 
     .form-input,
-    .form-textarea,
-    .form-select {
+    .form-textarea {
       width: 100%;
       border: 1px solid #eadad4;
       background: #fffefd;
@@ -528,8 +525,7 @@
     }
 
     .form-input:focus,
-    .form-textarea:focus,
-    .form-select:focus {
+    .form-textarea:focus {
       border-color: var(--dusty-blush);
       box-shadow: 0 0 0 4px rgba(222, 164, 173, 0.13);
     }
@@ -583,7 +579,6 @@
       background: #efdfd9;
     }
 
-    /* Footer */
     .footer {
       margin-top: 16px;
       padding: 38px 0 0;
@@ -776,7 +771,7 @@
 
       <nav>
         <a href="index.html">Home</a>
-        <a href="Brand.html">Brands</a>
+        <a href="brands.html">Brands</a>
         <a href="Blog.html">Blogs</a>
         <a href="SecondUse.html">Second Hand</a>
         <a href="user_account.html" id="profileLink" style="display:none;" class="active">Profile</a>
@@ -954,43 +949,48 @@
     const profileEmail = document.getElementById("profileEmail");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    function getListingCardData(card) {
-      return {
-        id: card.dataset.id,
-        title: card.querySelector(".card-title").textContent,
-        description: card.querySelector(".card-description").textContent.trim(),
-        price: card.querySelector(".card-price").textContent,
-        contact: card.querySelector(".contact-pill").textContent,
-        image: card.querySelector(".card-image").getAttribute("src"),
-        alt: card.querySelector(".card-image").getAttribute("alt") || card.querySelector(".card-title").textContent
-      };
+    const savedName = localStorage.getItem("loomLoggedInUser");
+    const savedEmail = localStorage.getItem("loomUserEmail");
+
+    function getBookmarkStorageKey() {
+      if (!savedName) return null;
+      return "loomBookmarks_" + savedName;
     }
 
-    function saveListingsToStorage() {
-      const listingCards = document.querySelectorAll(".listing-card");
-      const listingsData = [];
+    function getStoredBookmarks() {
+      const key = getBookmarkStorageKey();
+      if (!key) return [];
+      return JSON.parse(localStorage.getItem(key) || "[]");
+    }
 
-      listingCards.forEach(function (card) {
-        listingsData.push(getListingCardData(card));
-      });
+    function saveBookmarksToStorage(bookmarks) {
+      const key = getBookmarkStorageKey();
+      if (!key) return;
+      localStorage.setItem(key, JSON.stringify(bookmarks));
+    }
 
-      localStorage.setItem("loomListings", JSON.stringify(listingsData));
+    function getStoredListings() {
+      return JSON.parse(localStorage.getItem("loomListings") || "[]");
+    }
+
+    function saveListingsToStorage(listings) {
+      localStorage.setItem("loomListings", JSON.stringify(listings));
     }
 
     function createListingCardHTML(item) {
       return `
         <article class="fashion-card listing-card" data-id="${item.id}">
           <div class="card-image-wrap">
-            <img class="card-image" src="${item.image}" alt="${item.alt}">
+            <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
             <div class="card-action-icons">
-              <button class="icon-btn edit-btn" title="Edit listing" aria-label="Edit listing">✎</button>
-              <button class="icon-btn delete-btn" title="Delete listing" aria-label="Delete listing">🗑</button>
+              <button class="icon-btn edit-btn" title="Edit listing" aria-label="Edit listing" type="button">✎</button>
+              <button class="icon-btn delete-btn" title="Delete listing" aria-label="Delete listing" type="button">🗑</button>
             </div>
           </div>
           <div class="card-body">
             <div class="title-price-row">
               <h4 class="card-title">${item.title}</h4>
-              <div class="card-price">${item.price}</div>
+              <div class="card-price">⃁${String(item.price).replace("⃁", "")}</div>
             </div>
             <p class="card-description">${item.description}</p>
             <div class="contact-pill">${item.contact}</div>
@@ -1006,7 +1006,7 @@
           <div class="card-image-wrap">
             <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
             <div class="card-action-icons">
-              <button class="icon-btn bookmark-btn active" onclick="removeSpecificBookmark(${index})" title="Remove from saved" aria-label="Remove from saved">
+              <button class="icon-btn bookmark-btn active" onclick="removeSpecificBookmark(${index})" title="Remove from saved" aria-label="Remove from saved" type="button">
                 <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
                 </svg>
@@ -1026,64 +1026,8 @@
       `;
     }
 
-    function loadListingsFromStorage() {
-      const savedListings = localStorage.getItem("loomListings");
-
-      if (!savedListings) {
-        const defaultListings = [
-          {
-            id: "listing-1",
-            title: "Beige Wool Coat",
-            description: "Tailored wool coat in excellent condition with a relaxed fit.",
-            price: "⃁110",
-            contact: "sara@gmail.com",
-            image: "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=900&q=80",
-            alt: "Beige Wool Coat"
-          },
-          {
-            id: "listing-2",
-            title: "Blush Wrap Cardigan",
-            description: "Soft textured cardigan in a dusty blush tone, lightly worn.",
-            price: "⃁47",
-            contact: "+96650599999",
-            image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80",
-            alt: "Blush Wrap Cardigan"
-          },
-          {
-            id: "listing-3",
-            title: "Forest Midi Dress",
-            description: "Flowing midi dress in muted green with a flattering cut.",
-            price: "⃁72",
-            contact: "sara@gmail.com",
-            image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
-            alt: "Forest Midi Dress"
-          }
-        ];
-        localStorage.setItem("loomListings", JSON.stringify(defaultListings));
-      }
-
-      const listingsData = JSON.parse(localStorage.getItem("loomListings")) || [];
-
-      if (listingsData.length === 0) {
-        listingsGrid.innerHTML = `
-          <div class="empty-state">
-            <h4>You haven’t listed any pieces yet.</h4>
-            <p>Add your first listing to start selling on LOOM.</p>
-          </div>
-        `;
-        return;
-      }
-
-      let html = "";
-      listingsData.forEach(function (item) {
-        html += createListingCardHTML(item);
-      });
-
-      listingsGrid.innerHTML = html;
-    }
-
     function loadBookmarksFromStorage() {
-      const savedBookmarks = JSON.parse(localStorage.getItem("loomBookmarks") || "[]");
+      const savedBookmarks = getStoredBookmarks();
 
       if (savedBookmarks.length === 0) {
         bookmarksGrid.innerHTML = `
@@ -1103,21 +1047,74 @@
       bookmarksGrid.innerHTML = html;
     }
 
+    function loadListingsFromStorage() {
+      const allListings = getStoredListings();
+      const myListings = allListings.filter(function (item) {
+        return item.owner === savedName;
+      });
+
+      if (myListings.length === 0) {
+        listingsGrid.innerHTML = `
+          <div class="empty-state">
+            <h4>You haven’t listed any pieces yet.</h4>
+            <p>Add your first listing in Second-Use to start selling on LOOM.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = "";
+      myListings.forEach(function (item) {
+        html += createListingCardHTML(item);
+      });
+
+      listingsGrid.innerHTML = html;
+    }
+
     function removeSpecificBookmark(index) {
-      let bookmarks = JSON.parse(localStorage.getItem("loomBookmarks") || "[]");
+      let bookmarks = getStoredBookmarks();
       bookmarks.splice(index, 1);
-      localStorage.setItem("loomBookmarks", JSON.stringify(bookmarks));
+      saveBookmarksToStorage(bookmarks);
       loadBookmarksFromStorage();
     }
 
     window.removeSpecificBookmark = removeSpecificBookmark;
+
+    function syncBookmarkWithListing(updatedListing) {
+      let bookmarks = getStoredBookmarks();
+
+      bookmarks = bookmarks.map(function (bookmark) {
+        if (bookmark.id === updatedListing.id) {
+          return {
+            ...bookmark,
+            title: updatedListing.title,
+            description: updatedListing.description,
+            price: "⃁" + String(updatedListing.price).replace("⃁", ""),
+            contact: updatedListing.contact,
+            image: updatedListing.image,
+            alt: updatedListing.alt || updatedListing.title
+          };
+        }
+        return bookmark;
+      });
+
+      saveBookmarksToStorage(bookmarks);
+    }
+
+    function removeDeletedListingFromBookmarks(listingId) {
+      let bookmarks = getStoredBookmarks();
+      bookmarks = bookmarks.filter(function (bookmark) {
+        return bookmark.id !== listingId;
+      });
+      saveBookmarksToStorage(bookmarks);
+    }
 
     function openEditModal(card) {
       currentCardForEdit = card;
 
       const title = card.querySelector(".card-title").textContent;
       const description = card.querySelector(".card-description").textContent.trim();
-      const price = card.querySelector(".card-price").textContent.replace("⃁", "");
+      const price = card.querySelector(".card-price").textContent.replace("⃁", "").trim();
       const contact = card.querySelector(".contact-pill").textContent;
 
       editTitleInput.value = title;
@@ -1136,40 +1133,98 @@
     }
 
     function saveEditChanges() {
-      if (!currentCardForEdit) return;
+  if (!currentCardForEdit) return;
 
-      const newTitle = editTitleInput.value.trim();
-      const newDescription = editDescriptionInput.value.trim();
-      const newPrice = editPriceInput.value.trim();
-      const newContact = editContactInput.value.trim();
-      const selectedFile = editImageInput.files[0];
+  const newTitle = editTitleInput.value.trim();
+  const newDescription = editDescriptionInput.value.trim();
+  const newPrice = editPriceInput.value.trim();
+  const newContact = editContactInput.value.trim();
+  const selectedFile = editImageInput.files[0];
 
-      if (newTitle === "" || newDescription === "" || newPrice === "" || newContact === "") {
-        alert("Please fill in all required fields.");
-        return;
-      }
+  if (!newTitle || !newDescription || !newPrice || !newContact) {
+    alert("Please fill in all required fields.");
+    return;
+  }
 
-      currentCardForEdit.querySelector(".card-title").textContent = newTitle;
-      currentCardForEdit.querySelector(".card-description").textContent = newDescription;
-      currentCardForEdit.querySelector(".card-price").textContent = "⃁" + newPrice;
-      currentCardForEdit.querySelector(".contact-pill").textContent = newContact;
-      currentCardForEdit.querySelector(".card-image").alt = newTitle;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\+?[0-9\s-]{7,20}$/;
 
-      if (selectedFile) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          currentCardForEdit.querySelector(".card-image").src = event.target.result;
-          saveListingsToStorage();
-          closeEditModal();
-          addCardButtonEvents();
-        };
-        reader.readAsDataURL(selectedFile);
-      } else {
-        saveListingsToStorage();
-        closeEditModal();
-        addCardButtonEvents();
-      }
+  if (!emailRegex.test(newContact) && !phoneRegex.test(newContact)) {
+    alert("Contact must be a valid email or phone number.");
+    return;
+  }
+
+  const priceNum = Number(newPrice);
+  if (isNaN(priceNum) || priceNum <= 0) {
+    alert("Price must be a positive number.");
+    return;
+  }
+
+  const maxFileSize = 1024 * 1024 * 1.5; // 1.5 MB
+  if (selectedFile && selectedFile.size > maxFileSize) {
+    alert("Image is too large. Please upload an image smaller than 1.5 MB.");
+    return;
+  }
+
+  const allListings = getStoredListings();
+  const listingId = currentCardForEdit.dataset.id;
+  const listingIndex = allListings.findIndex(function (item) {
+    return item.id === listingId && item.owner === savedName;
+  });
+
+  if (listingIndex === -1) return;
+
+  saveEditBtn.disabled = true;
+  saveEditBtn.textContent = "Saving...";
+
+  function resetEditButton() {
+    saveEditBtn.disabled = false;
+    saveEditBtn.textContent = "Save Changes";
+  }
+
+  function finishUpdate(newImageSrc) {
+    try {
+      allListings[listingIndex] = {
+        ...allListings[listingIndex],
+        title: newTitle,
+        description: newDescription,
+        price: newPrice,
+        contact: newContact,
+        alt: newTitle,
+        image: newImageSrc || allListings[listingIndex].image
+      };
+
+      saveListingsToStorage(allListings);
+      syncBookmarkWithListing(allListings[listingIndex]);
+      loadListingsFromStorage();
+      loadBookmarksFromStorage();
+      addCardButtonEvents();
+      closeEditModal();
+    } catch (error) {
+      console.error("Failed to update listing:", error);
+      alert("Could not save changes. The image may be too large or storage is full.");
+    } finally {
+      resetEditButton();
     }
+  }
+
+  if (selectedFile) {
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+      finishUpdate(event.target.result);
+    };
+
+    reader.onerror = function () {
+      alert("Could not read the selected image.");
+      resetEditButton();
+    };
+
+    reader.readAsDataURL(selectedFile);
+  } else {
+    finishUpdate();
+  }
+}
 
     function openDeleteModal(card) {
       currentCardForDelete = card;
@@ -1184,30 +1239,19 @@
     function deleteListingCard() {
       if (!currentCardForDelete) return;
 
-      currentCardForDelete.style.transition = "0.3s ease";
-      currentCardForDelete.style.opacity = "0";
-      currentCardForDelete.style.transform = "scale(0.96)";
+      const listingId = currentCardForDelete.dataset.id;
+      let allListings = getStoredListings();
 
-      setTimeout(function () {
-        currentCardForDelete.remove();
-        saveListingsToStorage();
-        closeDeleteModal();
-        checkListingsEmptyState();
-        addCardButtonEvents();
-      }, 260);
-    }
+      allListings = allListings.filter(function (item) {
+        return !(item.id === listingId && item.owner === savedName);
+      });
 
-    function checkListingsEmptyState() {
-      const listingCards = listingsGrid.querySelectorAll(".listing-card");
-      if (listingCards.length === 0) {
-        listingsGrid.innerHTML = `
-          <div class="empty-state">
-            <h4>You haven’t listed any pieces yet.</h4>
-            <p>Add your first listing to start selling on LOOM.</p>
-          </div>
-        `;
-        localStorage.setItem("loomListings", JSON.stringify([]));
-      }
+      saveListingsToStorage(allListings);
+      removeDeletedListingFromBookmarks(listingId);
+      loadListingsFromStorage();
+      loadBookmarksFromStorage();
+      addCardButtonEvents();
+      closeDeleteModal();
     }
 
     function addCardButtonEvents() {
@@ -1241,9 +1285,6 @@
     deleteModal.addEventListener("click", function (event) {
       if (event.target === deleteModal) closeDeleteModal();
     });
-
-    const savedName = localStorage.getItem("loomLoggedInUser");
-    const savedEmail = localStorage.getItem("loomUserEmail");
 
     if (!savedName) {
       window.location.href = "index.html";

@@ -64,7 +64,6 @@
       padding: 20px 20px 40px;
     }
 
-    /* Header */
     .header {
       position: sticky;
       top: 0;
@@ -160,7 +159,6 @@
       color: #434543;
     }
 
-    /* Page Content */
     .page-head {
       padding: 42px 0 28px;
       display: flex;
@@ -324,16 +322,16 @@
       border-top: 1px solid #eee3de;
     }
 
-    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(53, 48, 45, 0.34);
       display: none;
-      align-items: center;
       justify-content: center;
-      padding: 20px;
-      z-index: 50;
+      align-items: flex-start;
+      padding: 100px 20px 20px;
+      z-index: 1000;
+      overflow-y: auto;
     }
 
     .modal-overlay.show {
@@ -349,7 +347,7 @@
       box-shadow: 0 20px 50px rgba(67, 69, 67, 0.14);
       padding: 24px;
       animation: popIn 0.22s ease;
-      max-height: 90vh;
+      max-height: calc(100vh - 120px);
       overflow-y: auto;
     }
 
@@ -452,7 +450,6 @@
       transform: translateY(-1px);
     }
 
-    /* Footer */
     .footer {
       margin-top: 16px;
       padding: 38px 0 0;
@@ -482,15 +479,6 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 18px;
-    }
-
-    .footer-about h4,
-    .footer-info h4 {
-      margin: 0 0 8px;
-      font-family: Inter, sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: #6f5d5d;
     }
 
     .footer-about h4,
@@ -633,143 +621,7 @@
       <button class="add-listing-btn" id="openAddListingBtn">+ Add Listing</button>
     </div>
 
-    <div class="card-grid" id="secondUseGrid">
-
-      <article class="fashion-card" data-id="item-1">
-        <a href="Productdetail.html" style="text-decoration:none;color:inherit;display:block;">
-          <div class="card-image-wrap">
-            <img class="card-image" src="images/photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٢.jpg" alt="Grey Wool Cardigan">
-            <div class="card-action-icons">
-              <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-                <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </a>
-        <div class="card-body">
-          <div class="title-price-row">
-            <h4 class="card-title">Grey Wool Cardigan</h4>
-            <div class="card-price">⃁85</div>
-          </div>
-          <p class="card-description">Fitted wool cardigan with gold buttons, worn twice.</p>
-          <div class="contact-pill">layla@gmail.com</div>
-          <div class="card-bottom-line"></div>
-        </div>
-      </article>
-
-      <article class="fashion-card" data-id="item-2">
-        <div class="card-image-wrap">
-          <img class="card-image" src="images/photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٣ (2).jpg" alt="Striped Bow-Back Dress">
-          <div class="card-action-icons">
-            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="title-price-row">
-            <h4 class="card-title">Striped Bow-Back Dress</h4>
-            <div class="card-price">⃁120</div>
-          </div>
-          <p class="card-description">Statement maxi dress with open back and oversized bow detail.</p>
-          <div class="contact-pill">+966 501234567</div>
-          <div class="card-bottom-line"></div>
-        </div>
-      </article>
-
-      <article class="fashion-card" data-id="item-3">
-        <div class="card-image-wrap">
-          <img class="card-image" src="images/Draped Green Top.jpg" alt="Draped Green Top">
-          <div class="card-action-icons">
-            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="title-price-row">
-            <h4 class="card-title">Draped Green Top</h4>
-            <div class="card-price">⃁55</div>
-          </div>
-          <p class="card-description">Asymmetric draped top in soft sage green with a gathered detail.</p>
-          <div class="contact-pill">noor@gmail.com</div>
-          <div class="card-bottom-line"></div>
-        </div>
-      </article>
-
-      <article class="fashion-card" data-id="item-4">
-        <div class="card-image-wrap">
-          <img class="card-image" src="images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥ (2).jpg" alt="Ivory Rose Top">
-          <div class="card-action-icons">
-            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="title-price-row">
-            <h4 class="card-title">Ivory Rose Top</h4>
-            <div class="card-price">⃁65</div>
-          </div>
-          <p class="card-description">Soft ivory top with a fabric rose accent, lightweight and barely worn.</p>
-          <div class="contact-pill">+966 509876543</div>
-          <div class="card-bottom-line"></div>
-        </div>
-      </article>
-
-      <article class="fashion-card" data-id="item-5">
-        <div class="card-image-wrap">
-          <img class="card-image" src="images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥.jpg" alt="Polka Dot Midi Skirt">
-          <div class="card-action-icons">
-            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="title-price-row">
-            <h4 class="card-title">Polka Dot Midi Skirt</h4>
-            <div class="card-price">⃁75</div>
-          </div>
-          <p class="card-description">Flowy midi skirt in cream with black polka dots, elastic waist.</p>
-          <div class="contact-pill">sara@gmail.com</div>
-          <div class="card-bottom-line"></div>
-        </div>
-      </article>
-
-      <article class="fashion-card" data-id="item-6">
-        <div class="card-image-wrap">
-          <img class="card-image" src="images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٨-٥٧.jpg" alt="Wide-Leg Linen Trousers">
-          <div class="card-action-icons">
-            <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-              <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="title-price-row">
-            <h4 class="card-title">Wide-Leg Linen Trousers</h4>
-            <div class="card-price">⃁90</div>
-          </div>
-          <p class="card-description">Relaxed wide-leg trousers in charcoal grey with a tie waist.</p>
-          <div class="contact-pill">+966 556789012</div>
-          <div class="card-bottom-line"></div>
-        </div>
-      </article>
-
-    </div>
+    <div class="card-grid" id="secondUseGrid"></div>
   </main>
 
   <footer class="footer">
@@ -853,143 +705,114 @@
   </div>
 
   <script>
-    const addListingModal = document.getElementById("addListingModal");
-    const openAddListingBtn = document.getElementById("openAddListingBtn");
-    const cancelAddBtn = document.getElementById("cancelAddBtn");
-    const confirmAddBtn = document.getElementById("confirmAddBtn");
-    const secondUseGrid = document.getElementById("secondUseGrid");
+   
+  const addListingModal = document.getElementById("addListingModal");
+  const openAddListingBtn = document.getElementById("openAddListingBtn");
+  const cancelAddBtn = document.getElementById("cancelAddBtn");
+  const confirmAddBtn = document.getElementById("confirmAddBtn");
+  const secondUseGrid = document.getElementById("secondUseGrid");
 
-    let itemCounter = 100;
+  const loginLink = document.getElementById("loginLink");
+  const profileLink = document.getElementById("profileLink");
+  const authPill = document.getElementById("authPill");
 
-    function getStoredBookmarks() {
-      return JSON.parse(localStorage.getItem("loomBookmarks")) || [];
+  const savedUser = localStorage.getItem("loomLoggedInUser");
+  const isLoggedIn = !!savedUser;
+
+  const DEFAULT_SECOND_USE_ITEMS = [
+    {
+      id: "item-1",
+      owner: "system",
+      title: "Grey Wool Cardigan",
+      description: "Fitted wool cardigan with gold buttons, worn twice.",
+      price: "85",
+      contact: "layla@gmail.com",
+      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٢.jpg",
+      alt: "Grey Wool Cardigan"
+    },
+    {
+      id: "item-2",
+      owner: "system",
+      title: "Striped Bow-Back Dress",
+      description: "Statement maxi dress with open back and oversized bow detail.",
+      price: "120",
+      contact: "+966 501234567",
+      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٣ (2).jpg",
+      alt: "Striped Bow-Back Dress"
+    },
+    {
+      id: "item-3",
+      owner: "system",
+      title: "Draped Green Top",
+      description: "Asymmetric draped top in soft sage green with a gathered detail.",
+      price: "55",
+      contact: "noor@gmail.com",
+      image: "images/Draped Green Top.jpg",
+      alt: "Draped Green Top"
+    },
+    {
+      id: "item-4",
+      owner: "system",
+      title: "Ivory Rose Top",
+      description: "Soft ivory top with a fabric rose accent, lightweight and barely worn.",
+      price: "65",
+      contact: "+966 509876543",
+      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥ (2).jpg",
+      alt: "Ivory Rose Top"
+    },
+    {
+      id: "item-5",
+      owner: "system",
+      title: "Polka Dot Midi Skirt",
+      description: "Flowy midi skirt in cream with black polka dots, elastic waist.",
+      price: "75",
+      contact: "sara@gmail.com",
+      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥.jpg",
+      alt: "Polka Dot Midi Skirt"
+    },
+    {
+      id: "item-6",
+      owner: "system",
+      title: "Wide-Leg Linen Trousers",
+      description: "Relaxed wide-leg trousers in charcoal grey with a tie waist.",
+      price: "90",
+      contact: "+966 556789012",
+      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٨-٥٧.jpg",
+      alt: "Wide-Leg Linen Trousers"
     }
+  ];
 
-    function saveBookmarksToStorage(bookmarks) {
-      localStorage.setItem("loomBookmarks", JSON.stringify(bookmarks));
-    }
+  function getBookmarkStorageKey() {
+    if (!savedUser) return null;
+    return "loomBookmarks_" + savedUser;
+  }
 
-    function handleBookmarkClick(btn) {
-      if (!isLoggedIn) {
-        alert("Please log in first to bookmark items.");
-        window.location.href = "register.html";
-        return;
-      }
+  function getStoredBookmarks() {
+    const key = getBookmarkStorageKey();
+    if (!key) return [];
+    return JSON.parse(localStorage.getItem(key) || "[]");
+  }
 
-      const card = btn.closest(".fashion-card");
-      const isActive = btn.classList.contains("active");
-      let saved = getStoredBookmarks();
+  function saveBookmarksToStorage(bookmarks) {
+    const key = getBookmarkStorageKey();
+    if (!key) return;
+    localStorage.setItem(key, JSON.stringify(bookmarks));
+  }
 
-      if (isActive) {
-        btn.classList.remove("active");
-        saved = saved.filter(item => item.id !== card.dataset.id);
-      } else {
-        btn.classList.add("active");
-        saved.push({
-          id: card.dataset.id,
-          title: card.querySelector(".card-title").innerText,
-          description: card.querySelector(".card-description").innerText.trim(),
-          price: card.querySelector(".card-price").innerText,
-          contact: card.querySelector(".contact-pill").innerText,
-          image: card.querySelector(".card-image").src,
-          alt: card.querySelector(".card-image").alt || card.querySelector(".card-title").innerText
-        });
-      }
+  function getStoredListings() {
+    return JSON.parse(localStorage.getItem("loomListings") || "[]");
+  }
 
-      saveBookmarksToStorage(saved);
-    }
-    function attachBookmarkEvents() {
-      document.querySelectorAll(".bookmark-btn").forEach(function (btn) {
-        btn.onclick = function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          handleBookmarkClick(btn);
-        };
-      });
-    }
+  function saveListingsToStorage(listings) {
+    localStorage.setItem("loomListings", JSON.stringify(listings));
+  }
 
-    function markSavedItems() {
-      const ids = getStoredBookmarks().map(function (b) { return b.id; });
-      document.querySelectorAll(".fashion-card").forEach(function (card) {
-        if (ids.includes(card.dataset.id)) {
-          const btn = card.querySelector(".bookmark-btn");
-          if (btn) btn.classList.add("active");
-        }
-      });
-    }
-
-    openAddListingBtn.addEventListener("click", function () {
-      if (!isLoggedIn) {
-        alert("Please log in first to create a listing.");
-        window.location.href = "register.html";
-        return;
-      }
-
-      addListingModal.classList.add("show");
-    });
-
-    cancelAddBtn.addEventListener("click", function () {
-      addListingModal.classList.remove("show");
-      clearAddForm();
-    });
-
-    addListingModal.addEventListener("click", function (e) {
-      if (e.target === addListingModal) {
-        addListingModal.classList.remove("show");
-        clearAddForm();
-      }
-    });
-
-    function clearAddForm() {
-      document.getElementById("addTitle").value = "";
-      document.getElementById("addDescription").value = "";
-      document.getElementById("addPrice").value = "";
-      document.getElementById("addContact").value = "";
-      document.getElementById("addImage").value = "";
-    }
-
-    confirmAddBtn.addEventListener("click", function () {
-      if (!isLoggedIn) {
-        alert("Please log in first to create a listing.");
-        window.location.href = "register.html";
-        return;
-      }
-
-      const title = document.getElementById("addTitle").value.trim();
-      const description = document.getElementById("addDescription").value.trim();
-      const price = document.getElementById("addPrice").value.trim();
-      const contact = document.getElementById("addContact").value.trim();
-      const file = document.getElementById("addImage").files[0];
-
-      if (!title || !description || !price || !contact || !file) {
-        alert("Please fill in all required fields.");
-        return;
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const phoneRegex = /^\+?[0-9]{7,15}$/;
-
-      if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
-        alert("Contact must be a valid email or phone number.");
-        return;
-      }
-
-      const priceNum = Number(price);
-      if (isNaN(priceNum) || priceNum <= 0) {
-        alert("Price must be a positive number.");
-        return;
-      }
-
-      function createCard(imgSrc) {
-        itemCounter++;
-        const id = "item-" + itemCounter;
-        const article = document.createElement("article");
-        article.className = "fashion-card";
-        article.dataset.id = id;
-
-        article.innerHTML = `
+  function createCardHTML(item) {
+    return `
+      <article class="fashion-card" data-id="${item.id}">
+        <a href="Productdetail.html" style="text-decoration:none;color:inherit;display:block;">
           <div class="card-image-wrap">
-            <img class="card-image" src="${imgSrc}" alt="${title}" style="height:280px;object-fit:cover;">
+            <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
             <div class="card-action-icons">
               <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
                 <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
@@ -998,60 +821,237 @@
               </button>
             </div>
           </div>
-          <div class="card-body">
-            <div class="title-price-row">
-              <h4 class="card-title">${title}</h4>
-              <div class="card-price">⃁${price}</div>
-            </div>
-            <p class="card-description">${description}</p>
-            <div class="contact-pill">${contact}</div>
-            <div class="card-bottom-line"></div>
+        </a>
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">${item.title}</h4>
+            <div class="card-price">⃁${String(item.price).replace("⃁", "")}</div>
           </div>
-        `;
+          <p class="card-description">${item.description}</p>
+          <div class="contact-pill">${item.contact}</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>
+    `;
+  }
 
-        article.style.opacity = "0";
-        article.style.transform = "scale(0.96)";
-        secondUseGrid.prepend(article);
+  function renderSecondUsePage() {
+    const userListings = getStoredListings();
+    const allItems = [...userListings, ...DEFAULT_SECOND_USE_ITEMS];
+    secondUseGrid.innerHTML = allItems.map(createCardHTML).join("");
+    attachBookmarkEvents();
+    markSavedItems();
+  }
 
-        requestAnimationFrame(function () {
-          article.style.transition = "0.3s ease";
-          article.style.opacity = "1";
-          article.style.transform = "scale(1)";
-        });
+  function getNextListingId() {
+    const listings = getStoredListings();
+    let max = 0;
 
-        attachBookmarkEvents();
-        addListingModal.classList.remove("show");
-        clearAddForm();
+    listings.forEach(function (item) {
+      const match = String(item.id).match(/^user-item-(\d+)$/);
+      if (match) {
+        const num = Number(match[1]);
+        if (num > max) max = num;
       }
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        createCard(e.target.result);
-      };
-      reader.readAsDataURL(file);
     });
 
-    markSavedItems();
-    attachBookmarkEvents();
+    return "user-item-" + (max + 1);
+  }
 
-    const loginLink = document.getElementById("loginLink");
-    const profileLink = document.getElementById("profileLink");
-    const authPill = document.getElementById("authPill");
-    const savedUser = localStorage.getItem("loomLoggedInUser");
-    const isLoggedIn = !!savedUser;
-
-    if (savedUser) {
-      if (loginLink) loginLink.style.display = "none";
-      if (profileLink) profileLink.style.display = "inline-block";
-      if (authPill) authPill.textContent = savedUser;
-    } else {
-      if (loginLink) loginLink.style.display = "inline-block";
-      if (profileLink) profileLink.style.display = "none";
-      if (authPill) authPill.textContent = "Guest Mode";
-    }
+  function handleBookmarkClick(btn) {
     if (!isLoggedIn) {
-      openAddListingBtn.textContent = "Login to Add Listing";
+      alert("Please log in first to bookmark items.");
+      window.location.href = "register.html";
+      return;
     }
+
+    const card = btn.closest(".fashion-card");
+    const isActive = btn.classList.contains("active");
+    let saved = getStoredBookmarks();
+
+    if (isActive) {
+      btn.classList.remove("active");
+      saved = saved.filter(function (item) {
+        return item.id !== card.dataset.id;
+      });
+    } else {
+      btn.classList.add("active");
+      saved.push({
+        id: card.dataset.id,
+        title: card.querySelector(".card-title").innerText,
+        description: card.querySelector(".card-description").innerText.trim(),
+        price: card.querySelector(".card-price").innerText,
+        contact: card.querySelector(".contact-pill").innerText,
+        image: card.querySelector(".card-image").src,
+        alt: card.querySelector(".card-image").alt || card.querySelector(".card-title").innerText
+      });
+    }
+
+    saveBookmarksToStorage(saved);
+  }
+
+  function attachBookmarkEvents() {
+    document.querySelectorAll(".bookmark-btn").forEach(function (btn) {
+      btn.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleBookmarkClick(btn);
+      };
+    });
+  }
+
+  function markSavedItems() {
+    const ids = getStoredBookmarks().map(function (b) {
+      return b.id;
+    });
+
+    document.querySelectorAll(".fashion-card").forEach(function (card) {
+      const btn = card.querySelector(".bookmark-btn");
+      if (!btn) return;
+
+      if (ids.includes(card.dataset.id)) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  }
+
+  openAddListingBtn.addEventListener("click", function () {
+    if (!isLoggedIn) {
+      alert("Please log in first to create a listing.");
+      window.location.href = "register.html";
+      return;
+    }
+
+    addListingModal.classList.add("show");
+  });
+
+  cancelAddBtn.addEventListener("click", function () {
+    addListingModal.classList.remove("show");
+    clearAddForm();
+    resetAddButton();
+  });
+
+  addListingModal.addEventListener("click", function (e) {
+    if (e.target === addListingModal) {
+      addListingModal.classList.remove("show");
+      clearAddForm();
+      resetAddButton();
+    }
+  });
+
+  function clearAddForm() {
+    document.getElementById("addTitle").value = "";
+    document.getElementById("addDescription").value = "";
+    document.getElementById("addPrice").value = "";
+    document.getElementById("addContact").value = "";
+    document.getElementById("addImage").value = "";
+  }
+
+  function resetAddButton() {
+    confirmAddBtn.disabled = false;
+    confirmAddBtn.textContent = "Add Listing";
+  }
+
+  confirmAddBtn.addEventListener("click", function () {
+    if (confirmAddBtn.disabled) return;
+
+    if (!isLoggedIn) {
+      alert("Please log in first to create a listing.");
+      window.location.href = "register.html";
+      return;
+    }
+
+    const title = document.getElementById("addTitle").value.trim();
+    const description = document.getElementById("addDescription").value.trim();
+    const price = document.getElementById("addPrice").value.trim();
+    const contact = document.getElementById("addContact").value.trim();
+    const file = document.getElementById("addImage").files[0];
+
+    if (!title || !description || !price || !contact || !file) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\+?[0-9\s-]{7,20}$/;
+
+    if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
+      alert("Contact must be a valid email or phone number.");
+      return;
+    }
+
+    const priceNum = Number(price);
+    if (isNaN(priceNum) || priceNum <= 0) {
+      alert("Price must be a positive number.");
+      return;
+    }
+
+    const maxFileSize = 1024 * 1024 * 1.5; // 1.5 MB
+    if (file.size > maxFileSize) {
+      alert("Image is too large. Please upload an image smaller than 1.5 MB.");
+      return;
+    }
+
+    confirmAddBtn.disabled = true;
+    confirmAddBtn.textContent = "Adding...";
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      try {
+        const listings = getStoredListings();
+
+        const newListing = {
+          id: getNextListingId(),
+          owner: savedUser,
+          title: title,
+          description: description,
+          price: price,
+          contact: contact,
+          image: e.target.result,
+          alt: title
+        };
+
+        listings.unshift(newListing);
+        saveListingsToStorage(listings);
+
+        renderSecondUsePage();
+        addListingModal.classList.remove("show");
+        clearAddForm();
+      } catch (error) {
+        console.error("Failed to save listing:", error);
+        alert("Could not save this listing. The image may be too large or storage is full. Please try a smaller image.");
+      } finally {
+        resetAddButton();
+      }
+    };
+
+    reader.onerror = function () {
+      alert("Could not read the selected image.");
+      resetAddButton();
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  if (savedUser) {
+    if (loginLink) loginLink.style.display = "none";
+    if (profileLink) profileLink.style.display = "inline-block";
+    if (authPill) authPill.textContent = savedUser;
+  } else {
+    if (loginLink) loginLink.style.display = "inline-block";
+    if (profileLink) profileLink.style.display = "none";
+    if (authPill) authPill.textContent = "Guest Mode";
+  }
+
+  if (!isLoggedIn) {
+    openAddListingBtn.textContent = "Login to Add Listing";
+  }
+
+  renderSecondUsePage();
+
   </script>
 </body>
 
