@@ -782,6 +782,18 @@
     }
   ];
 
+(function () {
+  let items = JSON.parse(localStorage.getItem("loomListings") || "[]");
+
+  items = items.filter(item =>
+    !["Beige Wool Coat", "Blush Wrap Cardigan", "Forest Midi Dress"]
+      .includes(item.title)
+  );
+
+  localStorage.setItem("loomListings", JSON.stringify(items));
+})
+
+();
   function getBookmarkStorageKey() {
     if (!savedUser) return null;
     return "loomBookmarks_" + savedUser;
