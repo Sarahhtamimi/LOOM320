@@ -1147,8 +1147,20 @@
     return;
   }
 
+  
+
+if (newTitle.length > 150) {
+    alert("title must be 150 characters or less.");
+    return;
+}
+
+
+if (newDescription.length > 500) {
+    alert("description must be 500 characters or less.");
+    return;
+}
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^(?:[0-9]{10}|\+[0-9]{12,15})$/;
+  const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
 
   if (!emailRegex.test(newContact) && !phoneRegex.test(newContact)) {
     alert("Contact must be a valid email or phone number.");
