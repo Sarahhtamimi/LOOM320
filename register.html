@@ -348,6 +348,34 @@
       font-weight: 700;
     }
 
+    .error-text {
+      display: block;
+      margin-top: 6px;
+      font-size: 13px;
+      color: #b3261e;
+      min-height: 18px;
+    }
+
+    .message {
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      min-height: 20px;
+    }
+
+    .message.success {
+      color: #2e7d32;
+    }
+
+    .message.error {
+      color: #b3261e;
+    }
+
+    input.invalid {
+      border: 1px solid #b3261e !important;
+      box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.10);
+    }
+
     @media (max-width: 980px) {
       nav {
         display: none;
@@ -427,8 +455,12 @@
     </div>
   </main>
 
-  <script>
 
+
+
+
+
+  <script>
     const signupForm = document.getElementById("signupForm");
     const fullNameInput = document.getElementById("fullName");
     const emailInput = document.getElementById("email");
@@ -439,13 +471,40 @@
     const passwordError = document.getElementById("passwordError");
     const formMessage = document.getElementById("formMessage");
 
-    signupForm.addEventListener("submit", function (e) {
-      e.preventDefault();
+    const submitButton = signupForm.querySelector(".submit-btn");
 
+    function clearErrors() {
       fullNameError.textContent = "";
       emailError.textContent = "";
       passwordError.textContent = "";
       formMessage.textContent = "";
+      formMessage.className = "message";
+
+      fullNameInput.classList.remove("invalid");
+      emailInput.classList.remove("invalid");
+      passwordInput.classList.remove("invalid");
+    }
+
+    function showFieldError(input, errorElement, message) {
+      errorElement.textContent = message;
+      input.classList.add("invalid");
+    }
+
+    function showFormMessage(message, type) {
+      formMessage.textContent = message;
+      formMessage.className = "message " + type;
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isValidPassword(password) {
+      return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password);
+    }
+
+    function validateSignupForm() {
+      clearErrors();
 
       const fullName = fullNameInput.value.trim();
       const email = emailInput.value.trim().toLowerCase();
@@ -454,174 +513,119 @@
       let isValid = true;
 
       if (fullName === "") {
-        fullNameError.textContent = "Please enter your name.";
+        showFieldError(fullNameInput, fullNameError, "Please enter your full name.");
+        isValid = false;
+      } else if (fullName.length < 3) {
+        showFieldError(fullNameInput, fullNameError, "Name must be at least 3 characters.");
         isValid = false;
       }
 
       if (email === "") {
-        emailError.textContent = "Please enter your email.";
+        showFieldError(emailInput, emailError, "Please enter your email.");
+        isValid = false;
+      } else if (!isValidEmail(email)) {
+        showFieldError(emailInput, emailError, "Please enter a valid email address.");
         isValid = false;
       }
 
       if (password === "") {
-        passwordError.textContent = "Please enter your password.";
+        showFieldError(passwordInput, passwordError, "Please enter your password.");
+        isValid = false;
+      } else if (!isValidPassword(password)) {
+        showFieldError(
+          passwordInput,
+          passwordError,
+          "Password must be at least 8 characters and include at least one letter and one number."
+        );
         isValid = false;
       }
 
-      if (!isValid) return;
+      if (!isValid) return null;
 
-      let users = JSON.parse(localStorage.getItem("loomUsers")) || [];
+      return {
+        fullName,
+        email,
+        password
+      };
+    }
 
-      const existingUser = users.find(user => user.email === email);
+    function getStoredUsers() {
+      return JSON.parse(localStorage.getItem("loomUsers")) || [];
+    }
 
-      if (existingUser) {
-        formMessage.textContent = "This email is already registered.";
+    function saveStoredUsers(users) {
+      localStorage.setItem("loomUsers", JSON.stringify(users));
+    }
+
+    signupForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const userData = validateSignupForm();
+      if (!userData) return;
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Creating...";
+
+      try {
+        const users = getStoredUsers();
+
+        const existingUser = users.find(
+          user => user.email.toLowerCase() === userData.email.toLowerCase()
+        );
+
+        if (existingUser) {
+          showFieldError(emailInput, emailError, "This email is already registered.");
+          showFormMessage("Registration failed. This email already exists.", "error");
+          submitButton.disabled = false;
+          submitButton.textContent = "Create Account";
+          return;
+        }
+
+        users.push(userData);
+        saveStoredUsers(users);
+
+        localStorage.setItem("loomLoggedInUser", userData.fullName);
+        localStorage.setItem("loomUserEmail", userData.email);
+
+        showFormMessage("Account created successfully. Redirecting...", "success");
+        signupForm.reset();
+
+        setTimeout(function () {
+          window.location.href = "index.html";
+        }, 1000);
+      } catch (error) {
+        showFormMessage("Something went wrong. Please try again.", "error");
+        submitButton.disabled = false;
+        submitButton.textContent = "Create Account";
         return;
       }
 
-      const newUser = {
-        fullName: fullName,
-        email: email,
-        password: password
-      };
-
-      users.push(newUser);
-      localStorage.setItem("loomUsers", JSON.stringify(users));
-
-      localStorage.setItem("loomLoggedInUser", fullName);
-      localStorage.setItem("loomUserEmail", email);
-
-      formMessage.textContent = "Account created successfully.";
-
-      setTimeout(function () {
-        window.location.href = "index.html";
-      }, 700);
+      submitButton.disabled = false;
+      submitButton.textContent = "Create Account";
     });
 
-
-    function setFieldError(fieldName, message) {
-      fields[fieldName].error.textContent = message;
-      fields[fieldName].input.classList.add("invalid");
-    }
-
-    function clearFieldError(fieldName) {
-      fields[fieldName].error.textContent = "";
-      fields[fieldName].input.classList.remove("invalid");
-    }
-
-    function clearAllErrors() {
-      Object.keys(fields).forEach(clearFieldError);
-      hideFormMessage();
-    }
-
-    function showFormMessage(message, type) {
-      formMessage.textContent = message;
-      formMessage.className = "message " + type;
-    }
-
-    function hideFormMessage() {
+    fullNameInput.addEventListener("input", function () {
+      fullNameError.textContent = "";
+      fullNameInput.classList.remove("invalid");
       formMessage.textContent = "";
       formMessage.className = "message";
-    }
-
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function isValidPassword(password) {
-      return password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
-    }
-
-    function validateForm() {
-      clearAllErrors();
-
-      const fullName = fullNameInput.value.trim();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      let valid = true;
-
-      if (!fullName) {
-        setFieldError("fullName", "Full name is required.");
-        valid = false;
-      }
-
-      if (!email) {
-        setFieldError("email", "Email is required.");
-        valid = false;
-      } else if (!isValidEmail(email)) {
-        setFieldError("email", "Please enter a valid email address.");
-        valid = false;
-      }
-
-      if (!password) {
-        setFieldError("password", "Password is required.");
-        valid = false;
-      } else if (!isValidPassword(password)) {
-        setFieldError(
-          "password",
-          "Password must be at least 8 characters and contain at least one letter and one number."
-        );
-        valid = false;
-      }
-
-      return valid;
-    }
-
-    async function registerUser(userData) {
-      const users = JSON.parse(localStorage.getItem("loomUsers") || "[]");
-
-      const exists = users.some(
-        (user) => user.email.toLowerCase() === userData.email.toLowerCase()
-      );
-
-      if (exists) {
-        throw new Error("A user with this email already exists.");
-      }
-
-      users.push(userData);
-      localStorage.setItem("loomUsers", JSON.stringify(users));
-
-      return { success: true };
-    }
-
-    signupForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      if (!validateForm()) return;
-
-      const button = signupForm.querySelector(".submit-btn");
-      button.disabled = true;
-      button.textContent = "Creating...";
-
-      try {
-        await registerUser({
-          fullName: fullNameInput.value.trim(),
-          email: emailInput.value.trim(),
-          password: passwordInput.value
-        });
-
-        showFormMessage("Account created successfully. Redirecting to login...", "success");
-        signupForm.reset();
-
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 1200);
-      } catch (error) {
-        showFormMessage(error.message || "Registration failed. Please try again.", "error");
-      } finally {
-        button.disabled = false;
-        button.textContent = "Create Account";
-      }
     });
 
-    [fullNameInput, emailInput, passwordInput].forEach((input) => {
-      input.addEventListener("input", () => {
-        clearFieldError(input.name);
-        hideFormMessage();
-      });
+    emailInput.addEventListener("input", function () {
+      emailError.textContent = "";
+      emailInput.classList.remove("invalid");
+      formMessage.textContent = "";
+      formMessage.className = "message";
+    });
+
+    passwordInput.addEventListener("input", function () {
+      passwordError.textContent = "";
+      passwordInput.classList.remove("invalid");
+      formMessage.textContent = "";
+      formMessage.className = "message";
     });
   </script>
+
 </body>
 
 </html>

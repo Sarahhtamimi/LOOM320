@@ -426,7 +426,6 @@
   </main>
 
   <script>
-
     const loginForm = document.getElementById("loginForm");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
@@ -435,75 +434,26 @@
     const passwordError = document.getElementById("passwordError");
     const formMessage = document.getElementById("formMessage");
 
-    loginForm.addEventListener("submit", function (e) {
-      e.preventDefault();
+    const submitButton = loginForm.querySelector(".submit-btn");
 
+    function clearErrors() {
       emailError.textContent = "";
       passwordError.textContent = "";
       formMessage.textContent = "";
+      formMessage.className = "message";
 
-      const email = emailInput.value.trim().toLowerCase();
-      const password = passwordInput.value.trim();
+      emailInput.classList.remove("invalid");
+      passwordInput.classList.remove("invalid");
+    }
 
-      let isValid = true;
-
-      if (email === "") {
-        emailError.textContent = "Please enter your email.";
-        isValid = false;
-      }
-
-      if (password === "") {
-        passwordError.textContent = "Please enter your password.";
-        isValid = false;
-      }
-
-      if (!isValid) return;
-
-      const users = JSON.parse(localStorage.getItem("loomUsers")) || [];
-
-      const matchedUser = users.find(user => user.email === email && user.password === password);
-
-      if (!matchedUser) {
-        formMessage.textContent = "Invalid email or password.";
-        return;
-      }
-
-      localStorage.setItem("loomLoggedInUser", matchedUser.fullName);
-      localStorage.setItem("loomUserEmail", matchedUser.email);
-
-      formMessage.textContent = "Login successful.";
-
-      setTimeout(function () {
-        window.location.href = "index.html";
-      }, 700);
-    });
-
-
-
-    function setError(input, errorElement, message) {
-      input.classList.add("invalid");
+    function showFieldError(input, errorElement, message) {
       errorElement.textContent = message;
+      input.classList.add("invalid");
     }
 
-    function clearError(input, errorElement) {
-      input.classList.remove("invalid");
-      errorElement.textContent = "";
-    }
-
-    function clearAllErrors() {
-      clearError(emailInput, emailError);
-      clearError(passwordInput, passwordError);
-      hideMessage();
-    }
-
-    function showMessage(message, type) {
+    function showFormMessage(message, type) {
       formMessage.textContent = message;
       formMessage.className = "message " + type;
-    }
-
-    function hideMessage() {
-      formMessage.textContent = "";
-      formMessage.className = "message";
     }
 
     function isValidEmail(email) {
@@ -511,91 +461,94 @@
     }
 
     function validateLoginForm() {
-      clearAllErrors();
+      clearErrors();
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value.trim();
+
       let isValid = true;
 
-      if (!email) {
-        setError(emailInput, emailError, "Email is required.");
+      if (email === "") {
+        showFieldError(emailInput, emailError, "Please enter your email.");
         isValid = false;
       } else if (!isValidEmail(email)) {
-        setError(emailInput, emailError, "Please enter a valid email address.");
+        showFieldError(emailInput, emailError, "Please enter a valid email address.");
         isValid = false;
       }
 
-      if (!password) {
-        setError(passwordInput, passwordError, "Password is required.");
+      if (password === "") {
+        showFieldError(passwordInput, passwordError, "Please enter your password.");
         isValid = false;
       }
 
-      return isValid;
+      if (!isValid) return null;
+
+      return { email, password };
     }
 
-    async function loginUser(email, password) {
-      const users = JSON.parse(localStorage.getItem("loomUsers") || "[]");
-
-      const matchedUser = users.find(
-        (user) =>
-          user.email.toLowerCase() === email.toLowerCase() &&
-          user.password === password
-      );
-
-      if (!matchedUser) {
-        throw new Error("Incorrect email or password.");
-      }
-
-      localStorage.setItem(
-        "loomLoggedInUser",
-        matchedUser.fullName
-      );
-
-      localStorage.setItem(
-        "loomCurrentUser",
-        JSON.stringify({
-          fullName: matchedUser.fullName,
-          email: matchedUser.email,
-          isLoggedIn: true
-        })
-      );
-
-      return matchedUser;
+    function getStoredUsers() {
+      return JSON.parse(localStorage.getItem("loomUsers")) || [];
     }
 
-    loginForm.addEventListener("submit", async function (e) {
+    loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      if (!validateLoginForm()) return;
+      const loginData = validateLoginForm();
+      if (!loginData) return;
 
-      const button = document.querySelector(".submit-btn");
-      button.disabled = true;
-      button.textContent = "Signing In...";
+      submitButton.disabled = true;
+      submitButton.textContent = "Signing In...";
 
       try {
-        await loginUser(emailInput.value.trim(), passwordInput.value);
+        const users = getStoredUsers();
 
-        showMessage("Login successful. Redirecting to homepage...", "success");
+        const matchedUser = users.find(
+          user =>
+            user.email.toLowerCase() === loginData.email &&
+            user.password === loginData.password
+        );
 
-        setTimeout(() => {
+        if (!matchedUser) {
+          showFormMessage("Incorrect email or password.", "error");
+          submitButton.disabled = false;
+          submitButton.textContent = "Sign In";
+          return;
+        }
+
+        localStorage.setItem("loomLoggedInUser", matchedUser.fullName);
+        localStorage.setItem("loomUserEmail", matchedUser.email);
+
+        showFormMessage("Login successful. Redirecting...", "success");
+
+        setTimeout(function () {
           window.location.href = "index.html";
-        }, 1200);
+        }, 1000);
       } catch (error) {
-        showMessage(error.message || "Login failed. Please try again.", "error");
-      } finally {
-        button.disabled = false;
-        button.textContent = "Sign In";
+        showFormMessage("Something went wrong. Please try again.", "error");
+        submitButton.disabled = false;
+        submitButton.textContent = "Sign In";
+        return;
       }
+
+      submitButton.disabled = false;
+      submitButton.textContent = "Sign In";
     });
 
-    [emailInput, passwordInput].forEach((input) => {
-      input.addEventListener("input", () => {
-        if (input === emailInput) clearError(emailInput, emailError);
-        if (input === passwordInput) clearError(passwordInput, passwordError);
-        hideMessage();
-      });
+    emailInput.addEventListener("input", function () {
+      emailError.textContent = "";
+      emailInput.classList.remove("invalid");
+      formMessage.textContent = "";
+      formMessage.className = "message";
+    });
+
+    passwordInput.addEventListener("input", function () {
+      passwordError.textContent = "";
+      passwordInput.classList.remove("invalid");
+      formMessage.textContent = "";
+      formMessage.className = "message";
     });
   </script>
+
 </body>
 
 </html>
