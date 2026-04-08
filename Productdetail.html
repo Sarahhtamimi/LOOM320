@@ -699,12 +699,13 @@
 
         <div class="btn-row">
           <a href="mailto:layla@loom.com" class="btn-main">Contact Seller</a>
-          <button class="btn-outline" id="saveBtn">
+          <!--################ SAVE Butoon#############-->
+          <!-- <button class="btn-outline" id="saveBtn">
             <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
             </svg>
             Save
-          </button>
+          </button> -->
         </div>
       </div>
 
@@ -755,10 +756,12 @@
     </div>
   </footer>
 
-  <script>
-    const saveBtn = document.getElementById("saveBtn");
-    const ITEM_ID = "item-1";
+  
+   <script>
+  const saveBtn = document.getElementById("saveBtn");
+  const ITEM_ID = "item-1";
 
+  if (saveBtn) {
     const savedBookmarks = JSON.parse(localStorage.getItem("loomBookmarks") || "[]");
 
     function isBookmarked() {
@@ -795,24 +798,25 @@
     });
 
     updateBtn();
+  }
 
-    const loginLink = document.getElementById("loginLink");
-    const profileLink = document.getElementById("profileLink");
-    const authPill = document.getElementById("authPill");
+  const loginLink = document.getElementById("loginLink");
+  const profileLink = document.getElementById("profileLink");
+  const authPill = document.getElementById("authPill");
 
-    const savedUser = localStorage.getItem("loomLoggedInUser");
+  const savedUser = localStorage.getItem("loomLoggedInUser");
 
-    if (savedUser) {
-      if (loginLink) loginLink.style.display = "none";
-      if (profileLink) profileLink.style.display = "inline-block";
-      if (authPill) authPill.textContent = savedUser;
-    } else {
-      if (loginLink) loginLink.style.display = "inline-block";
-      if (profileLink) profileLink.style.display = "none";
-      if (authPill) authPill.textContent = "Guest Mode";
-    }
-
-  </script>
+  if (savedUser) {
+    if (loginLink) loginLink.style.display = "none";
+    if (profileLink) profileLink.style.display = "inline-block";
+    if (authPill) authPill.textContent = savedUser;
+  } else {
+    if (loginLink) loginLink.style.display = "inline-block";
+    if (profileLink) profileLink.style.display = "none";
+    if (authPill) authPill.textContent = "Guest Mode";
+  }
+</script>
+  
 </body>
 
 </html>

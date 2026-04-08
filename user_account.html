@@ -900,13 +900,14 @@
       </div>
 
       <div class="form-group">
-        <label for="editImage">Upload New Photo</label>
+        <label for="editImage">Upload New Photo(Optional)</label>
         <input id="editImage" class="form-input" type="file" accept="image/*" />
       </div>
 
       <div class="modal-actions">
         <button class="btn-light" id="cancelEditBtn" type="button">Cancel</button>
         <button class="btn-main" id="saveEditBtn" type="button">Save Changes</button>
+        
       </div>
     </div>
   </div>
@@ -1147,7 +1148,7 @@
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^\+?[0-9\s-]{7,20}$/;
+  const phoneRegex = /^(?:[0-9]{10}|\+[0-9]{12,15})$/;
 
   if (!emailRegex.test(newContact) && !phoneRegex.test(newContact)) {
     alert("Contact must be a valid email or phone number.");

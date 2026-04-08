@@ -808,32 +808,40 @@
   }
 
   function createCardHTML(item) {
-    return `
-      <article class="fashion-card" data-id="${item.id}">
-        <a href="Productdetail.html" style="text-decoration:none;color:inherit;display:block;">
-          <div class="card-image-wrap">
-            <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
-            <div class="card-action-icons">
-              <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-                <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </a>
-        <div class="card-body">
-          <div class="title-price-row">
-            <h4 class="card-title">${item.title}</h4>
-            <div class="card-price">⃁${String(item.price).replace("⃁", "")}</div>
-          </div>
-          <p class="card-description">${item.description}</p>
-          <div class="contact-pill">${item.contact}</div>
-          <div class="card-bottom-line"></div>
+  const shouldOpenDetails = item.id === "item-1";
+
+  const imageContent = `
+    <div class="card-image-wrap">
+      <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
+      <div class="card-action-icons">
+        <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
+          <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  `;
+
+  return `
+    <article class="fashion-card" data-id="${item.id}">
+      ${
+        shouldOpenDetails
+          ? `<a href="Productdetail.html" style="text-decoration:none;color:inherit;display:block;">${imageContent}</a>`
+          : imageContent
+      }
+      <div class="card-body">
+        <div class="title-price-row">
+          <h4 class="card-title">${item.title}</h4>
+          <div class="card-price">⃁${String(item.price).replace("⃁", "")}</div>
         </div>
-      </article>
-    `;
-  }
+        <p class="card-description">${item.description}</p>
+        <div class="contact-pill">${item.contact}</div>
+        <div class="card-bottom-line"></div>
+      </div>
+    </article>
+  `;
+}
 
   function renderSecondUsePage() {
     const userListings = getStoredListings();
@@ -975,8 +983,8 @@
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\+?[0-9\s-]{7,20}$/;
-
+      // const phoneRegex = /^\+?[0-9\s-]{7,20}$/;
+    const phoneRegex = /^(?:[0-9]{10}|\+[0-9]{12,15})$/;
     if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
       alert("Contact must be a valid email or phone number.");
       return;
@@ -1046,9 +1054,7 @@
     if (authPill) authPill.textContent = "Guest Mode";
   }
 
-  if (!isLoggedIn) {
-    openAddListingBtn.textContent = "Login to Add Listing";
-  }
+ 
 
   renderSecondUsePage();
 
