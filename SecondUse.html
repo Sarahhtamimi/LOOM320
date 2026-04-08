@@ -994,9 +994,32 @@
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      // const phoneRegex = /^\+?[0-9\s-]{7,20}$/;
-    const phoneRegex = /^(?:[0-9]{10}|\+[0-9]{12,15})$/;
+
+if (title.length > 150) {
+    alert("title must be 150 characters or less.");
+    return;
+}
+
+
+if (description.length > 500) {
+    alert("description must be 500 characters or less.");
+    return;
+}
+
+
+
+const contactValue = contact.replace(/[^\d+@.]/g, '').trim();
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
+
+if (emailRegex.test(contactValue) || phoneRegex.test(contactValue)) {
+    console.log("Input is valid:", contactValue);
+} else {
+    alert("Error: The number must be 10 digits (05xxxxxxxx) or start with the country code.");
+    return;
+}
+
+
     if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
       alert("Contact must be a valid email or phone number.");
       return;
