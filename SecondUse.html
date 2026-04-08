@@ -1007,15 +1007,23 @@ if (description.length > 500) {
 }
 
 
+// 1. Only use trim() to keep letters for the email to work
+const contactValue = contact.trim();
 
-const contactValue = contact.replace(/[^\d+@.]/g, '').trim();
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
 
-if (emailRegex.test(contactValue) || phoneRegex.test(contactValue)) {
-    console.log("Input is valid:", contactValue);
+if (emailRegex.test(contactValue)) {
+    console.log("Valid Email:", contactValue);
+} else if (phoneRegex.test(contactValue)) {
+    console.log("Valid Phone Number:", contactValue);
 } else {
-    alert("Error: The number must be 10 digits (05xxxxxxxx) or start with the country code.");
+    // 2. Provide a more helpful error message
+    if (contactValue.includes('@')) {
+        alert("Error: Please enter a valid email address.");
+    } else {
+        alert("Error: Phone number must be 10 digits (05xxxxxxxx) or start with a country code.");
+    }
     return;
 }
 
