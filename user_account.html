@@ -925,89 +925,80 @@
   </div>
 
   <script>
-    let currentCardForEdit = null;
-    let currentCardForDelete = null;
+  // ─── State ─────────────────────────────────────────────────────────────────
+  let currentEditId   = null;
+  let currentDeleteId = null;
 
-    const editModal = document.getElementById("editModal");
-    const deleteModal = document.getElementById("deleteModal");
+  // ─── DOM refs ──────────────────────────────────────────────────────────────
+  const editModal        = document.getElementById("editModal");
+  const deleteModal      = document.getElementById("deleteModal");
+  const editTitleInput   = document.getElementById("editTitle");
+  const editDescInput    = document.getElementById("editDescription");
+  const editPriceInput   = document.getElementById("editPrice");
+  const editContactInput = document.getElementById("editContact");
+  const editImageInput   = document.getElementById("editImage");
+  const saveEditBtn      = document.getElementById("saveEditBtn");
+  const cancelEditBtn    = document.getElementById("cancelEditBtn");
+  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+  const cancelDeleteBtn  = document.getElementById("cancelDeleteBtn");
+  const bookmarksGrid    = document.getElementById("bookmarksGrid");
+  const listingsGrid     = document.getElementById("listingsGrid");
+  const profileUsername  = document.getElementById("profileUsername");
+  const profileEmail     = document.getElementById("profileEmail");
+  const logoutBtn        = document.getElementById("logoutBtn");
+  const loginLink        = document.getElementById("loginLink");
+  const profileLink      = document.getElementById("profileLink");
+  const authPill         = document.getElementById("authPill");
 
-    const editTitleInput = document.getElementById("editTitle");
-    const editDescriptionInput = document.getElementById("editDescription");
-    const editPriceInput = document.getElementById("editPrice");
-    const editContactInput = document.getElementById("editContact");
-    const editImageInput = document.getElementById("editImage");
+  // ─── تحميل بيانات الحساب ────────────────────────────────────────────────
+  async function loadAccount() {
+    try {
+      const res  = await fetch("api/get_account.php");
 
-    const saveEditBtn = document.getElementById("saveEditBtn");
-    const cancelEditBtn = document.getElementById("cancelEditBtn");
+      if (res.status === 401) {
+        window.location.href = "register.html";
+        return;
+      }
 
-    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
-    const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+      const data = await res.json();
+      if (!data.success) { console.error(data.message); return; }
 
-    const bookmarksGrid = document.getElementById("bookmarksGrid");
-    const listingsGrid = document.getElementById("listingsGrid");
+      // Auth UI
+      const username = data.user.username;
+      const email    = data.user.email;
 
-    const profileUsername = document.getElementById("profileUsername");
-    const profileEmail = document.getElementById("profileEmail");
-    const logoutBtn = document.getElementById("logoutBtn");
+      profileUsername.textContent = username;
+      profileEmail.textContent    = email;
+      if (loginLink)   loginLink.style.display   = "none";
+      if (profileLink) profileLink.style.display = "inline-block";
+      if (authPill)    authPill.textContent       = username;
 
-    const savedName = localStorage.getItem("loomLoggedInUser");
-    const savedEmail = localStorage.getItem("loomUserEmail");
+      renderBookmarks(data.bookmarks);
+      renderListings(data.listings);
 
-    function getBookmarkStorageKey() {
-      if (!savedName) return null;
-      return "loomBookmarks_" + savedName;
+    } catch (err) {
+      console.error("Failed to load the account:", err);
     }
+  }
 
-    function getStoredBookmarks() {
-      const key = getBookmarkStorageKey();
-      if (!key) return [];
-      return JSON.parse(localStorage.getItem(key) || "[]");
+  // ─── رسم Bookmarks ────────────────────────────────────────────────────────
+  function renderBookmarks(items) {
+    if (!items.length) {
+      bookmarksGrid.innerHTML = `
+        <div class="empty-state">
+          <h4>Your curated collection is empty</h4>
+          <p>Pieces you save in Second-Use will appear here.</p>
+        </div>`;
+      return;
     }
-
-    function saveBookmarksToStorage(bookmarks) {
-      const key = getBookmarkStorageKey();
-      if (!key) return;
-      localStorage.setItem(key, JSON.stringify(bookmarks));
-    }
-
-    function getStoredListings() {
-      return JSON.parse(localStorage.getItem("loomListings") || "[]");
-    }
-
-    function saveListingsToStorage(listings) {
-      localStorage.setItem("loomListings", JSON.stringify(listings));
-    }
-
-    function createListingCardHTML(item) {
+    bookmarksGrid.innerHTML = items.map(function(item) {
       return `
-        <article class="fashion-card listing-card" data-id="${item.id}">
+        <article class="fashion-card" data-id="${item.id}">
           <div class="card-image-wrap">
-            <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
+            <img class="card-image" src="${item.image}" alt="${item.title}">
             <div class="card-action-icons">
-              <button class="icon-btn edit-btn" title="Edit listing" aria-label="Edit listing" type="button">✎</button>
-              <button class="icon-btn delete-btn" title="Delete listing" aria-label="Delete listing" type="button">🗑</button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="title-price-row">
-              <h4 class="card-title">${item.title}</h4>
-              <div class="card-price">⃁${String(item.price).replace("⃁", "")}</div>
-            </div>
-            <p class="card-description">${item.description}</p>
-            <div class="contact-pill">${item.contact}</div>
-            <div class="card-bottom-line"></div>
-          </div>
-        </article>
-      `;
-    }
-
-    function createBookmarkCardHTML(item, index) {
-      return `
-        <article class="fashion-card bookmark-card" data-id="${item.id}">
-          <div class="card-image-wrap">
-            <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
-            <div class="card-action-icons">
-              <button class="icon-btn bookmark-btn active" onclick="removeSpecificBookmark(${index})" title="Remove from saved" aria-label="Remove from saved" type="button">
+              <button class="icon-btn bookmark-btn active" title="Remove from saved"
+                      type="button" data-id="${item.id}" onclick="removeBookmark(${item.id}, this)">
                 <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
                 </svg>
@@ -1017,320 +1008,254 @@
           <div class="card-body">
             <div class="title-price-row">
               <h4 class="card-title">${item.title}</h4>
-              <div class="card-price">${item.price}</div>
+              <div class="card-price">&#8203;${item.price}</div>
             </div>
             <p class="card-description">${item.description}</p>
             <div class="contact-pill">${item.contact}</div>
             <div class="card-bottom-line"></div>
           </div>
-        </article>
-      `;
+        </article>`;
+    }).join("");
+  }
+
+  // ─── رسم My Listings ─────────────────────────────────────────────────────
+  function renderListings(items) {
+    if (!items.length) {
+      listingsGrid.innerHTML = `
+        <div class="empty-state">
+          <h4>You haven't listed any pieces yet.</h4>
+          <p>Add your first listing in Second-Use to start selling on LOOM.</p>
+        </div>`;
+      return;
+    }
+    listingsGrid.innerHTML = items.map(function(item) {
+      return `
+        <article class="fashion-card listing-card" data-id="${item.id}">
+          <div class="card-image-wrap">
+            <img class="card-image" src="${item.image}" alt="${item.title}">
+            <div class="card-action-icons">
+              <button class="icon-btn edit-btn" title="Edit listing" type="button">✎</button>
+              <button class="icon-btn delete-btn" title="Delete listing" type="button">🗑</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title-price-row">
+              <h4 class="card-title">${item.title}</h4>
+              <div class="card-price">&#8203;${item.price}</div>
+            </div>
+            <p class="card-description">${item.description}</p>
+            <div class="contact-pill">${item.contact}</div>
+            <div class="card-bottom-line"></div>
+          </div>
+        </article>`;
+    }).join("");
+
+    attachListingEvents();
+  }
+
+  // ─── أحداث Edit/Delete على الـ cards ─────────────────────────────────────
+  function attachListingEvents() {
+    listingsGrid.querySelectorAll(".edit-btn").forEach(function(btn) {
+      btn.onclick = function() {
+        const card = btn.closest(".listing-card");
+        openEditModal(card);
+      };
+    });
+    listingsGrid.querySelectorAll(".delete-btn").forEach(function(btn) {
+      btn.onclick = function() {
+        const card = btn.closest(".listing-card");
+        currentDeleteId = parseInt(card.dataset.id, 10);
+        deleteModal.classList.add("show");
+      };
+    });
+  }
+
+  // ─── Edit Modal ──────────────────────────────────────────────────────────
+  function openEditModal(card) {
+    currentEditId              = parseInt(card.dataset.id, 10);
+    editTitleInput.value       = card.querySelector(".card-title").textContent.trim();
+    editDescInput.value        = card.querySelector(".card-description").textContent.trim();
+    editPriceInput.value       = card.querySelector(".card-price").textContent.replace("​", "").trim();
+    editContactInput.value     = card.querySelector(".contact-pill").textContent.trim();
+    editImageInput.value       = "";
+    editModal.classList.add("show");
+  }
+
+  function closeEditModal() {
+    editModal.classList.remove("show");
+    currentEditId    = null;
+    editImageInput.value = "";
+  }
+
+  saveEditBtn.addEventListener("click", async function() {
+    if (!currentEditId || saveEditBtn.disabled) return;
+
+    const title       = editTitleInput.value.trim();
+    const description = editDescInput.value.trim();
+    const price       = editPriceInput.value.trim();
+    const contact     = editContactInput.value.trim();
+    const file        = editImageInput.files[0];
+
+    if (!title || !description || !price || !contact) {
+      alert("Please fill in all the fields."); return;
+    }
+    if (title.length > 150)       { alert("The title must be 150 characters or less."); return; }
+    if (description.length > 500) { alert("The description must be 500 characters or less."); return; }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
+    if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
+      alert("The method of communication must be an email or a Saudi mobile number."); return;
+    }
+    if (isNaN(Number(price)) || Number(price) <= 0) {
+      alert("The price must be a positive number."); return;
+    }
+    if (file && file.size > 1.5 * 1024 * 1024) {
+      alert("The image is larger than 1.5 MB."); return;
     }
 
-    function loadBookmarksFromStorage() {
-      const savedBookmarks = getStoredBookmarks();
+    saveEditBtn.disabled    = true;
+    saveEditBtn.textContent = "Saving...";
 
-      if (savedBookmarks.length === 0) {
+    const formData = new FormData();
+    formData.append("item_id",     currentEditId);
+    formData.append("title",       title);
+    formData.append("description", description);
+    formData.append("price",       price);
+    formData.append("contact",     contact);
+    if (file) formData.append("image", file);
+
+    try {
+      const res  = await fetch("api/edit_listing.php", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (!data.success) { alert(data.message); return; }
+
+      // حدّث الكارد في الـ DOM مباشرة
+      const card = listingsGrid.querySelector(`.listing-card[data-id="${currentEditId}"]`);
+      if (card) {
+        card.querySelector(".card-title").textContent       = data.item.title;
+        card.querySelector(".card-description").textContent = data.item.description;
+        card.querySelector(".card-price").textContent       = "​" + data.item.price;
+        card.querySelector(".contact-pill").textContent     = data.item.contact;
+        if (file) card.querySelector(".card-image").src    = data.item.image;
+      }
+
+      closeEditModal();
+    } catch (err) {
+      console.error("Failed edit_listing:", err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      saveEditBtn.disabled    = false;
+      saveEditBtn.textContent = "Save Changes";
+    }
+  });
+
+  cancelEditBtn.addEventListener("click", closeEditModal);
+  editModal.addEventListener("click", function(e) { if (e.target === editModal) closeEditModal(); });
+
+  // ─── Delete Modal ─────────────────────────────────────────────────────────
+  confirmDeleteBtn.addEventListener("click", async function() {
+    if (!currentDeleteId || confirmDeleteBtn.disabled) return;
+
+    confirmDeleteBtn.disabled    = true;
+    confirmDeleteBtn.textContent = "Deleting...";
+
+    try {
+      const res  = await fetch("api/delete_listing.php", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ item_id: currentDeleteId }),
+      });
+      const data = await res.json();
+
+      if (!data.success) { alert(data.message); return; }
+
+      // احذف الكارد من الـ DOM
+      const card = listingsGrid.querySelector(`.listing-card[data-id="${currentDeleteId}"]`);
+      if (card) card.remove();
+
+      // إذا ما في listings، عرّض الـ empty state
+      if (!listingsGrid.querySelector(".listing-card")) {
+        listingsGrid.innerHTML = `
+          <div class="empty-state">
+            <h4>You haven't listed any pieces yet.</h4>
+            <p>Add your first listing in Second-Use to start selling on LOOM.</p>
+          </div>`;
+      }
+
+      // احذف من bookmarks إذا موجود
+      const bookmarkCard = bookmarksGrid.querySelector(`.fashion-card[data-id="${currentDeleteId}"]`);
+      if (bookmarkCard) {
+        bookmarkCard.remove();
+        if (!bookmarksGrid.querySelector(".fashion-card")) {
+          bookmarksGrid.innerHTML = `
+            <div class="empty-state">
+              <h4>Your curated collection is empty</h4>
+              <p>Pieces you save in Second-Use will appear here.</p>
+            </div>`;
+        }
+      }
+
+      deleteModal.classList.remove("show");
+      currentDeleteId = null;
+    } catch (err) {
+      console.error("Failed delete_listing:", err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      confirmDeleteBtn.disabled    = false;
+      confirmDeleteBtn.textContent = "Delete";
+    }
+  });
+
+  cancelDeleteBtn.addEventListener("click", function() {
+    deleteModal.classList.remove("show");
+    currentDeleteId = null;
+  });
+  deleteModal.addEventListener("click", function(e) {
+    if (e.target === deleteModal) {
+      deleteModal.classList.remove("show");
+      currentDeleteId = null;
+    }
+  });
+
+  // ─── Remove Bookmark ──────────────────────────────────────────────────────
+  async function removeBookmark(itemId, btn) {
+    btn.disabled = true;
+    try {
+      const res  = await fetch("api/toggle_bookmark.php", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ item_id: itemId }),
+      });
+      const data = await res.json();
+      if (!data.success) { alert(data.message); return; }
+
+      const card = bookmarksGrid.querySelector(`.fashion-card[data-id="${itemId}"]`);
+      if (card) card.remove();
+
+      if (!bookmarksGrid.querySelector(".fashion-card")) {
         bookmarksGrid.innerHTML = `
           <div class="empty-state">
             <h4>Your curated collection is empty</h4>
             <p>Pieces you save in Second-Use will appear here.</p>
-          </div>
-        `;
-        return;
+          </div>`;
       }
-
-      let html = "";
-      savedBookmarks.forEach(function (item, index) {
-        html += createBookmarkCardHTML(item, index);
-      });
-
-      bookmarksGrid.innerHTML = html;
+    } catch (err) {
+      console.error("Failed removeBookmark:", err);
+      btn.disabled = false;
     }
-
-    function loadListingsFromStorage() {
-      const allListings = getStoredListings();
-      const myListings = allListings.filter(function (item) {
-        return item.owner === savedName;
-      });
-
-      if (myListings.length === 0) {
-        listingsGrid.innerHTML = `
-          <div class="empty-state">
-            <h4>You haven’t listed any pieces yet.</h4>
-            <p>Add your first listing in Second-Use to start selling on LOOM.</p>
-          </div>
-        `;
-        return;
-      }
-
-      let html = "";
-      myListings.forEach(function (item) {
-        html += createListingCardHTML(item);
-      });
-
-      listingsGrid.innerHTML = html;
-    }
-
-    function removeSpecificBookmark(index) {
-      let bookmarks = getStoredBookmarks();
-      bookmarks.splice(index, 1);
-      saveBookmarksToStorage(bookmarks);
-      loadBookmarksFromStorage();
-    }
-
-    window.removeSpecificBookmark = removeSpecificBookmark;
-
-    function syncBookmarkWithListing(updatedListing) {
-      let bookmarks = getStoredBookmarks();
-
-      bookmarks = bookmarks.map(function (bookmark) {
-        if (bookmark.id === updatedListing.id) {
-          return {
-            ...bookmark,
-            title: updatedListing.title,
-            description: updatedListing.description,
-            price: "⃁" + String(updatedListing.price).replace("⃁", ""),
-            contact: updatedListing.contact,
-            image: updatedListing.image,
-            alt: updatedListing.alt || updatedListing.title
-          };
-        }
-        return bookmark;
-      });
-
-      saveBookmarksToStorage(bookmarks);
-    }
-
-    function removeDeletedListingFromBookmarks(listingId) {
-      let bookmarks = getStoredBookmarks();
-      bookmarks = bookmarks.filter(function (bookmark) {
-        return bookmark.id !== listingId;
-      });
-      saveBookmarksToStorage(bookmarks);
-    }
-
-    function openEditModal(card) {
-      currentCardForEdit = card;
-
-      const title = card.querySelector(".card-title").textContent;
-      const description = card.querySelector(".card-description").textContent.trim();
-      const price = card.querySelector(".card-price").textContent.replace("⃁", "").trim();
-      const contact = card.querySelector(".contact-pill").textContent;
-
-      editTitleInput.value = title;
-      editDescriptionInput.value = description;
-      editPriceInput.value = price;
-      editContactInput.value = contact;
-      editImageInput.value = "";
-
-      editModal.classList.add("show");
-    }
-
-    function closeEditModal() {
-      editModal.classList.remove("show");
-      currentCardForEdit = null;
-      editImageInput.value = "";
-    }
-
-    function saveEditChanges() {
-  if (!currentCardForEdit) return;
-
-  const newTitle = editTitleInput.value.trim();
-  const newDescription = editDescriptionInput.value.trim();
-  const newPrice = editPriceInput.value.trim();
-  const newContact = editContactInput.value.trim();
-  const selectedFile = editImageInput.files[0];
-
-  if (!newTitle || !newDescription || !newPrice || !newContact) {
-    alert("Please fill in all required fields.");
-    return;
   }
+  window.removeBookmark = removeBookmark;
 
-  
-
-if (newTitle.length > 150) {
-    alert("title must be 150 characters or less.");
-    return;
-}
-
-
-if (newDescription.length > 500) {
-    alert("description must be 500 characters or less.");
-    return;
-}
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
-
-  if (!emailRegex.test(newContact) && !phoneRegex.test(newContact)) {
-    alert("Contact must be a valid email or phone number.");
-    return;
-  }
-
-  const priceNum = Number(newPrice);
-  if (isNaN(priceNum) || priceNum <= 0) {
-    alert("Price must be a positive number.");
-    return;
-  }
-
-  const maxFileSize = 1024 * 1024 * 1.5; // 1.5 MB
-  if (selectedFile && selectedFile.size > maxFileSize) {
-    alert("Image is too large. Please upload an image smaller than 1.5 MB.");
-    return;
-  }
-
-  const allListings = getStoredListings();
-  const listingId = currentCardForEdit.dataset.id;
-  const listingIndex = allListings.findIndex(function (item) {
-    return item.id === listingId && item.owner === savedName;
+  // ─── Logout ───────────────────────────────────────────────────────────────
+  logoutBtn.addEventListener("click", async function() {
+    await fetch("api/logout.php", { method: "POST" }).catch(function(){});
+    window.location.href = "index.html";
   });
 
-  if (listingIndex === -1) return;
-
-  saveEditBtn.disabled = true;
-  saveEditBtn.textContent = "Saving...";
-
-  function resetEditButton() {
-    saveEditBtn.disabled = false;
-    saveEditBtn.textContent = "Save Changes";
-  }
-
-  function finishUpdate(newImageSrc) {
-    try {
-      allListings[listingIndex] = {
-        ...allListings[listingIndex],
-        title: newTitle,
-        description: newDescription,
-        price: newPrice,
-        contact: newContact,
-        alt: newTitle,
-        image: newImageSrc || allListings[listingIndex].image
-      };
-
-      saveListingsToStorage(allListings);
-      syncBookmarkWithListing(allListings[listingIndex]);
-      loadListingsFromStorage();
-      loadBookmarksFromStorage();
-      addCardButtonEvents();
-      closeEditModal();
-    } catch (error) {
-      console.error("Failed to update listing:", error);
-      alert("Could not save changes. The image may be too large or storage is full.");
-    } finally {
-      resetEditButton();
-    }
-  }
-
-  if (selectedFile) {
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-      finishUpdate(event.target.result);
-    };
-
-    reader.onerror = function () {
-      alert("Could not read the selected image.");
-      resetEditButton();
-    };
-
-    reader.readAsDataURL(selectedFile);
-  } else {
-    finishUpdate();
-  }
-}
-
-    function openDeleteModal(card) {
-      currentCardForDelete = card;
-      deleteModal.classList.add("show");
-    }
-
-    function closeDeleteModal() {
-      deleteModal.classList.remove("show");
-      currentCardForDelete = null;
-    }
-
-    function deleteListingCard() {
-      if (!currentCardForDelete) return;
-
-      const listingId = currentCardForDelete.dataset.id;
-      let allListings = getStoredListings();
-
-      allListings = allListings.filter(function (item) {
-        return !(item.id === listingId && item.owner === savedName);
-      });
-
-      saveListingsToStorage(allListings);
-      removeDeletedListingFromBookmarks(listingId);
-      loadListingsFromStorage();
-      loadBookmarksFromStorage();
-      addCardButtonEvents();
-      closeDeleteModal();
-    }
-
-    function addCardButtonEvents() {
-      const editButtons = document.querySelectorAll(".edit-btn");
-      const deleteButtons = document.querySelectorAll(".delete-btn");
-
-      editButtons.forEach(function (button) {
-        button.onclick = function () {
-          const card = button.closest(".listing-card");
-          openEditModal(card);
-        };
-      });
-
-      deleteButtons.forEach(function (button) {
-        button.onclick = function () {
-          const card = button.closest(".listing-card");
-          openDeleteModal(card);
-        };
-      });
-    }
-
-    saveEditBtn.addEventListener("click", saveEditChanges);
-    cancelEditBtn.addEventListener("click", closeEditModal);
-    confirmDeleteBtn.addEventListener("click", deleteListingCard);
-    cancelDeleteBtn.addEventListener("click", closeDeleteModal);
-
-    editModal.addEventListener("click", function (event) {
-      if (event.target === editModal) closeEditModal();
-    });
-
-    deleteModal.addEventListener("click", function (event) {
-      if (event.target === deleteModal) closeDeleteModal();
-    });
-
-    if (!savedName) {
-      window.location.href = "index.html";
-    } else {
-      profileUsername.textContent = savedName;
-      profileEmail.textContent = savedEmail || "No email available";
-    }
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", function () {
-        localStorage.removeItem("loomLoggedInUser");
-        localStorage.removeItem("loomUserEmail");
-        window.location.href = "index.html";
-      });
-    }
-
-    loadListingsFromStorage();
-    loadBookmarksFromStorage();
-    addCardButtonEvents();
-
-    const loginLink = document.getElementById("loginLink");
-    const profileLink = document.getElementById("profileLink");
-    const authPill = document.getElementById("authPill");
-
-    if (savedName) {
-      if (loginLink) loginLink.style.display = "none";
-      if (profileLink) profileLink.style.display = "inline-block";
-      if (authPill) authPill.textContent = savedName;
-    } else {
-      if (loginLink) loginLink.style.display = "inline-block";
-      if (profileLink) profileLink.style.display = "none";
-      if (authPill) authPill.textContent = "Guest Mode";
-    }
+  // ─── ابدأ ──────────────────────────────────────────────────────────────────
+  loadAccount();
   </script>
 </body>
 
