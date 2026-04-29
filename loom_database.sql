@@ -1,6 +1,6 @@
 -- LOOM Database
---user password: user123
---admin password: admin123
+-- user password: user123
+-- admin password: admin123
 -- Passwords are bcrypt hashes for PHP password_verify().
 
 DROP DATABASE IF EXISTS `loom`;
