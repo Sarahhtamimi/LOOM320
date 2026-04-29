@@ -705,211 +705,80 @@
   </div>
 
   <script>
-   
-  const addListingModal = document.getElementById("addListingModal");
+  // ─── DOM refs ──────────────────────────────────────────────────────────────
+  const addListingModal  = document.getElementById("addListingModal");
   const openAddListingBtn = document.getElementById("openAddListingBtn");
-  const cancelAddBtn = document.getElementById("cancelAddBtn");
-  const confirmAddBtn = document.getElementById("confirmAddBtn");
-  const secondUseGrid = document.getElementById("secondUseGrid");
+  const cancelAddBtn     = document.getElementById("cancelAddBtn");
+  const confirmAddBtn    = document.getElementById("confirmAddBtn");
+  const secondUseGrid    = document.getElementById("secondUseGrid");
+  const loginLink        = document.getElementById("loginLink");
+  const profileLink      = document.getElementById("profileLink");
+  const authPill         = document.getElementById("authPill");
 
-  const loginLink = document.getElementById("loginLink");
-  const profileLink = document.getElementById("profileLink");
-  const authPill = document.getElementById("authPill");
+  // ─── حالة المستخدم: تأتي من PHP session عبر get_listings ─────────────────
+  let isLoggedIn    = false;
+  let bookmarkedIds = [];   // IDs المحفوظة — تُملأ من get_listings
 
-  const savedUser = localStorage.getItem("loomLoggedInUser");
-  const isLoggedIn = !!savedUser;
+  // ─── تحميل الـ listings من قاعدة البيانات ────────────────────────────────
+  async function loadListings() {
+    try {
+      const res  = await fetch("api/get_listings.php");
+      const data = await res.json();
 
-  const DEFAULT_SECOND_USE_ITEMS = [
-    {
-      id: "item-1",
-      owner: "system",
-      title: "Grey Wool Cardigan",
-      description: "Fitted wool cardigan with gold buttons, worn twice.",
-      price: "85",
-      contact: "layla@gmail.com",
-      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٢.jpg",
-      alt: "Grey Wool Cardigan"
-    },
-    {
-      id: "item-2",
-      owner: "system",
-      title: "Striped Bow-Back Dress",
-      description: "Statement maxi dress with open back and oversized bow detail.",
-      price: "120",
-      contact: "+966 501234567",
-      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-١٦-٠٣ (2).jpg",
-      alt: "Striped Bow-Back Dress"
-    },
-    {
-      id: "item-3",
-      owner: "system",
-      title: "Draped Green Top",
-      description: "Asymmetric draped top in soft sage green with a gathered detail.",
-      price: "55",
-      contact: "noor@gmail.com",
-      image: "images/Draped Green Top.jpg",
-      alt: "Draped Green Top"
-    },
-    {
-      id: "item-4",
-      owner: "system",
-      title: "Ivory Rose Top",
-      description: "Soft ivory top with a fabric rose accent, lightweight and barely worn.",
-      price: "65",
-      contact: "+966 509876543",
-      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥ (2).jpg",
-      alt: "Ivory Rose Top"
-    },
-    {
-      id: "item-5",
-      owner: "system",
-      title: "Polka Dot Midi Skirt",
-      description: "Flowy midi skirt in cream with black polka dots, elastic waist.",
-      price: "75",
-      contact: "sara@gmail.com",
-      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٥-١٥.jpg",
-      alt: "Polka Dot Midi Skirt"
-    },
-    {
-      id: "item-6",
-      owner: "system",
-      title: "Wide-Leg Linen Trousers",
-      description: "Relaxed wide-leg trousers in charcoal grey with a tie waist.",
-      price: "90",
-      contact: "+966 556789012",
-      image: "images/photo_٢٠٢٦-٠٤-٠٣_١٢-٣٨-٥٧.jpg",
-      alt: "Wide-Leg Linen Trousers"
+      if (!data.success) { console.error(data.message); return; }
+
+      isLoggedIn    = data.bookmarkedIds !== undefined; // session موجودة
+      bookmarkedIds = data.bookmarkedIds || [];
+
+      renderGrid(data.items);
+      updateAuthUI(data.username || null);
+    } catch (err) {
+      console.error("Failed to load:", err);
     }
-  ];
-
-(function () {
-  let items = JSON.parse(localStorage.getItem("loomListings") || "[]");
-
-  items = items.filter(item =>
-    !["Beige Wool Coat", "Blush Wrap Cardigan", "Forest Midi Dress"]
-      .includes(item.title)
-  );
-
-  localStorage.setItem("loomListings", JSON.stringify(items));
-})
-
-();
-  function getBookmarkStorageKey() {
-    if (!savedUser) return null;
-    return "loomBookmarks_" + savedUser;
   }
 
-  function getStoredBookmarks() {
-    const key = getBookmarkStorageKey();
-    if (!key) return [];
-    return JSON.parse(localStorage.getItem(key) || "[]");
-  }
-
-  function saveBookmarksToStorage(bookmarks) {
-    const key = getBookmarkStorageKey();
-    if (!key) return;
-    localStorage.setItem(key, JSON.stringify(bookmarks));
-  }
-
-  function getStoredListings() {
-    return JSON.parse(localStorage.getItem("loomListings") || "[]");
-  }
-
-  function saveListingsToStorage(listings) {
-    localStorage.setItem("loomListings", JSON.stringify(listings));
-  }
-
+  // ─── رسم الكروت ──────────────────────────────────────────────────────────
   function createCardHTML(item) {
-  const shouldOpenDetails = item.id === "item-1";
+    const isFirst = (item.id === 1);
+    const isSaved = bookmarkedIds.includes(item.id);
 
-  const imageContent = `
-    <div class="card-image-wrap">
-      <img class="card-image" src="${item.image}" alt="${item.alt || item.title}">
-      <div class="card-action-icons">
-        <button class="icon-btn bookmark-btn" title="Save item" aria-label="Save item" type="button">
-          <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-  `;
-
-  return `
-    <article class="fashion-card" data-id="${item.id}">
-      ${
-        shouldOpenDetails
-          ? `<a href="Productdetail.html" style="text-decoration:none;color:inherit;display:block;">${imageContent}</a>`
-          : imageContent
-      }
-      <div class="card-body">
-        <div class="title-price-row">
-          <h4 class="card-title">${item.title}</h4>
-          <div class="card-price">⃁${String(item.price).replace("⃁", "")}</div>
+    const imageContent = `
+      <div class="card-image-wrap">
+        <img class="card-image" src="${item.image}" alt="${item.title}">
+        <div class="card-action-icons">
+          <button class="icon-btn bookmark-btn ${isSaved ? 'active' : ''}"
+                  title="Save item" aria-label="Save item"
+                  type="button" data-id="${item.id}">
+            <svg class="bookmark-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 4.5C7 3.67 7.67 3 8.5 3h7C16.33 3 17 3.67 17 4.5V21l-5-3.8L7 21V4.5z"></path>
+            </svg>
+          </button>
         </div>
-        <p class="card-description">${item.description}</p>
-        <div class="contact-pill">${item.contact}</div>
-        <div class="card-bottom-line"></div>
-      </div>
-    </article>
-  `;
-}
+      </div>`;
 
-  function renderSecondUsePage() {
-    const userListings = getStoredListings();
-    const allItems = [...userListings, ...DEFAULT_SECOND_USE_ITEMS];
-    secondUseGrid.innerHTML = allItems.map(createCardHTML).join("");
+    return `
+      <article class="fashion-card" data-id="${item.id}">
+        ${isFirst
+          ? `<a href="Productdetail.html" style="text-decoration:none;color:inherit;display:block;">${imageContent}</a>`
+          : imageContent}
+        <div class="card-body">
+          <div class="title-price-row">
+            <h4 class="card-title">${item.title}</h4>
+            <div class="card-price">&#8203;${String(item.price).replace("&#8203;", "")}</div>
+          </div>
+          <p class="card-description">${item.description}</p>
+          <div class="contact-pill">${item.contact}</div>
+          <div class="card-bottom-line"></div>
+        </div>
+      </article>`;
+  }
+
+  function renderGrid(items) {
+    secondUseGrid.innerHTML = items.map(createCardHTML).join("");
     attachBookmarkEvents();
-    markSavedItems();
   }
 
-  function getNextListingId() {
-    const listings = getStoredListings();
-    let max = 0;
-
-    listings.forEach(function (item) {
-      const match = String(item.id).match(/^user-item-(\d+)$/);
-      if (match) {
-        const num = Number(match[1]);
-        if (num > max) max = num;
-      }
-    });
-
-    return "user-item-" + (max + 1);
-  }
-
-  function handleBookmarkClick(btn) {
-    if (!isLoggedIn) {
-      alert("Please log in first to bookmark items.");
-      window.location.href = "register.html";
-      return;
-    }
-
-    const card = btn.closest(".fashion-card");
-    const isActive = btn.classList.contains("active");
-    let saved = getStoredBookmarks();
-
-    if (isActive) {
-      btn.classList.remove("active");
-      saved = saved.filter(function (item) {
-        return item.id !== card.dataset.id;
-      });
-    } else {
-      btn.classList.add("active");
-      saved.push({
-        id: card.dataset.id,
-        title: card.querySelector(".card-title").innerText,
-        description: card.querySelector(".card-description").innerText.trim(),
-        price: card.querySelector(".card-price").innerText,
-        contact: card.querySelector(".contact-pill").innerText,
-        image: card.querySelector(".card-image").src,
-        alt: card.querySelector(".card-image").alt || card.querySelector(".card-title").innerText
-      });
-    }
-
-    saveBookmarksToStorage(saved);
-  }
-
+  // ─── Bookmark — AJAX ──────────────────────────────────────────────────────
   function attachBookmarkEvents() {
     document.querySelectorAll(".bookmark-btn").forEach(function (btn) {
       btn.onclick = function (e) {
@@ -920,30 +789,48 @@
     });
   }
 
-  function markSavedItems() {
-    const ids = getStoredBookmarks().map(function (b) {
-      return b.id;
-    });
-
-    document.querySelectorAll(".fashion-card").forEach(function (card) {
-      const btn = card.querySelector(".bookmark-btn");
-      if (!btn) return;
-
-      if (ids.includes(card.dataset.id)) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    });
-  }
-
-  openAddListingBtn.addEventListener("click", function () {
+  async function handleBookmarkClick(btn) {
     if (!isLoggedIn) {
-      alert("Please log in first to create a listing.");
+      alert("You must log in first to bookmark.");
       window.location.href = "register.html";
       return;
     }
 
+    const itemId = parseInt(btn.dataset.id, 10);
+    btn.disabled = true;
+
+    try {
+      const res  = await fetch("api/toggle_bookmark.php", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ item_id: itemId }),
+      });
+      const data = await res.json();
+
+      if (!data.success) { alert(data.message); return; }
+
+      if (data.bookmarked) {
+        btn.classList.add("active");
+        bookmarkedIds.push(itemId);
+      } else {
+        btn.classList.remove("active");
+        bookmarkedIds = bookmarkedIds.filter(function (id) { return id !== itemId; });
+      }
+    } catch (err) {
+      console.error("Failed toggle_bookmark:", err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // ─── Add Listing — AJAX (multipart) ──────────────────────────────────────
+  openAddListingBtn.addEventListener("click", function () {
+    if (!isLoggedIn) {
+      alert("You must log in first.");
+      window.location.href = "register.html";
+      return;
+    }
     addListingModal.classList.add("show");
   });
 
@@ -961,146 +848,99 @@
     }
   });
 
-  function clearAddForm() {
-    document.getElementById("addTitle").value = "";
-    document.getElementById("addDescription").value = "";
-    document.getElementById("addPrice").value = "";
-    document.getElementById("addContact").value = "";
-    document.getElementById("addImage").value = "";
-  }
-
-  function resetAddButton() {
-    confirmAddBtn.disabled = false;
-    confirmAddBtn.textContent = "Add Listing";
-  }
-
-  confirmAddBtn.addEventListener("click", function () {
+  confirmAddBtn.addEventListener("click", async function () {
     if (confirmAddBtn.disabled) return;
-
     if (!isLoggedIn) {
-      alert("Please log in first to create a listing.");
+      alert("You must log in first.");
       window.location.href = "register.html";
       return;
     }
 
-    const title = document.getElementById("addTitle").value.trim();
+    const title       = document.getElementById("addTitle").value.trim();
     const description = document.getElementById("addDescription").value.trim();
-    const price = document.getElementById("addPrice").value.trim();
-    const contact = document.getElementById("addContact").value.trim();
-    const file = document.getElementById("addImage").files[0];
+    const price       = document.getElementById("addPrice").value.trim();
+    const contact     = document.getElementById("addContact").value.trim();
+    const file        = document.getElementById("addImage").files[0];
 
+    // ── Validation (نفس قواعد الـ HTML الأصلية) ──────────────────────────
     if (!title || !description || !price || !contact || !file) {
-      alert("Please fill in all required fields.");
-      return;
+      alert("Please fill in all the fields."); return;
     }
+    if (title.length > 150)       { alert("The title must be 150 characters or less."); return; }
+    if (description.length > 500) { alert("The description must be 500 characters or less.");   return; }
 
-
-if (title.length > 150) {
-    alert("title must be 150 characters or less.");
-    return;
-}
-
-
-if (description.length > 500) {
-    alert("description must be 500 characters or less.");
-    return;
-}
-
-
-// 1. Only use trim() to keep letters for the email to work
-const contactValue = contact.trim();
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
-
-if (emailRegex.test(contactValue)) {
-    console.log("Valid Email:", contactValue);
-} else if (phoneRegex.test(contactValue)) {
-    console.log("Valid Phone Number:", contactValue);
-} else {
-    // 2. Provide a more helpful error message
-    if (contactValue.includes('@')) {
-        alert("Error: Please enter a valid email address.");
-    } else {
-        alert("Error: Phone number must be 10 digits (05xxxxxxxx) or start with a country code.");
-    }
-    return;
-}
-
-
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
     if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
-      alert("Contact must be a valid email or phone number.");
-      return;
+      alert("The method of communication must be an email or a Saudi mobile number."); return;
     }
 
     const priceNum = Number(price);
-    if (isNaN(priceNum) || priceNum <= 0) {
-      alert("Price must be a positive number.");
-      return;
-    }
+    if (isNaN(priceNum) || priceNum <= 0) { alert("The price must be a positive number."); return; }
 
-    const maxFileSize = 1024 * 1024 * 1.5; // 1.5 MB
-    if (file.size > maxFileSize) {
-      alert("Image is too large. Please upload an image smaller than 1.5 MB.");
-      return;
-    }
+    if (file.size > 1.5 * 1024 * 1024) { alert("The image is larger than 1.5 MB."); return; }
 
-    confirmAddBtn.disabled = true;
+    // ── إرسال إلى PHP ─────────────────────────────────────────────────────
+    confirmAddBtn.disabled    = true;
     confirmAddBtn.textContent = "Adding...";
 
-    const reader = new FileReader();
+    const formData = new FormData();
+    formData.append("title",       title);
+    formData.append("description", description);
+    formData.append("price",       price);
+    formData.append("contact",     contact);
+    formData.append("image",       file);
 
-    reader.onload = function (e) {
-      try {
-        const listings = getStoredListings();
+    try {
+      const res  = await fetch("api/add_listing.php", { method: "POST", body: formData });
+      const data = await res.json();
 
-        const newListing = {
-          id: getNextListingId(),
-          owner: savedUser,
-          title: title,
-          description: description,
-          price: price,
-          contact: contact,
-          image: e.target.result,
-          alt: title
-        };
+      if (!data.success) { alert(data.message); return; }
 
-        listings.unshift(newListing);
-        saveListingsToStorage(listings);
+      // أضف الكارد الجديد في أول الـ grid بدون reload
+      const newCard = createCardHTML(data.item);
+      secondUseGrid.insertAdjacentHTML("afterbegin", newCard);
+      attachBookmarkEvents();
 
-        renderSecondUsePage();
-        addListingModal.classList.remove("show");
-        clearAddForm();
-      } catch (error) {
-        console.error("Failed to save listing:", error);
-        alert("Could not save this listing. The image may be too large or storage is full. Please try a smaller image.");
-      } finally {
-        resetAddButton();
-      }
-    };
-
-    reader.onerror = function () {
-      alert("Could not read the selected image.");
+      addListingModal.classList.remove("show");
+      clearAddForm();
+    } catch (err) {
+      console.error("Failure add_listing:", err);
+      alert("An error occurred while adding. Please try again.");
+    } finally {
       resetAddButton();
-    };
-
-    reader.readAsDataURL(file);
+    }
   });
 
-  if (savedUser) {
-    if (loginLink) loginLink.style.display = "none";
-    if (profileLink) profileLink.style.display = "inline-block";
-    if (authPill) authPill.textContent = savedUser;
-  } else {
-    if (loginLink) loginLink.style.display = "inline-block";
-    if (profileLink) profileLink.style.display = "none";
-    if (authPill) authPill.textContent = "Guest Mode";
+  // ─── Helpers ──────────────────────────────────────────────────────────────
+  function clearAddForm() {
+    document.getElementById("addTitle").value       = "";
+    document.getElementById("addDescription").value = "";
+    document.getElementById("addPrice").value        = "";
+    document.getElementById("addContact").value      = "";
+    document.getElementById("addImage").value        = "";
   }
 
- 
+  function resetAddButton() {
+    confirmAddBtn.disabled    = false;
+    confirmAddBtn.textContent = "Add Listing";
+  }
 
-  renderSecondUsePage();
+  function updateAuthUI(username) {
+    if (username) {
+      isLoggedIn = true;
+      if (loginLink)   loginLink.style.display   = "none";
+      if (profileLink) profileLink.style.display = "inline-block";
+      if (authPill)    authPill.textContent       = username;
+    } else {
+      if (loginLink)   loginLink.style.display   = "inline-block";
+      if (profileLink) profileLink.style.display = "none";
+      if (authPill)    authPill.textContent       = "Guest Mode";
+    }
+  }
 
+  // ─── ابدأ ──────────────────────────────────────────────────────────────────
+  loadListings();
   </script>
 </body>
 
