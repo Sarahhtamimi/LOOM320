@@ -249,6 +249,16 @@ function validate_listing(array $post, array $files, bool $imageRequired): array
 $userId = current_user_id();
 if (!$userId) redirect('login.php');
 
+$editErrors = [];
+$editOld = [
+    'item_id' => '',
+    'title' => '',
+    'description' => '',
+    'price' => '',
+    'contact_method' => '',
+];
+$openEditModal = false;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -271,26 +281,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($action === 'edit_listing') {
+        $itemId = (int)($_POST['item_id'] ?? 0);
+
+        $editOld = [
+            'item_id' => (string)$itemId,
+            'title' => trim((string)($_POST['title'] ?? '')),
+            'description' => trim((string)($_POST['description'] ?? '')),
+            'price' => trim((string)($_POST['price'] ?? '')),
+            'contact_method' => trim((string)($_POST['contact_method'] ?? '')),
+        ];
+
         [$errors, $data] = validate_listing($_POST, $_FILES, false);
-        if (!$errors) {
-            $itemId = (int)($_POST['item_id'] ?? 0);
+
+        if ($errors) {
+            $editErrors = $errors;
+            $openEditModal = true;
+        } else {
             if ($data['photo']) {
                 $stmt = db()->prepare(
                     'UPDATE `seconduseitem`
                      SET title = ?, photo = ?, description = ?, price = ?, contact_method = ?
                      WHERE secondUseItem_id = ? AND user_id = ?'
                 );
-                $stmt->execute([$data['title'], $data['photo'], $data['description'], (float)$data['price'], $data['contact_method'], $itemId, $userId]);
+                $stmt->execute([
+                    $data['title'],
+                    $data['photo'],
+                    $data['description'],
+                    (float)$data['price'],
+                    $data['contact_method'],
+                    $itemId,
+                    $userId
+                ]);
             } else {
                 $stmt = db()->prepare(
                     'UPDATE `seconduseitem`
                      SET title = ?, description = ?, price = ?, contact_method = ?
                      WHERE secondUseItem_id = ? AND user_id = ?'
                 );
-                $stmt->execute([$data['title'], $data['description'], (float)$data['price'], $data['contact_method'], $itemId, $userId]);
+                $stmt->execute([
+                    $data['title'],
+                    $data['description'],
+                    (float)$data['price'],
+                    $data['contact_method'],
+                    $itemId,
+                    $userId
+                ]);
             }
+
+            redirect('user_account.php');
         }
-        redirect('user_account.php');
     }
 }
 
@@ -854,6 +893,25 @@ $listings = $listingStmt->fetchAll();
       box-shadow: 0 0 0 4px rgba(222, 164, 173, 0.13);
     }
 
+    .form-error-box {
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #fff1f1;
+      border: 1px solid #f0cccc;
+      color: #9f4e4e;
+      font-size: 0.88rem;
+    }
+
+    .form-error-box ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .form-error-box li {
+      margin: 3px 0;
+    }
+
     .modal-actions {
       display: flex;
       justify-content: flex-end;
@@ -1270,32 +1328,42 @@ $listings = $listingStmt->fetchAll();
     </div>
   </footer>
 
-  <div class="modal-overlay" id="editModal">
+  <div class="modal-overlay <?= $openEditModal ? 'show' : '' ?>" id="editModal">
     <div class="modal-box">
       <h3 class="modal-title">Edit Listing</h3>
       <p class="modal-text">Update your piece details below.</p>
       <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="edit_listing">
-        <input type="hidden" name="item_id" id="editItemId" value="">
+        <input type="hidden" name="item_id" id="editItemId" value="<?= e($editOld['item_id']) ?>">
+
+        <?php if ($editErrors): ?>
+          <div class="form-error-box">
+            <ul>
+              <?php foreach ($editErrors as $error): ?>
+                <li><?= e($error) ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        <?php endif; ?>
 
       <div class="form-group">
         <label for="editTitle">Title</label>
-        <input id="editTitle" name="title" class="form-input" type="text" />
+        <input id="editTitle" name="title" class="form-input" type="text" value="<?= e($editOld['title']) ?>" />
       </div>
 
       <div class="form-group">
         <label for="editDescription">Description</label>
-        <textarea id="editDescription" name="description" class="form-textarea"></textarea>
+        <textarea id="editDescription" name="description" class="form-textarea"><?= e($editOld['description']) ?></textarea>
       </div>
 
       <div class="form-group">
         <label for="editPrice">Price</label>
-        <input id="editPrice" name="price" class="form-input" type="text" />
+        <input id="editPrice" name="price" class="form-input" type="text" value="<?= e($editOld['price']) ?>" />
       </div>
 
       <div class="form-group">
         <label for="editContact">Contact method</label>
-        <input id="editContact" name="contact_method" class="form-input" type="text" />
+        <input id="editContact" name="contact_method" class="form-input" type="text" value="<?= e($editOld['contact_method']) ?>" />
       </div>
 
       <div class="form-group">
