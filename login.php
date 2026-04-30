@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION["email"] = $user["email"];
                 $_SESSION["role"] = "user";
 
-                header("Location: index.html");
+                header("Location: index.php");
                 exit;
             }
 
