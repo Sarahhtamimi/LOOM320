@@ -582,7 +582,6 @@ $username = $_SESSION['username'] ?? "Guest Mode";
               stroke-linecap="round" />
           </svg>
         </div>
-        
         <div class="wordmark">LOOM</div>
       </a>
 
@@ -740,3 +739,5 @@ window.addEventListener("click", (e) => {
     </script>
 </body>
 </html>
+
+

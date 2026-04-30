@@ -619,7 +619,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
     </div>
 
-    
     <div class="side-card">
       <img src="images/admin-blog-side.png" alt="LOOM Admin Visual">
       <div class="side-content">
