@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION["email"] = $email;
                 $_SESSION["role"] = "user";
 
-                header("Location: index.php");
+                header("Location: index.html");
                 exit;
             }
         } catch (PDOException $e) {
