@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LOOM — Sign In</title>
+  <title>LOOM — Sign Up</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -178,8 +178,6 @@
       isolation: isolate;
     }
 
-
-
     .auth-wrapper {
       position: relative;
       z-index: 2;
@@ -350,6 +348,34 @@
       font-weight: 700;
     }
 
+    .error-text {
+      display: block;
+      margin-top: 6px;
+      font-size: 13px;
+      color: #b3261e;
+      min-height: 18px;
+    }
+
+    .message {
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      min-height: 20px;
+    }
+
+    .message.success {
+      color: #2e7d32;
+    }
+
+    .message.error {
+      color: #b3261e;
+    }
+
+    input.invalid {
+      border: 1px solid #b3261e !important;
+      box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.10);
+    }
+
     @media (max-width: 980px) {
       nav {
         display: none;
@@ -380,23 +406,27 @@
 
 <body>
 
-
   <main class="auth-page">
     <div class="container">
       <section class="auth-shell">
 
 
         <div class="auth-wrapper">
-          <div class="eyebrow"><i></i> Welcome back to LOOM</div>
-          <h1>Sign In</h1>
+          <div class="eyebrow"><i></i> Create your LOOM account</div>
+          <h1>Join LOOM</h1>
           <p class="subtitle">
-            Sign in to manage your activity and continue your LOOM journey with the same elegant experience as the
-            homepage.
+            Create an account to start your sustainable fashion journey with a calm, elegant experience.
           </p>
 
           <div class="card">
-            <form id="loginForm" novalidate>
+            <form id="signupForm" novalidate>
               <div class="form-grid">
+                <div class="field">
+                  <label for="fullName">Full Name</label>
+                  <input type="text" id="fullName" name="fullName" placeholder="Your name" />
+                  <small class="error-text" id="fullNameError"></small>
+                </div>
+
                 <div class="field">
                   <label for="email">Email</label>
                   <input type="email" id="email" name="email" placeholder="you@example.com" />
@@ -411,11 +441,11 @@
 
                 <div id="formMessage" class="message"></div>
 
-                <button type="submit" class="submit-btn">Sign In</button>
+                <button type="submit" class="submit-btn">Create Account</button>
 
                 <p class="bottom-text">
-                  Don’t have an account?
-                  <a class="switch-link" href="register.html">Create Account</a>
+                  Already have an account?
+                  <a class="switch-link" href="login.html">Sign In</a>
                 </p>
               </div>
             </form>
@@ -425,23 +455,32 @@
     </div>
   </main>
 
+
+
+
+
+
   <script>
-    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const fullNameInput = document.getElementById("fullName");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
 
+    const fullNameError = document.getElementById("fullNameError");
     const emailError = document.getElementById("emailError");
     const passwordError = document.getElementById("passwordError");
     const formMessage = document.getElementById("formMessage");
 
-    const submitButton = loginForm.querySelector(".submit-btn");
+    const submitButton = signupForm.querySelector(".submit-btn");
 
     function clearErrors() {
+      fullNameError.textContent = "";
       emailError.textContent = "";
       passwordError.textContent = "";
       formMessage.textContent = "";
       formMessage.className = "message";
 
+      fullNameInput.classList.remove("invalid");
       emailInput.classList.remove("invalid");
       passwordInput.classList.remove("invalid");
     }
@@ -460,13 +499,26 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    function validateLoginForm() {
+    function isValidPassword(password) {
+      return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password);
+    }
+
+    function validateSignupForm() {
       clearErrors();
 
+      const fullName = fullNameInput.value.trim();
       const email = emailInput.value.trim().toLowerCase();
       const password = passwordInput.value.trim();
 
       let isValid = true;
+
+      if (fullName === "") {
+        showFieldError(fullNameInput, fullNameError, "Please enter your full name.");
+        isValid = false;
+      } else if (fullName.length < 3) {
+        showFieldError(fullNameInput, fullNameError, "Name must be at least 3 characters.");
+        isValid = false;
+      }
 
       if (email === "") {
         showFieldError(emailInput, emailError, "Please enter your email.");
@@ -479,46 +531,64 @@
       if (password === "") {
         showFieldError(passwordInput, passwordError, "Please enter your password.");
         isValid = false;
+      } else if (!isValidPassword(password)) {
+        showFieldError(
+          passwordInput,
+          passwordError,
+          "Password must be at least 8 characters and include at least one letter and one number."
+        );
+        isValid = false;
       }
 
       if (!isValid) return null;
 
-      return { email, password };
+      return {
+        fullName,
+        email,
+        password
+      };
     }
 
     function getStoredUsers() {
       return JSON.parse(localStorage.getItem("loomUsers")) || [];
     }
 
-    loginForm.addEventListener("submit", function (e) {
+    function saveStoredUsers(users) {
+      localStorage.setItem("loomUsers", JSON.stringify(users));
+    }
+
+    signupForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const loginData = validateLoginForm();
-      if (!loginData) return;
+      const userData = validateSignupForm();
+      if (!userData) return;
 
       submitButton.disabled = true;
-      submitButton.textContent = "Signing In...";
+      submitButton.textContent = "Creating...";
 
       try {
         const users = getStoredUsers();
 
-        const matchedUser = users.find(
-          user =>
-            user.email.toLowerCase() === loginData.email &&
-            user.password === loginData.password
+        const existingUser = users.find(
+          user => user.email.toLowerCase() === userData.email.toLowerCase()
         );
 
-        if (!matchedUser) {
-          showFormMessage("Incorrect email or password.", "error");
+        if (existingUser) {
+          showFieldError(emailInput, emailError, "This email is already registered.");
+          showFormMessage("Registration failed. This email already exists.", "error");
           submitButton.disabled = false;
-          submitButton.textContent = "Sign In";
+          submitButton.textContent = "Create Account";
           return;
         }
 
-        localStorage.setItem("loomLoggedInUser", matchedUser.fullName);
-        localStorage.setItem("loomUserEmail", matchedUser.email);
+        users.push(userData);
+        saveStoredUsers(users);
 
-        showFormMessage("Login successful. Redirecting...", "success");
+        localStorage.setItem("loomLoggedInUser", userData.fullName);
+        localStorage.setItem("loomUserEmail", userData.email);
+
+        showFormMessage("Account created successfully. Redirecting...", "success");
+        signupForm.reset();
 
         setTimeout(function () {
           window.location.href = "index.html";
@@ -526,12 +596,19 @@
       } catch (error) {
         showFormMessage("Something went wrong. Please try again.", "error");
         submitButton.disabled = false;
-        submitButton.textContent = "Sign In";
+        submitButton.textContent = "Create Account";
         return;
       }
 
       submitButton.disabled = false;
-      submitButton.textContent = "Sign In";
+      submitButton.textContent = "Create Account";
+    });
+
+    fullNameInput.addEventListener("input", function () {
+      fullNameError.textContent = "";
+      fullNameInput.classList.remove("invalid");
+      formMessage.textContent = "";
+      formMessage.className = "message";
     });
 
     emailInput.addEventListener("input", function () {
