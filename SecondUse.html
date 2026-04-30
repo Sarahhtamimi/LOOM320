@@ -733,7 +733,7 @@
       renderGrid(data.items);
       updateAuthUI(data.username || null);
     } catch (err) {
-      console.error("Failed to load:", err);
+      console.error("فشل تحميل الإعلانات:", err);
     }
   }
 
@@ -791,7 +791,7 @@
 
   async function handleBookmarkClick(btn) {
     if (!isLoggedIn) {
-      alert("You must log in first to bookmark.");
+      alert("يجب تسجيل الدخول أولاً لحفظ الإعلانات.");
       window.location.href = "register.html";
       return;
     }
@@ -817,8 +817,8 @@
         bookmarkedIds = bookmarkedIds.filter(function (id) { return id !== itemId; });
       }
     } catch (err) {
-      console.error("Failed toggle_bookmark:", err);
-      alert("An error occurred. Please try again.");
+      console.error("فشل toggle_bookmark:", err);
+      alert("حدث خطأ. حاول مجدداً.");
     } finally {
       btn.disabled = false;
     }
@@ -827,7 +827,7 @@
   // ─── Add Listing — AJAX (multipart) ──────────────────────────────────────
   openAddListingBtn.addEventListener("click", function () {
     if (!isLoggedIn) {
-      alert("You must log in first.");
+      alert("يجب تسجيل الدخول أولاً لإضافة إعلان.");
       window.location.href = "register.html";
       return;
     }
@@ -851,7 +851,7 @@
   confirmAddBtn.addEventListener("click", async function () {
     if (confirmAddBtn.disabled) return;
     if (!isLoggedIn) {
-      alert("You must log in first.");
+      alert("يجب تسجيل الدخول أولاً.");
       window.location.href = "register.html";
       return;
     }
@@ -864,25 +864,25 @@
 
     // ── Validation (نفس قواعد الـ HTML الأصلية) ──────────────────────────
     if (!title || !description || !price || !contact || !file) {
-      alert("Please fill in all the fields."); return;
+      alert("يرجى تعبئة جميع الحقول."); return;
     }
-    if (title.length > 150)       { alert("The title must be 150 characters or less."); return; }
-    if (description.length > 500) { alert("The description must be 500 characters or less.");   return; }
+    if (title.length > 150)       { alert("العنوان يجب أن يكون 150 حرفاً أو أقل."); return; }
+    if (description.length > 500) { alert("الوصف يجب أن يكون 500 حرف أو أقل.");   return; }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^(05\d{8}|(\+966|966)5\d{8})$/;
     if (!emailRegex.test(contact) && !phoneRegex.test(contact)) {
-      alert("The method of communication must be an email or a Saudi mobile number."); return;
+      alert("طريقة التواصل يجب أن تكون إيميل أو رقم جوال سعودي."); return;
     }
 
     const priceNum = Number(price);
-    if (isNaN(priceNum) || priceNum <= 0) { alert("The price must be a positive number."); return; }
+    if (isNaN(priceNum) || priceNum <= 0) { alert("السعر يجب أن يكون رقماً موجباً."); return; }
 
-    if (file.size > 1.5 * 1024 * 1024) { alert("The image is larger than 1.5 MB."); return; }
+    if (file.size > 1.5 * 1024 * 1024) { alert("الصورة أكبر من 1.5 MB."); return; }
 
     // ── إرسال إلى PHP ─────────────────────────────────────────────────────
     confirmAddBtn.disabled    = true;
-    confirmAddBtn.textContent = "Adding...";
+    confirmAddBtn.textContent = "جاري الإضافة...";
 
     const formData = new FormData();
     formData.append("title",       title);
@@ -905,8 +905,8 @@
       addListingModal.classList.remove("show");
       clearAddForm();
     } catch (err) {
-      console.error("Failure add_listing:", err);
-      alert("An error occurred while adding. Please try again.");
+      console.error("فشل add_listing:", err);
+      alert("حدث خطأ أثناء الإضافة. حاول مجدداً.");
     } finally {
       resetAddButton();
     }
