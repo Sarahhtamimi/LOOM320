@@ -378,52 +378,129 @@
   </style>
 </head>
 
-<body>
+<?php
+session_start();
+include "db/config.php";
 
+$emailError = "";
+$passwordError = "";
+$formMessage = "";
+$messageType = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = trim(strtolower($_POST["email"] ?? ""));
+    $password = trim($_POST["password"] ?? "");
+
+    $isValid = true;
+
+    if ($email === "") {
+        $emailError = "Please enter your email.";
+        $isValid = false;
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailError = "Please enter a valid email address.";
+        $isValid = false;
+    }
+
+    if ($password === "") {
+        $passwordError = "Please enter your password.";
+        $isValid = false;
+    }
+
+    if ($isValid) {
+        $sql = "SELECT user_id, username, email, password FROM `user` WHERE email = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        if (mysqli_num_rows($result) === 1) {
+            $user = mysqli_fetch_assoc($result);
+
+            if (password_verify($password, $user["password"])) {
+                $_SESSION["user_id"] = $user["user_id"];
+                $_SESSION["username"] = $user["username"];
+                $_SESSION["email"] = $user["email"];
+
+                header("Location: index.php");
+                exit();
+            } else {
+                $formMessage = "Incorrect email or password.";
+                $messageType = "error";
+            }
+        } else {
+            $formMessage = "Incorrect email or password.";
+            $messageType = "error";
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+}
+?>
+
+<body>
 
   <main class="auth-page">
     <div class="container">
       <section class="auth-shell">
 
-
         <div class="auth-wrapper">
           <div class="eyebrow"><i></i> Welcome back to LOOM</div>
+
           <h1>Sign In</h1>
+
           <p class="subtitle">
-            Sign in to manage your activity and continue your LOOM journey with the same elegant experience as the
-            homepage.
+            Sign in to manage your activity and continue your LOOM journey with the same elegant experience as the homepage.
           </p>
 
           <div class="card">
-            <form id="loginForm" novalidate>
+            <form id="loginForm" method="POST" action="login.php" novalidate>
               <div class="form-grid">
+
                 <div class="field">
                   <label for="email">Email</label>
-                  <input type="email" id="email" name="email" placeholder="you@example.com" />
-                  <small class="error-text" id="emailError"></small>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="you@example.com"
+                    value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
+                  />
+                  <small class="error-text" id="emailError"><?php echo $emailError; ?></small>
                 </div>
 
                 <div class="field">
                   <label for="password">Password</label>
-                  <input type="password" id="password" name="password" placeholder="••••••••" />
-                  <small class="error-text" id="passwordError"></small>
+                  <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="••••••••" 
+                  />
+                  <small class="error-text" id="passwordError"><?php echo $passwordError; ?></small>
                 </div>
 
-                <div id="formMessage" class="message"></div>
+                <div id="formMessage" class="message <?php echo $messageType; ?>">
+                  <?php echo $formMessage; ?>
+                </div>
 
                 <button type="submit" class="submit-btn">Sign In</button>
 
                 <p class="bottom-text">
                   Don’t have an account?
-                  <a class="switch-link" href="register.html">Create Account</a>
+                  <a class="switch-link" href="register.php">Create Account</a>
                 </p>
+
               </div>
             </form>
           </div>
         </div>
+
       </section>
     </div>
   </main>
+
+</body>
 
   <script>
     const loginForm = document.getElementById("loginForm");

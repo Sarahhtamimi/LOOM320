@@ -403,6 +403,84 @@
     }
   </style>
 </head>
+<?php
+session_start();
+include "db/config.php";
+
+$fullNameError = "";
+$emailError = "";
+$passwordError = "";
+$formMessage = "";
+$messageType = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $fullName = trim($_POST["fullName"] ?? "");
+    $email = trim(strtolower($_POST["email"] ?? ""));
+    $password = trim($_POST["password"] ?? "");
+
+    $isValid = true;
+
+    if ($fullName === "") {
+        $fullNameError = "Please enter your full name.";
+        $isValid = false;
+    } elseif (strlen($fullName) < 3) {
+        $fullNameError = "Name must be at least 3 characters.";
+        $isValid = false;
+    }
+
+    if ($email === "") {
+        $emailError = "Please enter your email.";
+        $isValid = false;
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailError = "Please enter a valid email address.";
+        $isValid = false;
+    }
+
+    if ($password === "") {
+        $passwordError = "Please enter your password.";
+        $isValid = false;
+    } elseif (strlen($password) < 8 || !preg_match("/[A-Za-z]/", $password) || !preg_match("/[0-9]/", $password)) {
+        $passwordError = "Password must be at least 8 characters and include at least one letter and one number.";
+        $isValid = false;
+    }
+
+    if ($isValid) {
+        $checkSql = "SELECT user_id FROM `user` WHERE email = ?";
+        $checkStmt = mysqli_prepare($conn, $checkSql);
+        mysqli_stmt_bind_param($checkStmt, "s", $email);
+        mysqli_stmt_execute($checkStmt);
+        mysqli_stmt_store_result($checkStmt);
+
+        if (mysqli_stmt_num_rows($checkStmt) > 0) {
+            $emailError = "This email is already registered.";
+            $formMessage = "This email is already registered. Please sign in instead.";
+            $messageType = "error";
+        } else {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $insertSql = "INSERT INTO `user` (username, email, password) VALUES (?, ?, ?)";
+            $insertStmt = mysqli_prepare($conn, $insertSql);
+            mysqli_stmt_bind_param($insertStmt, "sss", $fullName, $email, $hashedPassword);
+
+            if (mysqli_stmt_execute($insertStmt)) {
+                $_SESSION["user_id"] = mysqli_insert_id($conn);
+                $_SESSION["username"] = $fullName;
+                $_SESSION["email"] = $email;
+
+                header("Location: index.php");
+                exit();
+            } else {
+                $formMessage = "Something went wrong. Please try again.";
+                $messageType = "error";
+            }
+
+            mysqli_stmt_close($insertStmt);
+        }
+
+        mysqli_stmt_close($checkStmt);
+    }
+}
+?>
 
 <body>
 
@@ -410,51 +488,75 @@
     <div class="container">
       <section class="auth-shell">
 
-
         <div class="auth-wrapper">
           <div class="eyebrow"><i></i> Create your LOOM account</div>
+
           <h1>Join LOOM</h1>
+
           <p class="subtitle">
             Create an account to start your sustainable fashion journey with a calm, elegant experience.
           </p>
 
           <div class="card">
-            <form id="signupForm" novalidate>
+            <form id="signupForm" method="POST" action="register.php" novalidate>
               <div class="form-grid">
+
                 <div class="field">
                   <label for="fullName">Full Name</label>
-                  <input type="text" id="fullName" name="fullName" placeholder="Your name" />
-                  <small class="error-text" id="fullNameError"></small>
+                  <input 
+                    type="text" 
+                    id="fullName" 
+                    name="fullName" 
+                    placeholder="Your name"
+                    value="<?php echo htmlspecialchars($_POST['fullName'] ?? ''); ?>"
+                  />
+                  <small class="error-text" id="fullNameError"><?php echo $fullNameError; ?></small>
                 </div>
 
                 <div class="field">
                   <label for="email">Email</label>
-                  <input type="email" id="email" name="email" placeholder="you@example.com" />
-                  <small class="error-text" id="emailError"></small>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="you@example.com"
+                    value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
+                  />
+                  <small class="error-text" id="emailError"><?php echo $emailError; ?></small>
                 </div>
 
                 <div class="field">
                   <label for="password">Password</label>
-                  <input type="password" id="password" name="password" placeholder="••••••••" />
-                  <small class="error-text" id="passwordError"></small>
+                  <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="••••••••" 
+                  />
+                  <small class="error-text" id="passwordError"><?php echo $passwordError; ?></small>
                 </div>
 
-                <div id="formMessage" class="message"></div>
+                <div id="formMessage" class="message <?php echo $messageType; ?>">
+                  <?php echo $formMessage; ?>
+                </div>
 
                 <button type="submit" class="submit-btn">Create Account</button>
 
                 <p class="bottom-text">
                   Already have an account?
-                  <a class="switch-link" href="login.html">Sign In</a>
+                  <a class="switch-link" href="login.php">Sign In</a>
                 </p>
+
               </div>
             </form>
           </div>
         </div>
+
       </section>
     </div>
   </main>
 
+</body>
 
 
 
