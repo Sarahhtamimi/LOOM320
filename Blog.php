@@ -564,10 +564,10 @@ echo json_encode($blogs);
       <nav>
         <a href="index.html">Home</a>
         <a href="brands.html">Brands</a>
-        <a href="Blog.html" class="active">Blogs</a>
-        <a href="SecondUse.html">Second Hand</a>
-        <a href="user_account.html" id="profileLink" style="display:none;">Profile</a>
-        <a href="register.html" id="loginLink">Login / Register</a>
+        <a href="Blog.php" class="active">Blogs</a>
+        <a href="SecondUse.php">Second Hand</a>
+        <a href="user_account.php" id="profileLink" style="display:none;">Profile</a>
+        <a href="register.php" id="loginLink">Login / Register</a>
       </nav>
 
       <div class="header-actions">
