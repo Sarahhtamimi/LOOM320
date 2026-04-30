@@ -1,3 +1,80 @@
+
+<?php
+require_once "db/config.php";
+
+$fullNameError = "";
+$emailError = "";
+$passwordError = "";
+$formMessage = "";
+$messageType = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $fullName = trim($_POST["fullName"] ?? "");
+    $email = trim(strtolower($_POST["email"] ?? ""));
+    $password = trim($_POST["password"] ?? "");
+
+    $isValid = true;
+
+    if ($fullName === "") {
+        $fullNameError = "Please enter your full name.";
+        $isValid = false;
+    } elseif (strlen($fullName) < 3) {
+        $fullNameError = "Name must be at least 3 characters.";
+        $isValid = false;
+    }
+
+    if ($email === "") {
+        $emailError = "Please enter your email.";
+        $isValid = false;
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailError = "Please enter a valid email address.";
+        $isValid = false;
+    }
+
+    if ($password === "") {
+        $passwordError = "Please enter your password.";
+        $isValid = false;
+    } elseif (strlen($password) < 8 || !preg_match("/[A-Za-z]/", $password) || !preg_match("/[0-9]/", $password)) {
+        $passwordError = "Password must be at least 8 characters and include at least one letter and one number.";
+        $isValid = false;
+    }
+
+    if ($isValid) {
+        try {
+            $pdo = getDB();
+
+            $checkStmt = $pdo->prepare("SELECT user_id FROM `User` WHERE LOWER(email) = ?");
+            $checkStmt->execute([$email]);
+
+            if ($checkStmt->rowCount() > 0) {
+                $emailError = "This email is already registered.";
+                $formMessage = "Registration failed. This email already exists.";
+                $messageType = "error";
+            } else {
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+                $insertStmt = $pdo->prepare(
+                    "INSERT INTO `User` (username, email, password) VALUES (?, ?, ?)"
+                );
+
+                $insertStmt->execute([$fullName, $email, $hashedPassword]);
+
+                $_SESSION["user_id"] = $pdo->lastInsertId();
+                $_SESSION["username"] = $fullName;
+                $_SESSION["email"] = $email;
+                $_SESSION["role"] = "user";
+
+                header("Location: index.php");
+                exit;
+            }
+        } catch (PDOException $e) {
+            $formMessage = "Database error. Please try again.";
+            $messageType = "error";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,24 +101,16 @@
       --border: rgba(67, 69, 67, .10);
       --shadow: 0 22px 60px rgba(67, 69, 67, .10);
       --shadow-soft: 0 12px 32px rgba(67, 69, 67, .08);
-      --r-xl: 28px;
-      --r-lg: 22px;
-      --r-md: 16px;
-      --r-sm: 12px;
-      --max: 1180px;
-      --ease: cubic-bezier(.2, .8, .2, 1);
       --error: #b54b4b;
       --success: #4d6a58;
+      --max: 1180px;
+      --ease: cubic-bezier(.2, .8, .2, 1);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
     }
 
     body {
@@ -69,94 +138,6 @@
       margin: 0 auto;
     }
 
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      backdrop-filter: blur(14px);
-      background: rgba(243, 232, 232, .72);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 14px 0;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 180px;
-    }
-
-    .logo-mark {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, .66);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .wordmark {
-      font-family: "Cormorant Garamond", serif;
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: .08em;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 0 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, .58);
-      box-shadow: var(--shadow-soft);
-    }
-
-    nav a {
-      padding: 11px 10px;
-      font-size: 13px;
-      font-weight: 700;
-      color: rgba(67, 69, 67, .84);
-      position: relative;
-    }
-
-    nav a.active::after {
-      content: "";
-      position: absolute;
-      left: 10px;
-      right: 10px;
-      bottom: 7px;
-      height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--terracotta), var(--blush));
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .pill {
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      padding: 11px 14px;
-      font-size: 13px;
-      font-weight: 800;
-      background: rgba(255, 255, 255, .65);
-      box-shadow: var(--shadow-soft);
-    }
-
     .auth-page {
       padding: 42px 0 60px;
     }
@@ -175,12 +156,9 @@
       min-height: calc(100vh - 180px);
       display: grid;
       place-items: center;
-      isolation: isolate;
     }
 
     .auth-wrapper {
-      position: relative;
-      z-index: 2;
       width: 100%;
       max-width: 540px;
       text-align: center;
@@ -262,10 +240,6 @@
       transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
     }
 
-    .field input::placeholder {
-      color: rgba(67, 69, 67, .42);
-    }
-
     .field input:focus {
       border-color: rgba(222, 164, 173, .95);
       box-shadow: 0 0 0 4px rgba(222, 164, 173, .16);
@@ -320,7 +294,7 @@
       color: var(--charcoal);
       background: linear-gradient(135deg, rgba(181, 100, 73, .24), rgba(222, 164, 173, .28));
       border: 1px solid rgba(181, 100, 73, .28);
-      transition: transform .18s var(--ease), box-shadow .18s var(--ease), filter .18s var(--ease);
+      transition: transform .18s var(--ease), box-shadow .18s var(--ease);
       box-shadow: var(--shadow-soft);
       margin-top: 4px;
     }
@@ -328,12 +302,6 @@
     .submit-btn:hover {
       transform: translateY(-1px);
       box-shadow: var(--shadow);
-    }
-
-    .submit-btn:disabled {
-      opacity: .78;
-      cursor: not-allowed;
-      transform: none;
     }
 
     .bottom-text {
@@ -346,40 +314,6 @@
     .switch-link {
       color: var(--terracotta);
       font-weight: 700;
-    }
-
-    .error-text {
-      display: block;
-      margin-top: 6px;
-      font-size: 13px;
-      color: #b3261e;
-      min-height: 18px;
-    }
-
-    .message {
-      margin-top: 6px;
-      font-size: 14px;
-      font-weight: 600;
-      min-height: 20px;
-    }
-
-    .message.success {
-      color: #2e7d32;
-    }
-
-    .message.error {
-      color: #b3261e;
-    }
-
-    input.invalid {
-      border: 1px solid #b3261e !important;
-      box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.10);
-    }
-
-    @media (max-width: 980px) {
-      nav {
-        display: none;
-      }
     }
 
     @media (max-width: 620px) {
@@ -403,84 +337,6 @@
     }
   </style>
 </head>
-<?php
-session_start();
-include "db/config.php";
-
-$fullNameError = "";
-$emailError = "";
-$passwordError = "";
-$formMessage = "";
-$messageType = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $fullName = trim($_POST["fullName"] ?? "");
-    $email = trim(strtolower($_POST["email"] ?? ""));
-    $password = trim($_POST["password"] ?? "");
-
-    $isValid = true;
-
-    if ($fullName === "") {
-        $fullNameError = "Please enter your full name.";
-        $isValid = false;
-    } elseif (strlen($fullName) < 3) {
-        $fullNameError = "Name must be at least 3 characters.";
-        $isValid = false;
-    }
-
-    if ($email === "") {
-        $emailError = "Please enter your email.";
-        $isValid = false;
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $emailError = "Please enter a valid email address.";
-        $isValid = false;
-    }
-
-    if ($password === "") {
-        $passwordError = "Please enter your password.";
-        $isValid = false;
-    } elseif (strlen($password) < 8 || !preg_match("/[A-Za-z]/", $password) || !preg_match("/[0-9]/", $password)) {
-        $passwordError = "Password must be at least 8 characters and include at least one letter and one number.";
-        $isValid = false;
-    }
-
-    if ($isValid) {
-        $checkSql = "SELECT user_id FROM `user` WHERE email = ?";
-        $checkStmt = mysqli_prepare($conn, $checkSql);
-        mysqli_stmt_bind_param($checkStmt, "s", $email);
-        mysqli_stmt_execute($checkStmt);
-        mysqli_stmt_store_result($checkStmt);
-
-        if (mysqli_stmt_num_rows($checkStmt) > 0) {
-            $emailError = "This email is already registered.";
-            $formMessage = "This email is already registered. Please sign in instead.";
-            $messageType = "error";
-        } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            $insertSql = "INSERT INTO `user` (username, email, password) VALUES (?, ?, ?)";
-            $insertStmt = mysqli_prepare($conn, $insertSql);
-            mysqli_stmt_bind_param($insertStmt, "sss", $fullName, $email, $hashedPassword);
-
-            if (mysqli_stmt_execute($insertStmt)) {
-                $_SESSION["user_id"] = mysqli_insert_id($conn);
-                $_SESSION["username"] = $fullName;
-                $_SESSION["email"] = $email;
-
-                header("Location: index.php");
-                exit();
-            } else {
-                $formMessage = "Something went wrong. Please try again.";
-                $messageType = "error";
-            }
-
-            mysqli_stmt_close($insertStmt);
-        }
-
-        mysqli_stmt_close($checkStmt);
-    }
-}
-?>
 
 <body>
 
@@ -498,45 +354,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </p>
 
           <div class="card">
-            <form id="signupForm" method="POST" action="register.php" novalidate>
+            <form method="POST" action="register.php" novalidate>
               <div class="form-grid">
 
                 <div class="field">
                   <label for="fullName">Full Name</label>
-                  <input 
-                    type="text" 
-                    id="fullName" 
-                    name="fullName" 
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
                     placeholder="Your name"
+                    class="<?php echo $fullNameError ? 'invalid' : ''; ?>"
                     value="<?php echo htmlspecialchars($_POST['fullName'] ?? ''); ?>"
                   />
-                  <small class="error-text" id="fullNameError"><?php echo $fullNameError; ?></small>
+                  <small class="error-text"><?php echo $fullNameError; ?></small>
                 </div>
 
                 <div class="field">
                   <label for="email">Email</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
                     placeholder="you@example.com"
+                    class="<?php echo $emailError ? 'invalid' : ''; ?>"
                     value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                   />
-                  <small class="error-text" id="emailError"><?php echo $emailError; ?></small>
+                  <small class="error-text"><?php echo $emailError; ?></small>
                 </div>
 
                 <div class="field">
                   <label for="password">Password</label>
-                  <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="••••••••" 
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    class="<?php echo $passwordError ? 'invalid' : ''; ?>"
                   />
-                  <small class="error-text" id="passwordError"><?php echo $passwordError; ?></small>
+                  <small class="error-text"><?php echo $passwordError; ?></small>
                 </div>
 
-                <div id="formMessage" class="message <?php echo $messageType; ?>">
+                <div class="message <?php echo $messageType; ?>">
                   <?php echo $formMessage; ?>
                 </div>
 
@@ -557,177 +416,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </main>
 
 </body>
-
-
-
-
-
-  <script>
-    const signupForm = document.getElementById("signupForm");
-    const fullNameInput = document.getElementById("fullName");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-
-    const fullNameError = document.getElementById("fullNameError");
-    const emailError = document.getElementById("emailError");
-    const passwordError = document.getElementById("passwordError");
-    const formMessage = document.getElementById("formMessage");
-
-    const submitButton = signupForm.querySelector(".submit-btn");
-
-    function clearErrors() {
-      fullNameError.textContent = "";
-      emailError.textContent = "";
-      passwordError.textContent = "";
-      formMessage.textContent = "";
-      formMessage.className = "message";
-
-      fullNameInput.classList.remove("invalid");
-      emailInput.classList.remove("invalid");
-      passwordInput.classList.remove("invalid");
-    }
-
-    function showFieldError(input, errorElement, message) {
-      errorElement.textContent = message;
-      input.classList.add("invalid");
-    }
-
-    function showFormMessage(message, type) {
-      formMessage.textContent = message;
-      formMessage.className = "message " + type;
-    }
-
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function isValidPassword(password) {
-      return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password);
-    }
-
-    function validateSignupForm() {
-      clearErrors();
-
-      const fullName = fullNameInput.value.trim();
-      const email = emailInput.value.trim().toLowerCase();
-      const password = passwordInput.value.trim();
-
-      let isValid = true;
-
-      if (fullName === "") {
-        showFieldError(fullNameInput, fullNameError, "Please enter your full name.");
-        isValid = false;
-      } else if (fullName.length < 3) {
-        showFieldError(fullNameInput, fullNameError, "Name must be at least 3 characters.");
-        isValid = false;
-      }
-
-      if (email === "") {
-        showFieldError(emailInput, emailError, "Please enter your email.");
-        isValid = false;
-      } else if (!isValidEmail(email)) {
-        showFieldError(emailInput, emailError, "Please enter a valid email address.");
-        isValid = false;
-      }
-
-      if (password === "") {
-        showFieldError(passwordInput, passwordError, "Please enter your password.");
-        isValid = false;
-      } else if (!isValidPassword(password)) {
-        showFieldError(
-          passwordInput,
-          passwordError,
-          "Password must be at least 8 characters and include at least one letter and one number."
-        );
-        isValid = false;
-      }
-
-      if (!isValid) return null;
-
-      return {
-        fullName,
-        email,
-        password
-      };
-    }
-
-    function getStoredUsers() {
-      return JSON.parse(localStorage.getItem("loomUsers")) || [];
-    }
-
-    function saveStoredUsers(users) {
-      localStorage.setItem("loomUsers", JSON.stringify(users));
-    }
-
-    signupForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const userData = validateSignupForm();
-      if (!userData) return;
-
-      submitButton.disabled = true;
-      submitButton.textContent = "Creating...";
-
-      try {
-        const users = getStoredUsers();
-
-        const existingUser = users.find(
-          user => user.email.toLowerCase() === userData.email.toLowerCase()
-        );
-
-        if (existingUser) {
-          showFieldError(emailInput, emailError, "This email is already registered.");
-          showFormMessage("Registration failed. This email already exists.", "error");
-          submitButton.disabled = false;
-          submitButton.textContent = "Create Account";
-          return;
-        }
-
-        users.push(userData);
-        saveStoredUsers(users);
-
-        localStorage.setItem("loomLoggedInUser", userData.fullName);
-        localStorage.setItem("loomUserEmail", userData.email);
-
-        showFormMessage("Account created successfully. Redirecting...", "success");
-        signupForm.reset();
-
-        setTimeout(function () {
-          window.location.href = "index.html";
-        }, 1000);
-      } catch (error) {
-        showFormMessage("Something went wrong. Please try again.", "error");
-        submitButton.disabled = false;
-        submitButton.textContent = "Create Account";
-        return;
-      }
-
-      submitButton.disabled = false;
-      submitButton.textContent = "Create Account";
-    });
-
-    fullNameInput.addEventListener("input", function () {
-      fullNameError.textContent = "";
-      fullNameInput.classList.remove("invalid");
-      formMessage.textContent = "";
-      formMessage.className = "message";
-    });
-
-    emailInput.addEventListener("input", function () {
-      emailError.textContent = "";
-      emailInput.classList.remove("invalid");
-      formMessage.textContent = "";
-      formMessage.className = "message";
-    });
-
-    passwordInput.addEventListener("input", function () {
-      passwordError.textContent = "";
-      passwordInput.classList.remove("invalid");
-      formMessage.textContent = "";
-      formMessage.className = "message";
-    });
-  </script>
-
-</body>
-
 </html>

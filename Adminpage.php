@@ -1,3 +1,12 @@
+<?php
+require_once "db/config.php";
+
+if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
+    header("Location: login.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
