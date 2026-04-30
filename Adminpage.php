@@ -503,8 +503,8 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
 
       
 <nav>
-  <a href="admin-dashboard.html" class="active">Admin</a>
-  <a href="Blog.html">Blog</a>
+  <a href="Adminpage.php" class="active">Admin</a>
+  <a href="Blog.php">Blog</a>
 </nav>
 
 
@@ -670,7 +670,7 @@ const savedUser = localStorage.getItem("loomLoggedInUser");
 logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("loomLoggedInUser");
   localStorage.removeItem("loomUserEmail");
-  window.location.href = "index.html";
+  window.location.href = "index.php";
 });
 
     

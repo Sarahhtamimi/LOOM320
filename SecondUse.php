@@ -962,9 +962,9 @@ $username = $_SESSION['username'] ?? null;
       </a>
 
       <nav>
-        <a href="index.html">Home</a>
-        <a href="brands.html">Brands</a>
-        <a href="Blog.pphp">Blogs</a>
+        <a href="index.php">Home</a>
+        <a href="brands.php">Brands</a>
+        <a href="Blog.php">Blogs</a>
         <a href="SecondUse.php" class="active">Second Hand</a>
         <?php if ($isLoggedIn): ?><a href="user_account.php" id="profileLink">Profile</a><?php else: ?><a href="user_account.php" id="profileLink" style="display:none;">Profile</a><?php endif; ?>
         <?php if (!$isLoggedIn): ?><a href="login.php" id="loginLink">Login</a><?php else: ?><a href="login.php" id="loginLink" style="display:none;">Login</a><?php endif; ?>

@@ -1094,11 +1094,11 @@ $listings = $listingStmt->fetchAll();
       </a>
 
    <nav>
-        <a href="index.html">Home</a>
-        <a href="brands.html">Brands</a>
-        <a href="Blog.php" class="active">Blogs</a>
+        <a href="index.php">Home</a>
+        <a href="brands.php">Brands</a>
+        <a href="Blog.php">Blogs</a>
         <a href="SecondUse.php">Second Hand</a>
-        <a href="user_account.php" id="profileLink" style="display:none;">Profile</a>
+        <a href="user_account.php" id="profileLink" style="display:none;"class="active">Profile</a>
         <a href="register.php" id="loginLink">Login / Register</a>
       </nav>
 

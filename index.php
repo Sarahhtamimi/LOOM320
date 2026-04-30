@@ -1,3 +1,14 @@
+<?php
+declare(strict_types=1);
+session_start();
+
+function e($value): string {
+    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+}
+
+$isLoggedIn = isset($_SESSION["user_id"]);
+$username = $_SESSION["username"] ?? "Guest Mode";
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1057,7 +1068,7 @@
     }
 
 
-   .footer-about h4,
+    .footer-about h4,
     .footer-info h4 {
       margin: 0 0 8px;
       font-family: "Cormorant Garamond", serif;
@@ -1196,31 +1207,39 @@
 </head>
 
 <body>
+
+
   <header class="header">
     <div class="container header-inner">
-      <a class="brand" href="#home" aria-label="LOOM home">
+      <a class="brand" href="home.html" aria-label="LOOM Home">
         <div class="logo-mark">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M13 4L9.5 20" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" />
-            <path d="M8.5 7.5c3-2 6-2 9 0" stroke="var(--blush)" stroke-width="2" stroke-linecap="round" />
-            <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="var(--terracotta)"
-              stroke-width="2" stroke-linecap="round" />
+            <path d="M13 4L9.5 20" stroke="#6B7883" stroke-width="2" stroke-linecap="round" />
+            <path d="M8.5 7.5c3-2 6-2 9 0" stroke="#DEA4AD" stroke-width="2" stroke-linecap="round" />
+            <path d="M9.2 7.6c-3.2 2.2-3.5 5.2-.6 7.2 2.4 1.6 6.1 1.3 9.4-1.2" stroke="#B56449" stroke-width="2"
+              stroke-linecap="round" />
           </svg>
         </div>
         <div class="wordmark">LOOM</div>
       </a>
 
-     <nav>
-        <a href="index.html">Home</a>
-        <a href="brands.html">Brands</a>
-        <a href="Blog.php" class="active">Blogs</a>
-        <a href="SecondUse.php">Second Hand</a>
-        <a href="user_account.php" id="profileLink" style="display:none;">Profile</a>
-        <a href="register.php" id="loginLink">Login / Register</a>
+      <nav>
+        <a href="index.php"class="active">Home</a>
+        <a href="brands.php">Brands</a>
+        <a href="Blog.php">Blogs</a>
+        <a href="SecondUse.php" >Second Hand</a>
+        <?php if ($isLoggedIn): ?><a href="user_account.php" id="profileLink">Profile</a>
+        <?php else: ?><a href="user_account.php" id="profileLink" style="display:none;">Profile</a>
+        <?php endif; ?>
+        <?php if (!$isLoggedIn): ?><a href="login.php" id="loginLink">Login</a>
+        <?php else: ?><a href="login.php" id="loginLink" style="display:none;">Login</a>
+        <?php endif; ?>
       </nav>
 
       <div class="header-actions">
-        <button class="pill" id="authPill">Guest Mode</button>
+        <button class="pill" id="authPill">
+          <?= e($username ?? "Guest Mode") ?>
+        </button>
       </div>
     </div>
   </header>
@@ -1561,23 +1580,6 @@
   </main>
 
   <script>
-
-    const loginLink = document.getElementById("loginLink");
-    const profileLink = document.getElementById("profileLink");
-    const authPill = document.getElementById("authPill");
-
-    const savedUser = localStorage.getItem("loomLoggedInUser");
-
-    if (savedUser) {
-      loginLink.style.display = "none";
-      profileLink.style.display = "inline-block";
-      if (authPill) authPill.textContent = savedUser;
-    } else {
-      loginLink.style.display = "inline-block";
-      profileLink.style.display = "none";
-      if (authPill) authPill.textContent = "Guest Mode";
-    }
-
 
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

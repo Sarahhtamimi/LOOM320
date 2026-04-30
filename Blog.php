@@ -1,17 +1,17 @@
 <?php
-include("db.php");
+declare(strict_types=1);
+session_start();
 
-$query = "SELECT blog_id, title, image, content, publish_date FROM BlogPost ORDER BY publish_date DESC";
-$result = mysqli_query($conn, $query);
-
-$blogs = [];
-
-while ($row = mysqli_fetch_assoc($result)) {
-  $blogs[] = $row;
+function e($value): string {
+    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
-echo json_encode($blogs);
+$isLoggedIn = isset($_SESSION["user_id"]);
+$username = $_SESSION["username"] ?? "Guest Mode";
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -546,8 +546,7 @@ echo json_encode($blogs);
 </head>
 
 <body>
-
-  <header class="header">
+<header class="header">
     <div class="container header-inner">
       <a class="brand" href="home.html" aria-label="LOOM Home">
         <div class="logo-mark">
@@ -562,16 +561,22 @@ echo json_encode($blogs);
       </a>
 
       <nav>
-        <a href="index.html">Home</a>
-        <a href="brands.html">Brands</a>
-        <a href="Blog.php" class="active">Blogs</a>
-        <a href="SecondUse.php">Second Hand</a>
-        <a href="user_account.php" id="profileLink" style="display:none;">Profile</a>
-        <a href="register.php" id="loginLink">Login / Register</a>
+        <a href="index.php">Home</a>
+        <a href="brands.php">Brands</a>
+        <a href="Blog.php"class="active">Blogs</a>
+        <a href="SecondUse.php" >Second Hand</a>
+        <?php if ($isLoggedIn): ?><a href="user_account.php" id="profileLink">Profile</a>
+        <?php else: ?><a href="user_account.php" id="profileLink" style="display:none;">Profile</a>
+        <?php endif; ?>
+        <?php if (!$isLoggedIn): ?><a href="login.php" id="loginLink">Login</a>
+        <?php else: ?><a href="login.php" id="loginLink" style="display:none;">Login</a>
+        <?php endif; ?>
       </nav>
 
       <div class="header-actions">
-        <button class="pill" id="authPill">Guest Mode</button>
+        <button class="pill" id="authPill">
+          <?= e($username ?? "Guest Mode") ?>
+        </button>
       </div>
     </div>
   </header>
@@ -754,20 +759,30 @@ echo json_encode($blogs);
 
     renderBlogs();
 
-    const loginLink = document.getElementById("loginLink");
-    const profileLink = document.getElementById("profileLink");
-    const authPill = document.getElementById("authPill");
-    const savedUser = localStorage.getItem("loomLoggedInUser");
+   const addListingModal  = document.getElementById("addListingModal");
+  const openAddListingBtn = document.getElementById("openAddListingBtn");
+  const cancelAddBtn     = document.getElementById("cancelAddBtn");
+  const confirmAddBtn    = document.getElementById("confirmAddBtn");
+  const isLoggedIn = <?= $isLoggedIn ? 'true' : 'false' ?>;
 
-    if (savedUser) {
-      if (loginLink) loginLink.style.display = "none";
-      if (profileLink) profileLink.style.display = "inline-block";
-      if (authPill) authPill.textContent = savedUser;
-    } else {
-      if (loginLink) loginLink.style.display = "inline-block";
-      if (profileLink) profileLink.style.display = "none";
-      if (authPill) authPill.textContent = "Guest Mode";
+  openAddListingBtn.addEventListener("click", function () {
+    if (!isLoggedIn) {
+      alert("You must log in first.");
+      window.location.href = "login.php";
+      return;
     }
+    addListingModal.classList.add("show");
+  });
+
+  cancelAddBtn.addEventListener("click", function () {
+    addListingModal.classList.remove("show");
+  });
+
+  addListingModal.addEventListener("click", function (e) {
+    if (e.target === addListingModal) {
+      addListingModal.classList.remove("show");
+    }
+  });
   </script>
 
 </body>
