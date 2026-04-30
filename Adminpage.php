@@ -1,11 +1,70 @@
 <?php
-require_once "db/config.php";
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
+/* ✅ السيشن هنا فقط */
+session_start();
+
+/* ✅ دالة الاتصال بقاعدة البيانات */
+function db(): PDO {
+    static $pdo = null;
+    if ($pdo !== null) {
+        return $pdo;
+    }
+
+    $pdo = new PDO(
+        "mysql:host=127.0.0.1;port=8889;dbname=loom;charset=utf8mb4",
+        "root",
+        "root",
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+
+    return $pdo;
+}
+
+/* ✅ دالة الحماية */
+function e($value): string {
+    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+}
+
+/* ✅ تحقق من الأدمن */
+if (!isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit;
 }
+
+$message = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title   = trim($_POST['title'] ?? '');
+    $date    = $_POST['date'] ?? '';
+    $image   = trim($_POST['image'] ?? '');
+    $content = trim($_POST['content'] ?? '');
+    $adminId = $_SESSION['admin_id'];
+
+    if ($title && $date && $image && $content) {
+        try {
+            $stmt = db()->prepare(
+                "INSERT INTO blogpost (title, image, content, publish_date, admin_id)
+                 VALUES (?, ?, ?, ?, ?)"
+            );
+            $stmt->execute([$title, $image, $content, $date, $adminId]);
+
+            $message = "✅ Blog published successfully";
+            header("Refresh: 1; url=Blog.php");
+        } catch (PDOException $ex) {
+            die("DB ERROR: " . $ex->getMessage());
+        }
+    } else {
+        $message = "❌ Please fill all fields";
+    }
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -518,32 +577,36 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
 
   <section class="page">
     <div class="form-card">
+      
       <span class="badge">Admin Dashboard</span>
       <h1 class="title">Create a new<br>LOOM blog post</h1>
       <p class="subtitle">
         Add educational and visually engaging blog content to inspire sustainable fashion choices and raise awareness.
       </p>
+      <?php if (!empty($message)): ?>
+  <p class="message"><?= e($message) ?></p>
+<?php endif; ?>
 
-      <form id="blogForm">
+      <form id="blogForm" method="post">
         <div class="form-grid">
           <div class="form-group">
             <label for="title">Blog Title</label>
-            <input type="text" id="title" placeholder="Enter blog title" required>
+            <input type="text" id="title" name="title" placeholder="Enter blog title" required>
           </div>
 
           <div class="form-group">
             <label for="date">Publish Date</label>
-            <input type="date" id="date" required>
+            <input type="date" id="date" name="date" required>
           </div>
 
           <div class="form-group full">
             <label for="image">Image Path / URL</label>
-            <input type="text" id="image" placeholder="images/blog1.png or https://..." required>
+            <input type="text" id="image" name="image" placeholder="images/blog1.png or https://..." required>
           </div>
 
           <div class="form-group full">
             <label for="content">Blog Content</label>
-            <textarea id="content" placeholder="Write the blog content here..." required></textarea>
+            <textarea id="content" name="content" placeholder="Write the blog content here..." required></textarea>
           </div>
         </div>
 
@@ -552,7 +615,7 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
           <button type="reset" class="btn btn-secondary">Clear Form</button>
         </div>
 
-        <p class="message" id="message"></p>
+        
       </form>
     </div>
 
@@ -620,64 +683,21 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
       <p>© 2026 Team LOOM. All rights reserved.</p>
     </div>
   </footer>
+<script>
+  // تعيين تاريخ اليوم تلقائيًا
+  const dateInput = document.getElementById("date");
+  if (dateInput) {
+    dateInput.value = new Date().toISOString().split("T")[0];
+  }
 
-  <script>
-    const form = document.getElementById("blogForm");
-    const message = document.getElementById("message");
-    const dateInput = document.getElementById("date");
-
-    const today = new Date().toISOString().split("T")[0];
-    dateInput.value = today;
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const title = document.getElementById("title").value.trim();
-      const date = document.getElementById("date").value;
-      const image = document.getElementById("image").value.trim();
-      const content = document.getElementById("content").value.trim();
-
-      const newBlog = {
-        id: Date.now(),
-        title,
-        date,
-        image,
-        content
-      };
-
-      let blogs = JSON.parse(localStorage.getItem("blogs")) || [];
-      blogs.push(newBlog);
-      localStorage.setItem("blogs", JSON.stringify(blogs));
-
-      message.textContent = "Blog published successfully.";
-
-      setTimeout(() => {
-        window.location.href = "Blog.html";
-      }, 800);
-
-      form.reset();
-      dateInput.value = today;
+  // تسجيل الخروج
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      window.location.href = "index.php";
     });
-
-    const authPill = document.getElementById("authPill");
-const logoutBtn = document.getElementById("logoutBtn");
-
-const savedUser = localStorage.getItem("loomLoggedInUser");
-
-
-
-// تسجيل الخروج
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("loomLoggedInUser");
-  localStorage.removeItem("loomUserEmail");
-  window.location.href = "index.php";
-});
-
-    
-  
-
-  </script>
-
+  }
+</script>
 </body>
 
 </html>

@@ -1,17 +1,42 @@
 <?php
-declare(strict_types=1);
-session_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
+/* اتصال قاعدة البيانات */
+function db(): PDO {
+    static $pdo = null;
+    if ($pdo) return $pdo;
+
+    $pdo = new PDO(
+        "mysql:host=127.0.0.1;port=8889;dbname=loom;charset=utf8mb4",
+        "root",
+        "root",
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+    return $pdo;
+}
+
+/* حماية */
 function e($value): string {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
-$isLoggedIn = isset($_SESSION["user_id"]);
-$username = $_SESSION["username"] ?? "Guest Mode";
+/* جلب البوستات */
+$stmt = db()->query(
+  "SELECT blog_id, title, image, content, publish_date
+   FROM blogpost
+   ORDER BY publish_date DESC"
+);
+$blogs = $stmt->fetchAll();
+
+/* (اختياري) بيانات الهيدر */
+session_start();
+$isLoggedIn = isset($_SESSION['user_id']);
+$username = $_SESSION['username'] ?? "Guest Mode";
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -602,7 +627,37 @@ $username = $_SESSION["username"] ?? "Guest Mode";
     </p>
   </section>
 
-  <section class="blog-grid" id="blogContainer"></section>
+  <section class="blog-grid">
+  <?php if (empty($blogs)): ?>
+    <div class="empty-state">
+      <h3>No blog posts yet</h3>
+      <p>The admin hasn’t published any blog posts yet.</p>
+    </div>
+  <?php endif; ?>
+
+  <?php foreach ($blogs as $blog): ?>
+    <div class="blog-card">
+      <img src="<?= e($blog['image']) ?>" alt="<?= e($blog['title']) ?>">
+
+      <div class="blog-content">
+        <p class="blog-date">
+          <?= date("F d, Y", strtotime($blog['publish_date'])) ?>
+        </p>
+
+        <h3 class="blog-title"><?= e($blog['title']) ?></h3>
+
+        <p class="blog-text">
+          <?= e(mb_substr($blog['content'], 0, 140)) ?>...
+        </p>
+
+        <button class="blog-btn"
+          onclick='openModal(<?= json_encode($blog, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+          Read More
+        </button>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</section>
 
   <div class="modal" id="blogModal">
     <div class="modal-content">
@@ -659,132 +714,28 @@ $username = $_SESSION["username"] ?? "Guest Mode";
   </footer>
 
   <script>
-    const blogContainer = document.getElementById("blogContainer");
     const blogModal = document.getElementById("blogModal");
-    const modalImage = document.getElementById("modalImage");
-    const modalDate = document.getElementById("modalDate");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalText = document.getElementById("modalText");
+const modalImage = document.getElementById("modalImage");
+const modalDate = document.getElementById("modalDate");
+const modalTitle = document.getElementById("modalTitle");
+const modalText = document.getElementById("modalText");
 
-    const defaultBlogs = [
-      {
-        id: 1,
-        title: "Why Sustainable Fashion Matters",
-        image: "images/blog1.png",
-        date: "2026-04-01",
-        content: "Sustainable fashion helps reduce textile waste, environmental harm, and impulsive overconsumption.\n\nIt encourages more intentional shopping decisions, better use of clothing, and greater awareness of how fashion impacts the planet.\n\nBy choosing quality over quantity and supporting more responsible practices, users can build wardrobes that are both stylish and thoughtful."
-      },
-      {
-        id: 2,
-        title: "How Second-Use Clothing Extends a Garment’s Life",
-        image: "images/blog2.png",
-        date: "2026-03-28",
-        content: "Second-use fashion gives clothing a second life instead of allowing it to be wasted after limited wear.\n\nBuying and selling pre-owned garments supports circular fashion, reduces unnecessary waste, and encourages smarter wardrobe choices.\n\nIt also allows users to refresh their style in a more sustainable and affordable way."
-      },
-      {
-        id: 3,
-        title: "5 Smart Habits for a More Conscious Wardrobe",
-        image: "images/blog3.png",
-        date: "2026-03-21",
-        content: "A more conscious wardrobe starts with simple habits.\n\nBuy less, choose better quality, rewear what you own, care for your garments properly, and avoid impulsive purchases.\n\nThese small decisions can make fashion feel more intentional, practical, and aligned with sustainability."
-      }
-    ];
+function openModal(blog) {
+  modalImage.src = blog.image;
+  modalTitle.textContent = blog.title;
+  modalDate.textContent =
+    new Date(blog.publish_date).toDateString();
+  modalText.textContent = blog.content;
+  blogModal.style.display = "flex";
+}
 
-    let storedBlogs = JSON.parse(localStorage.getItem("blogs"));
+function closeModal() {
+  blogModal.style.display = "none";
+}
 
-    if (!storedBlogs || storedBlogs.length === 0) {
-      localStorage.setItem("blogs", JSON.stringify(defaultBlogs));
-      storedBlogs = defaultBlogs;
-    }
-
-    function formatDate(dateString) {
-      const options = { year: "numeric", month: "long", day: "numeric" };
-      return new Date(dateString).toLocaleDateString("en-US", options);
-    }
-
-    function openModal(blog) {
-      modalImage.src = blog.image;
-      modalTitle.textContent = blog.title;
-      modalDate.textContent = formatDate(blog.date);
-      modalText.textContent = blog.content;
-      blogModal.style.display = "flex";
-    }
-
-    function closeModal() {
-      blogModal.style.display = "none";
-    }
-
-    window.addEventListener("click", function (e) {
-      if (e.target === blogModal) {
-        closeModal();
-      }
-    });
-
-    function renderBlogs() {
-      let blogs = JSON.parse(localStorage.getItem("blogs")) || [];
-
-      if (blogs.length === 0) {
-        blogContainer.innerHTML = `
-          <div class="empty-state">
-            <h3>No blog posts yet</h3>
-            <p>The admin hasn’t published any blog posts yet.</p>
-          </div>
-        `;
-        return;
-      }
-
-      blogContainer.innerHTML = "";
-
-      blogs.slice().reverse().forEach(blog => {
-        const card = document.createElement("div");
-        card.className = "blog-card";
-
-        card.innerHTML = `
-          <img src="${blog.image}" alt="${blog.title}">
-          <div class="blog-content">
-            <p class="blog-date">${formatDate(blog.date)}</p>
-            <h3 class="blog-title">${blog.title}</h3>
-            <p class="blog-text">${blog.content.substring(0, 140)}...</p>
-            <button class="blog-btn">Read More</button>
-          </div>
-        `;
-
-        card.querySelector(".blog-btn").addEventListener("click", () => {
-          openModal(blog);
-        });
-
-        blogContainer.appendChild(card);
-      });
-    }
-
-    renderBlogs();
-
-   const addListingModal  = document.getElementById("addListingModal");
-  const openAddListingBtn = document.getElementById("openAddListingBtn");
-  const cancelAddBtn     = document.getElementById("cancelAddBtn");
-  const confirmAddBtn    = document.getElementById("confirmAddBtn");
-  const isLoggedIn = <?= $isLoggedIn ? 'true' : 'false' ?>;
-
-  openAddListingBtn.addEventListener("click", function () {
-    if (!isLoggedIn) {
-      alert("You must log in first.");
-      window.location.href = "login.php";
-      return;
-    }
-    addListingModal.classList.add("show");
-  });
-
-  cancelAddBtn.addEventListener("click", function () {
-    addListingModal.classList.remove("show");
-  });
-
-  addListingModal.addEventListener("click", function (e) {
-    if (e.target === addListingModal) {
-      addListingModal.classList.remove("show");
-    }
-  });
-  </script>
-
+window.addEventListener("click", (e) => {
+  if (e.target === blogModal) closeModal();
+});
+    </script>
 </body>
-
 </html>
