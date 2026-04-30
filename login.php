@@ -36,8 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if ($admin && password_verify($password, $admin["password"])) {
                 $_SESSION["admin_id"] = $admin["admin_id"];
-                $_SESSION["email"] = $admin["email"];
-                $_SESSION["role"] = "admin";
+$_SESSION["email"] = $admin["email"];
+$_SESSION["username"] = "Admin";
+$_SESSION["role"] = "admin";
 
                 header("Location: Adminpage.php");
                 exit;

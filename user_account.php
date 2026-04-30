@@ -7,7 +7,7 @@ const DB_HOST = '127.0.0.1';
 const DB_PORT = '8889';
 const DB_USER = 'root';
 const DB_PASS = 'root';
-const DB_NAMES = ['loom_database', 'loom'];
+const DB_NAMES = ['loom', 'loom_database'];
 const UPLOAD_DIR = __DIR__ . '/images/uploads/';
 const UPLOAD_URL = 'images/uploads/';
 
@@ -1081,7 +1081,7 @@ $listings = $listingStmt->fetchAll();
 
   <header class="header">
     <div class="container header-inner">
-      <a class="brand" href="home.html" aria-label="LOOM Home">
+     <a class="brand" href="index.php" aria-label="LOOM Home">
         <div class="logo-mark">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M13 4L9.5 20" stroke="#6B7883" stroke-width="2" stroke-linecap="round" />
@@ -1092,15 +1092,13 @@ $listings = $listingStmt->fetchAll();
         </div>
         <div class="wordmark">LOOM</div>
       </a>
-
-   <nav>
-        <a href="index.php">Home</a>
-        <a href="brands.php">Brands</a>
-        <a href="Blog.php">Blogs</a>
-        <a href="SecondUse.php">Second Hand</a>
-        <a href="user_account.php" id="profileLink" style="display:none;"class="active">Profile</a>
-        <a href="register.php" id="loginLink">Login / Register</a>
-      </nav>
+<nav>
+  <a href="index.php">Home</a>
+  <a href="brands.php">Brands</a>
+  <a href="Blog.php">Blogs</a>
+  <a href="SecondUse.php">Second Hand</a>
+  <a href="user_account.php" class="active">Profile</a>
+</nav>
 
       <div class="header-actions">
         <button class="pill" id="authPill"><?= e($user["username"]) ?></button>

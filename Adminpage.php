@@ -3,10 +3,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-/* ✅ السيشن هنا فقط */
+
 session_start();
 
-/* ✅ دالة الاتصال بقاعدة البيانات */
+
 function db(): PDO {
     static $pdo = null;
     if ($pdo !== null) {
@@ -26,13 +26,13 @@ function db(): PDO {
     return $pdo;
 }
 
-/* ✅ دالة الحماية */
+
 function e($value): string {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
-/* ✅ تحقق من الأدمن */
-if (!isset($_SESSION['admin_id'])) {
+
+if (!isset($_SESSION['admin_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
     header("Location: login.php");
     exit;
 }
@@ -570,7 +570,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="header-actions admin-actions">
   <span class="pill user-name" id="authPill">Admin</span>
-  <button class="pill logout" id="logoutBtn">Logout</button>
+  <a class="pill logout" href="logout.php">Logout</a>
 </div>
     </div>
   </header>
@@ -684,19 +684,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </footer>
 <script>
-  // تعيين تاريخ اليوم تلقائيًا
+ 
   const dateInput = document.getElementById("date");
   if (dateInput) {
     dateInput.value = new Date().toISOString().split("T")[0];
   }
 
-  // تسجيل الخروج
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      window.location.href = "index.php";
-    });
-  }
+  
 </script>
 </body>
 

@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-/* اتصال قاعدة البيانات */
+
 function db(): PDO {
     static $pdo = null;
     if ($pdo) return $pdo;
@@ -19,12 +19,12 @@ function db(): PDO {
     return $pdo;
 }
 
-/* حماية */
+
 function e($value): string {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
-/* جلب البوستات */
+
 $stmt = db()->query(
   "SELECT blog_id, title, image, content, publish_date
    FROM blogpost
@@ -32,10 +32,17 @@ $stmt = db()->query(
 );
 $blogs = $stmt->fetchAll();
 
-/* (اختياري) بيانات الهيدر */
 session_start();
-$isLoggedIn = isset($_SESSION['user_id']);
+
+$isAdmin = isset($_SESSION['admin_id']);
+$isUser = isset($_SESSION['user_id']);
+$isLoggedIn = $isAdmin || $isUser;
+
 $username = $_SESSION['username'] ?? "Guest Mode";
+
+if ($isAdmin) {
+    $username = "Admin";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -585,24 +592,38 @@ $username = $_SESSION['username'] ?? "Guest Mode";
         <div class="wordmark">LOOM</div>
       </a>
 
-      <nav>
-        <a href="index.php">Home</a>
-        <a href="brands.php">Brands</a>
-        <a href="Blog.php"class="active">Blogs</a>
-        <a href="SecondUse.php" >Second Hand</a>
-        <?php if ($isLoggedIn): ?><a href="user_account.php" id="profileLink">Profile</a>
-        <?php else: ?><a href="user_account.php" id="profileLink" style="display:none;">Profile</a>
-        <?php endif; ?>
-        <?php if (!$isLoggedIn): ?><a href="login.php" id="loginLink">Login</a>
-        <?php else: ?><a href="login.php" id="loginLink" style="display:none;">Login</a>
-        <?php endif; ?>
-      </nav>
+    <nav>
+  <?php if ($isAdmin): ?>
 
-      <div class="header-actions">
-        <button class="pill" id="authPill">
-          <?= e($username ?? "Guest Mode") ?>
-        </button>
-      </div>
+    <a href="Adminpage.php">Admin</a>
+    <a href="Blog.php" class="active">Blog</a>
+
+  <?php else: ?>
+
+    <a href="index.php">Home</a>
+    <a href="brands.php">Brands</a>
+    <a href="Blog.php" class="active">Blogs</a>
+    <a href="SecondUse.php">Second Hand</a>
+
+    <?php if ($isUser): ?>
+      <a href="user_account.php" id="profileLink">Profile</a>
+    <?php else: ?>
+      <a href="login.php" id="loginLink">Login</a>
+    <?php endif; ?>
+
+  <?php endif; ?>
+</nav>
+
+<div class="header-actions">
+  <button class="pill" id="authPill">
+    <?= e($username) ?>
+  </button>
+
+  <?php if ($isAdmin): ?>
+    <a class="pill" href="logout.php">Logout</a>
+  <?php endif; ?>
+</div>
+      
     </div>
   </header>
 
