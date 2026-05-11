@@ -620,7 +620,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="side-card">
-      <img src="images/admin-blog-side.png" alt="LOOM Admin Visual">
+      <img src="images/admin-blog-side.avif" alt="LOOM Admin Visual">
       <div class="side-content">
         <h3>Write with elegance,<br>publish with purpose.</h3>
         <p>

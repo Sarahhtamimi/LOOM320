@@ -193,7 +193,7 @@ if ($isAdmin) {
       overflow: hidden;
       position: relative;
       box-shadow: var(--shadow);
-      background: url("images/blog-hero.png") center/cover no-repeat;
+      background: url("images/blog-hero.avif") center/cover no-repeat;
       display: flex;
       align-items: flex-end;
     }
